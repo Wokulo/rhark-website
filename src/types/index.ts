@@ -224,6 +224,123 @@ export interface Partner {
   isFeatured?: boolean;
 }
 
+// ─── Donation System Types ─────────────────────────────────────────────────────
+
+export type DonationStatus = "pending" | "successful" | "failed" | "cancelled";
+
+export type PaymentMethod = "mpesa" | "bank-transfer" | "card" | "other";
+
+export interface Donation {
+  id: string;
+  transactionId: string;
+  donorName: string;
+  email: string;
+  phone: string;
+  amount: number;
+  paymentMethod: PaymentMethod;
+  status: DonationStatus;
+  isRecurring: boolean;
+  campaignId?: string;
+  message?: string;
+  mpesaReceiptNumber?: string;
+  mpesaCheckoutRequestId?: string;
+  createdAt: string;
+  updatedAt: string;
+  emailHistory: EmailMessageRef[];
+}
+
+export interface EmailMessageRef {
+  emailId: string;
+  type: string;
+  sentAt: string;
+}
+
+// ─── Contact / Inquiry System Types ───────────────────────────────────────────
+
+export type ContactStatus = "new" | "read" | "replied" | "closed";
+export type InquiryType = "general" | "information" | "partnership" | "program";
+
+export interface ContactRequest {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  organization?: string;
+  subject: string;
+  message: string;
+  programOfInterest?: string;
+  inquiryType: InquiryType;
+  status: ContactStatus;
+  adminNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+  emailHistory: EmailMessageRef[];
+}
+
+// ─── Email System Types ────────────────────────────────────────────────────────
+
+export type EmailStatus = "sent" | "failed" | "queued";
+
+export type EmailTemplateType =
+  | "welcome"
+  | "contact-confirmation"
+  | "info-request-confirmation"
+  | "donation-thank-you"
+  | "donation-receipt"
+  | "donation-failed"
+  | "admin-notification"
+  | "contact-reply"
+  | "password-reset"
+  | "account-verification";
+
+export interface EmailMessage {
+  id: string;
+  templateType: EmailTemplateType;
+  to: string;
+  from: string;
+  subject: string;
+  body: string;
+  status: EmailStatus;
+  errorMessage?: string;
+  referenceId?: string; // link to ContactRequest or Donation id
+  referenceType?: "contact" | "donation";
+  createdAt: string;
+  sentAt?: string;
+}
+
+export interface CommunicationThread {
+  id: string;
+  contactRequestId: string;
+  messages: {
+    from: "user" | "admin";
+    content: string;
+    createdAt: string;
+  }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ─── Admin ────────────────────────────────────────────────────────────────────
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  role: "admin" | "superadmin";
+  createdAt: string;
+}
+
+export interface Notification {
+  id: string;
+  type: "new-contact" | "new-donation" | "donation-success" | "donation-failed" | "email-failed";
+  title: string;
+  message: string;
+  referenceId?: string;
+  referenceType?: "contact" | "donation";
+  isRead: boolean;
+  createdAt: string;
+}
+
 // ─── Forms ────────────────────────────────────────────────────────────────────
 
 export interface ContactFormData {
@@ -232,6 +349,8 @@ export interface ContactFormData {
   phone?: string;
   subject: string;
   message: string;
+  organization?: string;
+  programOfInterest?: string;
 }
 
 export interface NewsletterFormData {
@@ -259,12 +378,13 @@ export interface PartnershipInquiryFormData {
   message: string;
 }
 
-export interface DonationInquiryFormData {
+export interface DonationFormData {
   donorName: string;
   email: string;
-  phone?: string;
-  amount?: number;
-  donationType: "one-time" | "monthly" | "in-kind" | "corporate";
+  phone: string;
+  amount: number;
+  paymentMethod: PaymentMethod;
+  isRecurring: boolean;
   message?: string;
 }
 
@@ -275,4 +395,49 @@ export interface ApiResponse<T = unknown> {
   data?: T;
   message?: string;
   errors?: Record<string, string[]>;
+}
+
+export interface PaginatedResponse<T> extends ApiResponse<T[]> {
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+// ─── Dashboard Stats ──────────────────────────────────────────────────────────
+
+export interface DashboardStats {
+  totalDonations: number;
+  totalDonationAmount: number;
+  pendingDonations: number;
+  successfulDonations: number;
+  totalContacts: number;
+  newContacts: number;
+  totalEmailsSent: number;
+  failedEmails: number;
+}
+
+// ─── Filters ──────────────────────────────────────────────────────────────────
+
+export interface DonationFilter {
+  status?: DonationStatus;
+  paymentMethod?: PaymentMethod;
+  startDate?: string;
+  endDate?: string;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+  sortBy?: "createdAt" | "amount" | "status";
+  sortOrder?: "asc" | "desc";
+}
+
+export interface ContactFilter {
+  status?: ContactStatus;
+  inquiryType?: InquiryType;
+  startDate?: string;
+  endDate?: string;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+  sortBy?: "createdAt" | "status";
+  sortOrder?: "asc" | "desc";
 }

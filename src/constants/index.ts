@@ -91,7 +91,7 @@ export const NAV_ITEMS: NavItem[] = [
 // ─── Impact Statistics (placeholder — replace with real data) ─────────────────
 
 export const IMPACT_STATS: ImpactStat[] = [
-  { id: "1", value: 5000, suffix: "+", label: "Youth Reached", description: "Young people impacted by our programmes" },
+  { id: "1", value: 5000, suffix: "+", label: "Youth Reached", description: "Young people impacted by our programs" },
   { id: "2", value: 2500, suffix: "+", label: "Women Empowered", description: "Women and girls supported through community initiatives" },
   { id: "3", value: 120, suffix: "+", label: "Community Dialogues", description: "Dialogues held with youth, parents, leaders, and duty bearers" },
   { id: "4", value: 45, suffix: "+", label: "Schools Engaged", description: "Schools reached through clubs, talks, and referrals" },

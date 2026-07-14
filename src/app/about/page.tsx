@@ -60,7 +60,7 @@ export default function AboutPage() {
                 RHARK was established in {ORG.founded} in response to the persistent unmet needs in Sexual and Reproductive Health and Rights among young people and women in {ORG.county}. Founded by a group of passionate community health advocates, RHARK has grown from a grassroots initiative into a recognized community-based organization.
               </p>
               <p>
-                Operating from our head office at {ORG.address}, we work directly with communities, government institutions, and development partners to deliver evidence-based programmes that transform lives.
+                Operating from our head office at {ORG.address}, we work directly with communities, government institutions, and development partners to deliver evidence-based programs that transform lives.
               </p>
               <p>
                 Our approach is rooted in community participation, intersectionality, and a deep respect for the rights and dignity of every individual we serve.
@@ -152,7 +152,7 @@ export default function AboutPage() {
               ))}
             </ul>
             <Link href={ROUTES.programmes} className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary-500 px-6 py-3 text-sm font-bold text-white shadow-teal-sm transition-all duration-200 hover:bg-primary-600 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
-              Explore Our Programmes <ArrowRight size={15} aria-hidden="true" />
+              Explore Our Programs <ArrowRight size={15} aria-hidden="true" />
             </Link>
           </div>
           <div>
@@ -161,7 +161,7 @@ export default function AboutPage() {
               Target Beneficiaries
             </h2>
             <p className="mt-4 text-base leading-relaxed text-neutral-600">
-              RHARK's programmes are designed to reach the most vulnerable and underserved populations.
+              RHARK's programs are designed to reach the most vulnerable and underserved populations.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {BENEFICIARIES.map((b) => (
