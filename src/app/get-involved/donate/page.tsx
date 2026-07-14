@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Heart, ArrowRight, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
@@ -140,9 +141,12 @@ export default function DonatePage() {
                   <Button onClick={handleDonateAnother} size="lg">
                     Make Another Donation
                   </Button>
-                  <Button href="/" variant="secondary" size="lg">
+                  <Link
+                    href="/"
+                    className="inline-flex h-13 items-center justify-center gap-2.5 rounded-full border-2 border-primary-500 bg-transparent px-7 text-base font-semibold text-primary-500 transition-all duration-150 ease-out hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                  >
                     Return Home
-                  </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -235,6 +239,7 @@ export default function DonatePage() {
                   </p>
                 )}
                 <Input
+                  label="Custom Amount"
                   type="number"
                   error={errors.amount?.message}
                   {...register("amount", { valueAsNumber: true })}

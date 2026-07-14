@@ -163,6 +163,7 @@ export default function AdminContactsPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <Input
+            label="Search"
             placeholder="Search contacts..."
             value={filters.search}
             onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))}

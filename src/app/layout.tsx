@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter, Montserrat } from "next/font/google";
 import { Providers } from "@/providers";
 import {
   Header,
@@ -14,19 +13,6 @@ import "./globals.css";
 // ─── Fonts ────────────────────────────────────────────────────────────────────
 // next/font: self-hosted at build time — zero layout shift, GDPR-safe,
 // no runtime request to Google Fonts servers.
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
-});
 
 // ─── Root Metadata ────────────────────────────────────────────────────────────
 
@@ -47,7 +33,6 @@ export default function RootLayout({
       // suppressHydrationWarning is required by next-themes to prevent
       // a hydration mismatch when the theme class is applied client-side.
       suppressHydrationWarning
-      className={`${inter.variable} ${montserrat.variable}`}
     >
       <head>
         {/* JSON-LD structured data — enables Google Knowledge Panel */}

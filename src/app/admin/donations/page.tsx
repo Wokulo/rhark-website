@@ -190,6 +190,7 @@ export default function AdminDonationsPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <Input
+            label="Search"
             placeholder="Search donations..."
             value={filters.search}
             onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))}

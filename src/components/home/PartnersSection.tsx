@@ -58,7 +58,13 @@ export function PartnersSection() {
               className="flex h-16 min-w-[140px] items-center justify-center rounded-xl bg-white px-6 shadow-sm ring-1 ring-neutral-200 transition-all duration-200 hover:shadow-md hover:ring-neutral-300"
               title={partner.name}
             >
-              <span className="text-sm font-bold text-neutral-500">{partner.abbr}</span>
+              <Image
+                src={partner.logo}
+                alt={`${partner.name} logo`}
+                width={120}
+                height={48}
+                className="max-h-10 w-auto object-contain"
+              />
             </motion.div>
           ))}
         </div>

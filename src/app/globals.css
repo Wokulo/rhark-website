@@ -7,6 +7,9 @@
    Dark mode values are set in the [data-theme="dark"] / .dark block below.
    ─────────────────────────────────────────────────────────────────────────── */
 :root {
+  --font-inter: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-montserrat: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
   /* Brand colours */
   --color-primary: #0d6e6e;
   --color-primary-light: #2eadad;

@@ -25,14 +25,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = createSession(admin.email, admin.role);
+    const token = await createSession(admin.email, admin.role);
     const response = NextResponse.json({
       success: true,
       message: "Login successful.",
       data: { email: admin.email, name: admin.name, role: admin.role },
     });
 
-    setSessionCookie(response, token);
+    await setSessionCookie(response, token);
     return response;
   } catch (error) {
     console.error("[Admin Auth] Error:", error);
