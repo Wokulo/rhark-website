@@ -60,7 +60,7 @@ export default function DonatePage() {
 
   const checkMpesaStatus = useCallback(async (checkoutRequestId: string) => {
     try {
-      const res = await fetch(`/api/donate/status?checkoutRequestId=${encodeURIComponent(checkoutRequestId)}`);
+      const res = await fetch(`/api/mpesa/query?checkoutRequestId=${encodeURIComponent(checkoutRequestId)}`);
       const result = await res.json();
 
       if (result.success && result.data) {
@@ -69,7 +69,7 @@ export default function DonatePage() {
           setDonationData((prev) => prev ? { ...prev, message: "Your M-Pesa donation was successful! Thank you for your support." } : null);
         } else if (result.data.status === "failed") {
           setStatus("failed");
-          setDonationData((prev) => prev ? { ...prev, message: result.data.resultDesc || "The M-Pesa payment failed. Please try again." } : null);
+          setDonationData((prev) => prev ? { ...prev, message: "The M-Pesa payment failed. Please try again or call 0733551415 for assistance." } : null);
         }
       } else if (!result.success && result.message) {
         setStatus("failed");
@@ -98,23 +98,46 @@ export default function DonatePage() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("/api/donate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-
-      if (!res.ok || !result.success) {
-        throw new Error(result.message || "Donation failed. Please try again.");
-      }
-
-      setDonationData({ ...result.data, message: result.message });
-
       if (data.paymentMethod === "mpesa") {
+        const res = await fetch("/api/mpesa/stkpush", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: data.amount,
+            phone: data.phone,
+            donorName: data.donorName,
+            email: data.email,
+          }),
+        });
+
+        const result = await res.json();
+
+        if (!res.ok || !result.success) {
+          throw new Error(result.message || "M-Pesa payment could not be initiated. Please try again.");
+        }
+
+        setDonationData({
+          id: "",
+          transactionId: result.transactionId || `RHARK-${Date.now()}`,
+          checkoutRequestId: result.checkoutRequestId,
+          message: result.message,
+          amount: data.amount,
+        });
         setStatus("pending");
       } else {
+        const res = await fetch("/api/donate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await res.json();
+
+        if (!res.ok || !result.success) {
+          throw new Error(result.message || "Donation failed. Please try again.");
+        }
+
+        setDonationData({ ...result.data, message: result.message });
         setStatus("bank-pending");
       }
     } catch (err) {

@@ -17,7 +17,7 @@ export const ORG = {
   county: "Siaya County",
   address: "Ardhi House, DCC's Building, along Bondo–Kisumu Highway, Bondo Town",
   postalAddress: "P.O. Box 509–40601, Bondo, Kenya",
-  email: "info@rhark.org",
+  email: "rharkenya@gmail.com",
   phone: "+254 733551415",
   mpesaNumber: "0733551415",
   vision:

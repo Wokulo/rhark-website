@@ -244,6 +244,7 @@ export interface Donation {
   message?: string;
   mpesaReceiptNumber?: string;
   mpesaCheckoutRequestId?: string;
+  merchantRequestId?: string;
   createdAt: string;
   updatedAt: string;
   emailHistory: EmailMessageRef[];
