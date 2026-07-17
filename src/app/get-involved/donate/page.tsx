@@ -171,9 +171,6 @@ export default function DonatePage() {
                     <li>2. Enter your M-Pesa PIN to complete the payment</li>
                     <li>3. Wait for the confirmation message from M-Pesa</li>
                   </ul>
-                  <p className="mt-3 text-xs text-neutral-500">
-                    Transaction Reference: <span className="font-mono font-semibold">{donationData.transactionId}</span>
-                  </p>
                 </div>
                 <p className="text-xs text-neutral-400">
                   This page will automatically update once your payment is confirmed.
