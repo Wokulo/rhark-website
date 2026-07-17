@@ -2,7 +2,8 @@
  * Donation Service — M-Pesa Daraja 2.0 integration.
  *
  * This module handles M-Pesa STK Push (Lipa na M-Pesa Online) API calls.
- * In development mode without credentials, it simulates the payment flow.
+ * If M-Pesa credentials are not configured, the service returns an error
+ * prompting the user to contact RHARK for assistance.
  */
 
 export interface DonationPayload {
@@ -99,8 +100,7 @@ async function getMpesaAccessToken(config: MpesaConfig): Promise<string> {
 /**
  * Initiates an M-Pesa STK Push payment.
  *
- * In development, if M-Pesa credentials are not configured, returns a
- * simulated success response with a mock CheckoutRequestID.
+ * Returns an error if M-Pesa credentials are not configured.
  */
 export async function initiateMpesaPayment(
   payload: DonationPayload
