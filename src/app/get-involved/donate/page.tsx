@@ -29,7 +29,7 @@ export default function DonatePage() {
     id: string;
     transactionId: string;
     checkoutRequestId?: string;
-    message: string;
+    message?: string;
     amount?: number;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -107,7 +107,7 @@ export default function DonatePage() {
         throw new Error(result.message || "Donation failed. Please try again.");
       }
 
-      setDonationData(result.data);
+      setDonationData({ ...result.data, message: result.message });
 
       if (data.paymentMethod === "mpesa") {
         setStatus("pending");
@@ -162,7 +162,7 @@ export default function DonatePage() {
                   Waiting for M-Pesa Payment
                 </h2>
                 <p className="text-neutral-600">
-                  We have sent an M-Pesa STK Push request to <strong>{donationData.message.includes(donationData.id) ? "your phone" : "your phone"}</strong>.
+                  We have sent an M-Pesa STK Push request to your phone.
                 </p>
                 <div className="mt-4 w-full rounded-xl bg-primary-50 p-6 text-left ring-1 ring-primary-100">
                   <p className="text-sm font-semibold text-primary-700">Please check your phone now</p>
