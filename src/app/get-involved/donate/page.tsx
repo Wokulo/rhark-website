@@ -63,7 +63,7 @@ export default function DonatePage() {
       const res = await fetch(`/api/donate/status?checkoutRequestId=${encodeURIComponent(checkoutRequestId)}`);
       const result = await res.json();
 
-      if (res.ok && result.success) {
+      if (result.success && result.data) {
         if (result.data.status === "successful") {
           setStatus("successful");
           setDonationData((prev) => prev ? { ...prev, message: "Your M-Pesa donation was successful! Thank you for your support." } : null);
@@ -71,6 +71,9 @@ export default function DonatePage() {
           setStatus("failed");
           setDonationData((prev) => prev ? { ...prev, message: result.data.resultDesc || "The M-Pesa payment failed. Please try again." } : null);
         }
+      } else if (!result.success && result.message) {
+        setStatus("failed");
+        setDonationData((prev) => prev ? { ...prev, message: result.message } : null);
       }
     } catch (err) {
       console.error("[Donate] Status check failed:", err);

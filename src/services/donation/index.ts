@@ -107,20 +107,10 @@ export async function initiateMpesaPayment(
 ): Promise<DonationResult> {
   const config = getMpesaConfig();
 
-  // Development mode: simulate the payment flow
   if (!config) {
-    console.log("[M-Pesa] No credentials configured. Simulating STK Push.");
-    console.log("[M-Pesa] Payload:", payload);
-
-    const mockCheckoutRequestId = `ws_CO_${Date.now()}_${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
-    const mockMerchantRequestId = `${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-
     return {
-      success: true,
-      transactionId: `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-      checkoutRequestId: mockCheckoutRequestId,
-      merchantRequestId: mockMerchantRequestId,
-      message: "STK Push sent to your phone. Please enter your M-Pesa PIN to complete payment.",
+      success: false,
+      message: "M-Pesa is not configured. Please call 0733551415 for assistance or use bank transfer.",
     };
   }
 
@@ -204,13 +194,10 @@ export async function queryMpesaPaymentStatus(
   const config = getMpesaConfig();
 
   if (!config) {
-    // In development, simulate a successful query after some time
-    console.log("[M-Pesa] Simulating payment status query for:", checkoutRequestId);
     return {
-      success: true,
-      resultCode: 0,
-      resultDesc: "The service request is processed successfully.",
-      receiptNumber: `MPS${Date.now()}`,
+      success: false,
+      resultCode: -1,
+      resultDesc: "M-Pesa is not configured. Please call 0733551415 for assistance.",
     };
   }
 

@@ -42,6 +42,18 @@ export async function GET(request: NextRequest) {
 
     if (checkoutRequestId) {
       const mpesaStatus = await queryMpesaPaymentStatus(checkoutRequestId);
+
+      if (!mpesaStatus.success && mpesaStatus.resultCode === -1) {
+        return NextResponse.json({
+          success: false,
+          message: mpesaStatus.resultDesc || "M-Pesa is not configured. Please call 0733551415 for assistance.",
+          data: {
+            status: "failed",
+            transactionId: donation.transactionId,
+          },
+        });
+      }
+
       return NextResponse.json({
         success: true,
         data: {
