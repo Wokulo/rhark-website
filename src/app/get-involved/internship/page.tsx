@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { buildMetadata } from "@/lib/metadata";
 import Link from "next/link";
-import { BookOpen, CheckCircle2, ArrowRight } from "lucide-react";
+import { BookOpen, CheckCircle2 } from "lucide-react";
 import { ROUTES } from "@/constants";
+import { buildMetadata } from "@/lib/metadata";
+import InternshipForm from "./internship-form";
 
 export const metadata: Metadata = buildMetadata({
   title: "Internship Opportunities",
@@ -76,21 +77,8 @@ export default function InternshipPage() {
                 ))}
               </ul>
             </div>
-            <div className="rounded-2xl bg-secondary-50 p-8 ring-1 ring-secondary-100">
-              <h3 className="font-display text-lg font-bold text-neutral-900">How to Apply</h3>
-              <div className="mt-4 space-y-3 text-sm text-neutral-600">
-                <p>Send your application to <a href="mailto:internships@rhark.org" className="font-semibold text-primary-600 hover:underline">internships@rhark.org</a> with:</p>
-                <ul className="ml-4 list-disc space-y-1">
-                  <li>Your CV / Resume</li>
-                  <li>A cover letter (max 1 page)</li>
-                  <li>Your preferred internship area and duration</li>
-                  <li>Your availability start date</li>
-                </ul>
-              </div>
-              <Link href={ROUTES.contact} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-secondary-400 px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-secondary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-400 focus-visible:ring-offset-2">
-                Contact Us to Apply <ArrowRight size={14} aria-hidden="true" />
-              </Link>
-            </div>
+
+            <InternshipForm />
           </div>
         </div>
       </section>

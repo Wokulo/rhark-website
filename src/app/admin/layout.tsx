@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Heart,
   Mail,
+  Users,
   Bell,
   Menu,
   X,
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Contacts", href: "/admin/contacts", icon: MessageSquare },
   { label: "Donations", href: "/admin/donations", icon: Heart },
+  { label: "Subscribers", href: "/admin/subscribers", icon: Users },
   { label: "Email History", href: "/admin/emails", icon: Mail },
 ];
 

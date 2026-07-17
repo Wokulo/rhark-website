@@ -358,6 +358,14 @@ export interface NewsletterFormData {
   firstName?: string;
 }
 
+export interface Subscriber {
+  id: string;
+  email: string;
+  firstName?: string;
+  subscribedAt: string;
+  source?: string;
+}
+
 export interface VolunteerFormData {
   firstName: string;
   lastName: string;

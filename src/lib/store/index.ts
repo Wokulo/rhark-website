@@ -19,6 +19,7 @@ import type {
   DonationFilter,
   ContactFilter,
   PaginatedResponse,
+  Subscriber,
 } from "@/types";
 
 // ─── UUID generator (crypto.randomUUID is available in modern runtimes) ────────
@@ -44,6 +45,7 @@ class Store {
   private threads: Map<string, CommunicationThread> = new Map();
   private notifications: Map<string, Notification> = new Map();
   private adminUsers: Map<string, AdminUser> = new Map();
+  private subscribers: Map<string, Subscriber> = new Map();
 
   constructor() {
     // Seed a default admin user
@@ -305,6 +307,34 @@ class Store {
 
   getAdminByEmail(email: string): AdminUser | undefined {
     return Array.from(this.adminUsers.values()).find((u) => u.email === email);
+  }
+
+  listAdmins(): AdminUser[] {
+    return Array.from(this.adminUsers.values());
+  }
+
+  // ─── Subscribers ─────────────────────────────────────────────────────────────
+
+  createSubscriber(data: Omit<Subscriber, "id" | "subscribedAt">): Subscriber {
+    const id = uuid();
+    const now = new Date().toISOString();
+    const subscriber: Subscriber = { ...data, id, subscribedAt: now };
+    this.subscribers.set(id, subscriber);
+    return subscriber;
+  }
+
+  getSubscriber(id: string): Subscriber | undefined {
+    return this.subscribers.get(id);
+  }
+
+  getSubscriberByEmail(email: string): Subscriber | undefined {
+    return Array.from(this.subscribers.values()).find((s) => s.email === email);
+  }
+
+  listSubscribers(): Subscriber[] {
+    return Array.from(this.subscribers.values()).sort(
+      (a, b) => new Date(b.subscribedAt).getTime() - new Date(a.subscribedAt).getTime()
+    );
   }
 
   // ─── Dashboard Stats ─────────────────────────────────────────────────────────

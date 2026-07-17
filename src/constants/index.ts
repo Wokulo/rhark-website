@@ -18,7 +18,8 @@ export const ORG = {
   address: "Ardhi House, DCC's Building, along Bondo–Kisumu Highway, Bondo Town",
   postalAddress: "P.O. Box 509–40601, Bondo, Kenya",
   email: "info@rhark.org",
-  phone: "+254 700 000 000", // placeholder — update with real number
+  phone: "+254 733551415",
+  mpesaNumber: "0733551415",
   vision:
     "A society where young people and women are healthy, enlightened, empowered, and free from unmet Sexual and Reproductive Health and Rights (SRHR) needs.",
   mission:

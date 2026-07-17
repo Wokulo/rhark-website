@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Heart, ArrowRight, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Heart, ArrowRight, CheckCircle2, AlertCircle, Loader2, RefreshCw } from "lucide-react";
 import { donationFormSchema, type DonationFormSchema } from "@/lib/validations";
 import { ORG } from "@/constants";
 import { cn, formatNumber } from "@/utils";
@@ -20,15 +20,17 @@ const IMPACT = [
   { amount: "KES 10,000", impact: "Sponsors a youth gender equality workshop for 30 participants" },
 ];
 
+type DonationStatus = "idle" | "submitting" | "pending" | "successful" | "failed" | "bank-pending";
+
 export default function DonatePage() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<DonationStatus>("idle");
   const [serverError, setServerError] = useState("");
-  const [donationResult, setDonationResult] = useState<{
+  const [donationData, setDonationData] = useState<{
     id: string;
     transactionId: string;
     checkoutRequestId?: string;
-    status: string;
     message: string;
+    amount?: number;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,9 +58,40 @@ export default function DonatePage() {
   const selectedAmount = watch("amount");
   const paymentMethod = watch("paymentMethod");
 
+  const checkMpesaStatus = useCallback(async (checkoutRequestId: string) => {
+    try {
+      const res = await fetch(`/api/donate/status?checkoutRequestId=${encodeURIComponent(checkoutRequestId)}`);
+      const result = await res.json();
+
+      if (res.ok && result.success) {
+        if (result.data.status === "successful") {
+          setStatus("successful");
+          setDonationData((prev) => prev ? { ...prev, message: "Your M-Pesa donation was successful! Thank you for your support." } : null);
+        } else if (result.data.status === "failed") {
+          setStatus("failed");
+          setDonationData((prev) => prev ? { ...prev, message: result.data.resultDesc || "The M-Pesa payment failed. Please try again." } : null);
+        }
+      }
+    } catch (err) {
+      console.error("[Donate] Status check failed:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (status === "pending" && donationData?.checkoutRequestId) {
+      interval = setInterval(() => {
+        checkMpesaStatus(donationData.checkoutRequestId!);
+      }, 3000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [status, donationData?.checkoutRequestId, checkMpesaStatus]);
+
   const onSubmit = async (data: DonationFormSchema) => {
     setServerError("");
-    setDonationResult(null);
+    setDonationData(null);
     setIsSubmitting(true);
 
     try {
@@ -74,19 +107,24 @@ export default function DonatePage() {
         throw new Error(result.message || "Donation failed. Please try again.");
       }
 
-      setDonationResult(result.data);
-      setSubmitted(true);
-      reset();
+      setDonationData(result.data);
+
+      if (data.paymentMethod === "mpesa") {
+        setStatus("pending");
+      } else {
+        setStatus("bank-pending");
+      }
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setStatus("idle");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDonateAnother = () => {
-    setSubmitted(false);
-    setDonationResult(null);
+    setStatus("idle");
+    setDonationData(null);
     setServerError("");
     reset({
       donorName: "",
@@ -99,7 +137,62 @@ export default function DonatePage() {
     });
   };
 
-  if (submitted && donationResult) {
+  if (status === "pending" && donationData) {
+    return (
+      <div className="bg-white">
+        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
+          <div className="container-site text-center">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
+              <Heart size={30} className="text-white" aria-hidden="true" fill="currentColor" />
+            </div>
+            <h1 id="donate-hero-heading" className="font-display text-4xl font-extrabold text-white text-balance lg:text-5xl">
+              Support Our Mission
+            </h1>
+          </div>
+        </section>
+
+        <section className="py-20 lg:py-28" aria-labelledby="donate-pending-heading">
+          <div className="container-site max-w-2xl">
+            <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
+              <div className="flex flex-col items-center gap-4 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-warning-50">
+                  <Loader2 size={32} className="text-warning-500 animate-spin" aria-hidden="true" />
+                </div>
+                <h2 id="donate-pending-heading" className="font-display text-2xl font-bold text-neutral-900">
+                  Waiting for M-Pesa Payment
+                </h2>
+                <p className="text-neutral-600">
+                  We have sent an M-Pesa STK Push request to <strong>{donationData.message.includes(donationData.id) ? "your phone" : "your phone"}</strong>.
+                </p>
+                <div className="mt-4 w-full rounded-xl bg-primary-50 p-6 text-left ring-1 ring-primary-100">
+                  <p className="text-sm font-semibold text-primary-700">Please check your phone now</p>
+                  <ul className="mt-3 space-y-2 text-sm text-neutral-700">
+                    <li>1. You should receive an M-Pesa prompt on your phone ({watch("phone")})</li>
+                    <li>2. Enter your M-Pesa PIN to complete the payment</li>
+                    <li>3. Wait for the confirmation message from M-Pesa</li>
+                  </ul>
+                  <p className="mt-3 text-xs text-neutral-500">
+                    Transaction Reference: <span className="font-mono font-semibold">{donationData.transactionId}</span>
+                  </p>
+                </div>
+                <p className="text-xs text-neutral-400">
+                  This page will automatically update once your payment is confirmed.
+                </p>
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <Button onClick={handleDonateAnother} variant="secondary" size="lg">
+                    <RefreshCw size={18} aria-hidden="true" />
+                    Cancel & Try Again
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (status === "successful" && donationData) {
     return (
       <div className="bg-white">
         <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
@@ -121,22 +214,117 @@ export default function DonatePage() {
                   <CheckCircle2 size={32} className="text-success-500" aria-hidden="true" />
                 </div>
                 <h2 id="donate-success-heading" className="font-display text-2xl font-bold text-neutral-900">
-                  {donationResult.status === "pending" ? "Donation Initiated!" : "Donation Received!"}
+                  Donation Received!
                 </h2>
                 <p className="text-neutral-600">
-                  {donationResult.message}
+                  {donationData.message}
                 </p>
+                <div className="mt-4 w-full rounded-xl bg-neutral-50 p-4 text-left">
+                  <p className="text-sm font-semibold text-neutral-700">Transaction Reference</p>
+                  <p className="mt-1 font-mono text-sm text-neutral-900">{donationData.transactionId}</p>
+                  <p className="mt-2 text-sm text-neutral-500">
+                    A confirmation email will be sent shortly. Thank you for your generosity!
+                  </p>
+                </div>
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <Button onClick={handleDonateAnother} size="lg">
+                    Make Another Donation
+                  </Button>
+                  <Link
+                    href="/"
+                    className="inline-flex h-13 items-center justify-center gap-2.5 rounded-full border-2 border-primary-500 bg-transparent px-7 text-base font-semibold text-primary-500 transition-all duration-150 ease-out hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                  >
+                    Return Home
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
-                {donationResult.checkoutRequestId && (
-                  <div className="mt-4 w-full rounded-xl bg-neutral-50 p-4 text-left">
-                    <p className="text-sm font-semibold text-neutral-700">Transaction Reference</p>
-                    <p className="mt-1 font-mono text-sm text-neutral-900">{donationResult.transactionId}</p>
-                    <p className="mt-2 text-sm text-neutral-500">
-                      Please save this reference for your records. A confirmation email will be sent shortly.
-                    </p>
-                  </div>
-                )}
+  if (status === "failed" && donationData) {
+    return (
+      <div className="bg-white">
+        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
+          <div className="container-site text-center">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
+              <Heart size={30} className="text-white" aria-hidden="true" fill="currentColor" />
+            </div>
+            <h1 id="donate-hero-heading" className="font-display text-4xl font-extrabold text-white text-balance lg:text-5xl">
+              Support Our Mission
+            </h1>
+          </div>
+        </section>
 
+        <section className="py-20 lg:py-28" aria-labelledby="donate-failed-heading">
+          <div className="container-site max-w-2xl">
+            <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
+              <div className="flex flex-col items-center gap-4 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-error-50">
+                  <AlertCircle size={32} className="text-error-500" aria-hidden="true" />
+                </div>
+                <h2 id="donate-failed-heading" className="font-display text-2xl font-bold text-neutral-900">
+                  Payment Failed
+                </h2>
+                <p className="text-neutral-600">
+                  {donationData.message}
+                </p>
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <Button onClick={handleDonateAnother} size="lg">
+                    Try Again
+                  </Button>
+                  <Link
+                    href="/"
+                    className="inline-flex h-13 items-center justify-center gap-2.5 rounded-full border-2 border-primary-500 bg-transparent px-7 text-base font-semibold text-primary-500 transition-all duration-150 ease-out hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                  >
+                    Return Home
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (status === "bank-pending" && donationData) {
+    return (
+      <div className="bg-white">
+        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
+          <div className="container-site text-center">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
+              <Heart size={30} className="text-white" aria-hidden="true" fill="currentColor" />
+            </div>
+            <h1 id="donate-hero-heading" className="font-display text-4xl font-extrabold text-white text-balance lg:text-5xl">
+              Support Our Mission
+            </h1>
+          </div>
+        </section>
+
+        <section className="py-20 lg:py-28" aria-labelledby="donate-bank-heading">
+          <div className="container-site max-w-2xl">
+            <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
+              <div className="flex flex-col items-center gap-4 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-info-50">
+                  <CheckCircle2 size={32} className="text-info-500" aria-hidden="true" />
+                </div>
+                <h2 id="donate-bank-heading" className="font-display text-2xl font-bold text-neutral-900">
+                  Bank Transfer Instructions Sent
+                </h2>
+                <p className="text-neutral-600">
+                  {donationData.message}
+                </p>
+                <div className="mt-4 w-full rounded-xl bg-neutral-50 p-4 text-left">
+                  <p className="text-sm font-semibold text-neutral-700">Transaction Reference</p>
+                  <p className="mt-1 font-mono text-sm text-neutral-900">{donationData.transactionId}</p>
+                  <p className="mt-2 text-sm text-neutral-500">
+                    Please use this reference number when making your bank transfer. Your donation will be confirmed within 2-3 business days.
+                  </p>
+                </div>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                   <Button onClick={handleDonateAnother} size="lg">
                     Make Another Donation
@@ -179,7 +367,7 @@ export default function DonatePage() {
               Make a Donation
             </h2>
             <p className="mt-2 text-base text-neutral-600">
-              Choose an amount and payment method below. All donations are secure and tax-deductible.
+              Choose an amount and payment method below. All donations are secure.
             </p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
@@ -366,9 +554,9 @@ export default function DonatePage() {
             </ul>
 
             <div className="mt-8 rounded-2xl bg-primary-50 p-6 ring-1 ring-primary-100">
-              <p className="text-sm font-semibold text-neutral-700">Secure Donations</p>
+              <p className="text-sm font-semibold text-neutral-700">Need Help?</p>
               <p className="mt-1 text-sm text-neutral-500">
-                All transactions are processed securely. Your data is protected and never shared with third parties.
+                For M-Pesa issues, call us at <a href={`tel:${ORG.mpesaNumber}`} className="text-primary-600 hover:underline">{ORG.mpesaNumber}</a> or email <a href={`mailto:${ORG.email}`} className="text-primary-600 hover:underline">{ORG.email}</a>.
               </p>
             </div>
           </div>

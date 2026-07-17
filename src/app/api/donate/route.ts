@@ -63,6 +63,31 @@ export async function POST(request: NextRequest) {
           isRead: false,
         });
 
+        // Send admin notification email
+        try {
+          await sendEmail({
+            to: process.env.CONTACT_EMAIL || "info@rhark.org",
+            subject: "[RHARK Admin] New Donation Initiated - M-Pesa",
+            html: buildEmailHtml(
+              buildTemplate("admin-notification", {
+                formType: "Donation (M-Pesa)",
+                fields: {
+                  "Donor Name": donorName,
+                  Email: email,
+                  Phone: phone,
+                  Amount: `KES ${amount.toLocaleString("en-KE")}`,
+                  "Payment Method": "M-Pesa",
+                  "Transaction ID": mpesaResult.transactionId || transactionId,
+                  "Checkout Request ID": mpesaResult.checkoutRequestId,
+                  Status: "Pending",
+                },
+              }).html
+            ),
+          });
+        } catch (emailErr) {
+          console.error("[Donate] Failed to send admin notification:", emailErr);
+        }
+
         return NextResponse.json({
           success: true,
           message: mpesaResult.message,
@@ -110,6 +135,7 @@ export async function POST(request: NextRequest) {
         "</table>",
         "<p>Please use the reference number above when making the transfer.</p>",
         "<p>Once the transfer is complete, your donation will be confirmed within 2-3 business days.</p>",
+        "<p>If you have any questions, please contact us at " + (process.env.CONTACT_EMAIL || "info@rhark.org") + " or call " + (process.env.MPESA_PHONE_NUMBER || "+254 733551415") + ".</p>",
       ].join("\n");
 
       try {
@@ -120,6 +146,30 @@ export async function POST(request: NextRequest) {
         });
       } catch (emailErr) {
         console.error("[Donate] Failed to send bank transfer instructions:", emailErr);
+      }
+
+      // Send admin notification email
+      try {
+        await sendEmail({
+          to: process.env.CONTACT_EMAIL || "info@rhark.org",
+          subject: "[RHARK Admin] New Bank Transfer Donation Pledged",
+          html: buildEmailHtml(
+            buildTemplate("admin-notification", {
+              formType: "Donation (Bank Transfer)",
+              fields: {
+                "Donor Name": donorName,
+                Email: email,
+                Phone: phone,
+                Amount: `KES ${amount.toLocaleString("en-KE")}`,
+                "Payment Method": "Bank Transfer",
+                "Transaction ID": transactionId,
+                Status: "Pending",
+              },
+            }).html
+          ),
+        });
+      } catch (emailErr) {
+        console.error("[Donate] Failed to send admin notification:", emailErr);
       }
 
       return NextResponse.json({

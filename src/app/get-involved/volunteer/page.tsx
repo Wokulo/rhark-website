@@ -19,9 +19,21 @@ export default function VolunteerPage() {
   });
 
   const onSubmit = async (data: VolunteerSchema) => {
-    await new Promise((r) => setTimeout(r, 800)); // simulate API call
-    setSubmitted(true);
-    reset();
+    try {
+      const res = await fetch("/api/volunteer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (!res.ok || !result.success) {
+        throw new Error(result.message || "Failed to submit application");
+      }
+      setSubmitted(true);
+      reset();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to submit application");
+    }
   };
 
   return (
