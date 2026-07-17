@@ -52,7 +52,7 @@ class Store {
     const adminId = uuid();
     this.adminUsers.set(adminId, {
       id: adminId,
-      email: "admin@rhark.org",
+      email: "rharkenya@gmail.com",
       name: "RHARK Admin",
       role: "superadmin",
       createdAt: new Date().toISOString(),

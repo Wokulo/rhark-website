@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         to: email,
         subject: userTemplate.subject,
         html: buildEmailHtml(userTemplate.html),
-        replyTo: process.env.CONTACT_EMAIL || "info@rhark.org",
+        replyTo: process.env.CONTACT_EMAIL || "rharkenya@gmail.com",
       });
       store.createEmail({
         templateType,
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Send notification to RHARK admin
-    const adminEmail = process.env.CONTACT_EMAIL || "info@rhark.org";
+    const adminEmail = process.env.CONTACT_EMAIL || "rharkenya@gmail.com";
     const adminTemplate = buildTemplate("admin-notification", {
       formType: "Contact Form",
       fields: {

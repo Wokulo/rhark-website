@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
     try {
       await sendEmail({
-        to: process.env.CONTACT_EMAIL || "info@rhark.org",
+        to: process.env.CONTACT_EMAIL || "rharkenya@gmail.com",
         subject: "[RHARK Admin] New Internship Application",
         html: buildEmailHtml(
           buildTemplate("admin-notification", {

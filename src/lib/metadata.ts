@@ -88,7 +88,7 @@ export function buildOrganisationJsonLd() {
     },
     contactPoint: {
       "@type": "ContactPoint",
-      email: "info@rhark.org",
+      email: "rharkenya@gmail.com",
       contactType: "customer support",
     },
     sameAs: [

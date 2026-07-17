@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
 
       // Send admin notification
       try {
-        const adminEmail = process.env.CONTACT_EMAIL || "info@rhark.org";
+        const adminEmail = process.env.CONTACT_EMAIL || "rharkenya@gmail.com";
         const adminTemplate = buildTemplate("admin-notification", {
           formType: "Successful Donation",
           fields: {

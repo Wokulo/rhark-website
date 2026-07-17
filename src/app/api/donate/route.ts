@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         // Send admin notification email
         try {
           await sendEmail({
-            to: process.env.CONTACT_EMAIL || "info@rhark.org",
+            to: process.env.CONTACT_EMAIL || "rharkenya@gmail.com",
             subject: "[RHARK Admin] New Donation Initiated - M-Pesa",
             html: buildEmailHtml(
               buildTemplate("admin-notification", {
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
         "</table>",
         "<p>Please use the reference number above when making the transfer.</p>",
         "<p>Once the transfer is complete, your donation will be confirmed within 2-3 business days.</p>",
-        "<p>If you have any questions, please contact us at " + (process.env.CONTACT_EMAIL || "info@rhark.org") + " or call " + (process.env.MPESA_PHONE_NUMBER || "+254 733551415") + ".</p>",
+        "<p>If you have any questions, please contact us at " + (process.env.CONTACT_EMAIL || "rharkenya@gmail.com") + " or call " + (process.env.MPESA_PHONE_NUMBER || "+254 733551415") + ".</p>",
       ].join("\n");
 
       try {
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
       // Send admin notification email
       try {
         await sendEmail({
-          to: process.env.CONTACT_EMAIL || "info@rhark.org",
+          to: process.env.CONTACT_EMAIL || "rharkenya@gmail.com",
           subject: "[RHARK Admin] New Bank Transfer Donation Pledged",
           html: buildEmailHtml(
             buildTemplate("admin-notification", {

@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
         to: contact.email,
         subject: template.subject,
         html: buildEmailHtml(template.html),
-        replyTo: process.env.CONTACT_EMAIL || "info@rhark.org",
+        replyTo: process.env.CONTACT_EMAIL || "rharkenya@gmail.com",
       });
 
       const emailRecord = store.createEmail({

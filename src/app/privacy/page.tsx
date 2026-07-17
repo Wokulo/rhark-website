@@ -38,11 +38,11 @@ export default function PrivacyPage() {
             </div>
             <div>
               <h2 className="font-display text-xl font-bold text-neutral-900">5. Your Rights</h2>
-              <p className="mt-3">Under the Kenya Data Protection Act 2019, you have the right to access, correct, or delete your personal data. To exercise these rights, contact us at <a href="mailto:info@rhark.org" className="text-primary-600 hover:underline">info@rhark.org</a>.</p>
+              <p className="mt-3">Under the Kenya Data Protection Act 2019, you have the right to access, correct, or delete your personal data. To exercise these rights, contact us at <a href="mailto:rharkenya@gmail.com" className="text-primary-600 hover:underline">rharkenya@gmail.com</a>.</p>
             </div>
             <div>
               <h2 className="font-display text-xl font-bold text-neutral-900">6. Contact</h2>
-              <p className="mt-3">For privacy-related enquiries, contact our Data Protection Officer at <a href="mailto:info@rhark.org" className="text-primary-600 hover:underline">info@rhark.org</a>.</p>
+              <p className="mt-3">For privacy-related enquiries, contact our Data Protection Officer at <a href="mailto:rharkenya@gmail.com" className="text-primary-600 hover:underline">rharkenya@gmail.com</a>.</p>
             </div>
           </div>
           <div className="mt-10">

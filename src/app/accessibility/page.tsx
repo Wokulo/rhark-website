@@ -23,7 +23,7 @@ export default function AccessibilityPage() {
             </ul>
           </div>
           <div><h2 className="font-display text-xl font-bold text-neutral-900">Known Limitations</h2><p className="mt-3">We are continuously working to improve accessibility. Some older PDF documents may not be fully accessible. We are working to remediate these.</p></div>
-          <div><h2 className="font-display text-xl font-bold text-neutral-900">Feedback</h2><p className="mt-3">If you experience any accessibility barriers on our website, please contact us at <a href="mailto:info@rhark.org" className="text-primary-600 hover:underline">info@rhark.org</a>. We aim to respond within 5 business days.</p></div>
+          <div><h2 className="font-display text-xl font-bold text-neutral-900">Feedback</h2><p className="mt-3">If you experience any accessibility barriers on our website, please contact us at <a href="mailto:rharkenya@gmail.com" className="text-primary-600 hover:underline">rharkenya@gmail.com</a>. We aim to respond within 5 business days.</p></div>
           <Link href="/" className="inline-block text-sm font-semibold text-primary-600 hover:underline">← Back to Home</Link>
         </div>
       </section>

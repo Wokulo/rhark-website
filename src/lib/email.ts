@@ -53,7 +53,7 @@ function getTransporter() {
  */
 export async function sendEmail(options: EmailOptions): Promise<{ success: true }> {
   const transporter = getTransporter();
-  const smtpUser = process.env.SMTP_USER || "noreply@rhark.org";
+  const smtpUser = process.env.SMTP_USER || "rharkenya@gmail.com";
   const from = process.env.SMTP_FROM || '"RHARK Website" <' + smtpUser + '>';
 
   await transporter.sendMail({
@@ -116,7 +116,7 @@ export function buildEmailHtml(bodyHtml: string): string {
     bodyHtml,
     '      </div>',
     '      <div class="footer">',
-    '        <p>RHARK \u2022 Bondo, Siaya County, Kenya \u2022 info@rhark.org</p>',
+    '        <p>RHARK \u2022 Bondo, Siaya County, Kenya \u2022 rharkenya@gmail.com</p>',
     '        <p style="margin-top:4px;">\u00a9 ' + new Date().getFullYear() + ' RHARK. All rights reserved.</p>',
     '        <p style="margin-top:4px;">',
     '          <a href="https://www.rhark.org" style="color:#0f766e; text-decoration:underline;">www.rhark.org</a>',
@@ -207,7 +207,7 @@ export function buildDonationThankYouHtml(
     "  <tr><td>Date</td><td>" + new Date().toLocaleDateString("en-KE", { year: "numeric", month: "long", day: "numeric" }) + "</td></tr>",
     "</table>",
     "<hr />",
-    "<p>You will receive a formal receipt via email shortly. If you have any questions, please contact us at info@rhark.org.</p>",
+    "<p>You will receive a formal receipt via email shortly. If you have any questions, please contact us at rharkenya@gmail.com.</p>",
     "<p>With gratitude,</p>",
     "<p><strong>The RHARK Team</strong></p>",
   ].join("\n");
@@ -264,7 +264,7 @@ export function buildDonationFailedHtml(
     "  <tr><td>Reason</td><td>" + escapeHtml(reason) + "</td></tr>",
     "</table>",
     "<hr />",
-    "<p>Please try again or contact us at info@rhark.org for assistance.</p>",
+    "<p>Please try again or contact us at rharkenya@gmail.com for assistance.</p>",
     "<p>Best regards,</p>",
     "<p><strong>The RHARK Team</strong></p>",
   ].join("\n");
@@ -279,7 +279,7 @@ export function buildContactConfirmationHtml(name: string): string {
   return [
     "<p>Dear <strong>" + escapeHtml(name) + "</strong>,</p>",
     "<p>Thank you for contacting RHARK. We have received your message and will get back to you within 2 business days.</p>",
-    "<p>If your inquiry is urgent, please call us at +254 700 000 000 or email us directly at info@rhark.org.</p>",
+    "<p>If your inquiry is urgent, please call us at +254 700 000 000 or email us directly at rharkenya@gmail.com.</p>",
     "<p>Best regards,</p>",
     "<p><strong>The RHARK Team</strong></p>",
   ].join("\n");

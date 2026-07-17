@@ -17,7 +17,7 @@ export default function TermsPage() {
           <div><h2 className="font-display text-xl font-bold text-neutral-900">2. Use of Content</h2><p className="mt-3">All content on this website is the property of RHARK unless otherwise stated. You may share our content for non-commercial purposes with proper attribution. Commercial use requires written permission.</p></div>
           <div><h2 className="font-display text-xl font-bold text-neutral-900">3. Disclaimer</h2><p className="mt-3">The information on this website is provided for general informational purposes only. RHARK makes no warranties about the completeness, accuracy, or reliability of the information.</p></div>
           <div><h2 className="font-display text-xl font-bold text-neutral-900">4. External Links</h2><p className="mt-3">Our website may contain links to external websites. RHARK is not responsible for the content or privacy practices of those sites.</p></div>
-          <div><h2 className="font-display text-xl font-bold text-neutral-900">5. Contact</h2><p className="mt-3">For questions about these terms, contact us at <a href="mailto:info@rhark.org" className="text-primary-600 hover:underline">info@rhark.org</a>.</p></div>
+          <div><h2 className="font-display text-xl font-bold text-neutral-900">5. Contact</h2><p className="mt-3">For questions about these terms, contact us at <a href="mailto:rharkenya@gmail.com" className="text-primary-600 hover:underline">rharkenya@gmail.com</a>.</p></div>
           <Link href="/" className="inline-block text-sm font-semibold text-primary-600 hover:underline">← Back to Home</Link>
         </div>
       </section>
