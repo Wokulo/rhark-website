@@ -57,8 +57,27 @@ const FLOATING_CARDS = [
   { icon: Landmark, label: "Governance", color: "bg-info-500", delay: 1.35 },
 ];
 
-// Real hero image that exists on disk
-const HERO_IMAGE = "/images/hero/DSC_0878.JPG";
+// Hero images that exist on disk — static array for slideshow rotation
+const HERO_IMAGES = [
+  "/images/hero/DSC_0878.JPG",
+  "/images/hero/photo_2026-07-26_20-07-27.jpg",
+  "/images/hero/photo_2025-11-13_09-32-11.jpg",
+  "/images/hero/IMG-20250212-WA0153.jpg",
+  "/images/hero/IMG-20250131-WA0044.jpg",
+  "/images/hero/IMG-20250130-WA0175.jpg",
+  "/images/hero/IMG-20250130-WA0164.jpg",
+  "/images/hero/IMG-20250129-WA0062.jpg",
+  "/images/hero/hunkgraphy -9019.jpg",
+  "/images/hero/hunkgraphy -8992.jpg",
+  "/images/hero/DSC_1827.jpg",
+  "/images/hero/DSC_0849.JPG",
+  "/images/hero/DSC_0239.JPG",
+  "/images/hero/DSC_0230.JPG",
+  "/images/hero/DSC_0226.JPG",
+  "/images/hero/DSC_0222.JPG",
+];
+
+const HERO_ALT = "RHARK community members in Siaya County";
 
 // Video file that exists on disk
 const STORY_VIDEO = "/videos/rhark-story.mp4.mp4";
@@ -199,22 +218,84 @@ function FloatingInfoCard({
   );
 }
 
+// ─── HeroSlideshow ──────────────────────────────────────────────────────────────
+
+function HeroSlideshow({ images }: { images: string[] }) {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  const kenBurns = [
+    { scale: 1.05, x: 0, y: 0 },
+    { scale: 1.12, x: 100, y: 0 },
+    { scale: 1.05, x: 0, y: 100 },
+    { scale: 1.08, x: 100, y: 100 },
+  ];
+
+  return (
+    <div className="relative h-full w-full overflow-hidden">
+      {images.map((src, index) => {
+        const kb = kenBurns[index % kenBurns.length];
+        const isActive = index === current;
+        return (
+          <motion.div
+            key={src}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isActive ? 1 : 0 }}
+            transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+            aria-hidden={!isActive}
+          >
+            <motion.div
+              className="relative h-full w-full"
+              initial={{ scale: kb.scale, x: `${kb.x}%`, y: `${kb.y}%` }}
+              animate={{ scale: isActive ? kb.scale + 0.05 : kb.scale }}
+              transition={{
+    duration: 12,
+    ease: "easeInOut",
+    repeat: Infinity,
+    repeatType: "reverse",
+  }}
+            >
+              <Image
+                src={src}
+                alt={HERO_ALT}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            </motion.div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── HeroVisual ───────────────────────────────────────────────────────────────
 
 function HeroVisual() {
   return (
     <div className="relative flex items-center justify-center">
-      {/* Decorative background blob */}
+      {/* Decorative background blob — z-[1], behind everything */}
       <motion.div
         variants={fadeIn}
         initial="hidden"
         animate="visible"
         custom={0.2}
-        className="absolute -inset-12 rounded-[3rem] bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.16),transparent_42%),linear-gradient(135deg,rgba(13,110,110,0.08),rgba(245,158,11,0.12))] opacity-90 blur-2xl"
+        className="absolute -inset-12 z-[1] rounded-[3rem] bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.16),transparent_42%),linear-gradient(135deg,rgba(13,110,110,0.08),rgba(245,158,11,0.12))] opacity-90 blur-2xl"
         aria-hidden="true"
       />
 
-      {/* Main image container */}
+      {/* Main image container — z-10, holds slideshow */}
       <motion.div
         variants={scaleIn}
         initial="hidden"
@@ -222,25 +303,18 @@ function HeroVisual() {
         custom={0.3}
         className="relative z-10 w-full max-w-xl overflow-hidden rounded-[2.2rem] border border-white/70 shadow-[0_34px_90px_rgba(15,23,42,0.18)]"
       >
-        {/* aspect-[4/5] wrapper — image fills it with object-cover */}
+        {/* aspect-[4/5] wrapper — slides fill it */}
         <div className="relative aspect-[4/5] w-full">
-          <Image
-            src={HERO_IMAGE}
-            alt="RHARK community members in Siaya County"
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
+          <HeroSlideshow images={HERO_IMAGES} />
 
-          {/* Gradient overlay for text legibility — sits above image */}
+          {/* Gradient overlay for text legibility — z-20 */}
           <div
-            className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.25),transparent_42%),linear-gradient(to_top,rgba(13,110,110,0.55),transparent_60%)]"
+            className="absolute inset-0 z-20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.25),transparent_42%),linear-gradient(to_top,rgba(13,110,110,0.55),transparent_60%)]"
             aria-hidden="true"
           />
 
-          {/* Bottom caption bar — z-20 ensures it is above the gradient */}
-          <div className="absolute bottom-0 left-0 right-0 z-20 p-5">
+          {/* Bottom caption bar — z-30, above gradient */}
+          <div className="absolute bottom-0 left-0 right-0 z-30 p-5">
             <div className="rounded-[1.1rem] border border-white/20 bg-white/10 p-4 backdrop-blur-md">
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/80">
                 Our Community
@@ -253,43 +327,43 @@ function HeroVisual() {
         </div>
       </motion.div>
 
-      {/* Floating programme cards */}
+      {/* Floating programme cards — z-30, above image container */}
       <FloatingInfoCard
         icon={FLOATING_CARDS[0].icon}
         label={FLOATING_CARDS[0].label}
         color={FLOATING_CARDS[0].color}
         delay={FLOATING_CARDS[0].delay}
-        className="-left-6 top-12 lg:-left-12"
+        className="-left-6 top-12 lg:-left-12 z-30"
       />
       <FloatingInfoCard
         icon={FLOATING_CARDS[1].icon}
         label={FLOATING_CARDS[1].label}
         color={FLOATING_CARDS[1].color}
         delay={FLOATING_CARDS[1].delay}
-        className="-right-4 top-24 lg:-right-10"
+        className="-right-4 top-24 lg:-right-10 z-30"
       />
       <FloatingInfoCard
         icon={FLOATING_CARDS[2].icon}
         label={FLOATING_CARDS[2].label}
         color={FLOATING_CARDS[2].color}
         delay={FLOATING_CARDS[2].delay}
-        className="-left-4 bottom-32 lg:-left-10"
+        className="-left-4 bottom-32 lg:-left-10 z-30"
       />
       <FloatingInfoCard
         icon={FLOATING_CARDS[3].icon}
         label={FLOATING_CARDS[3].label}
         color={FLOATING_CARDS[3].color}
         delay={FLOATING_CARDS[3].delay}
-        className="-right-2 bottom-20 lg:-right-8"
+        className="-right-2 bottom-20 lg:-right-8 z-30"
       />
 
-      {/* Decorative circles */}
+      {/* Decorative circles — z-[2], behind image container */}
       <motion.div
         variants={fadeIn}
         initial="hidden"
         animate="visible"
         custom={0.4}
-        className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-accent-100/80 blur-sm"
+        className="absolute -right-4 -top-4 z-[2] h-20 w-20 rounded-full bg-accent-100/80 blur-sm"
         aria-hidden="true"
       />
       <motion.div
@@ -297,7 +371,7 @@ function HeroVisual() {
         initial="hidden"
         animate="visible"
         custom={0.5}
-        className="absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-primary-100/70 blur-sm"
+        className="absolute -bottom-8 -left-8 z-[2] h-36 w-36 rounded-full bg-primary-100/70 blur-sm"
         aria-hidden="true"
       />
     </div>
@@ -504,13 +578,7 @@ export function HeroSection() {
 
         {/* ── Mobile image strip ── */}
         <div className="relative h-48 w-full overflow-hidden lg:hidden" aria-hidden="true">
-          <Image
-            src={HERO_IMAGE}
-            alt=""
-            fill
-            className="object-cover"
-            sizes="100vw"
-          />
+          <HeroSlideshow images={HERO_IMAGES} />
           <div className="absolute inset-0 bg-gradient-to-t from-white via-white/35 to-transparent" />
         </div>
 
