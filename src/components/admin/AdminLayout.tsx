@@ -107,25 +107,33 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       const {
         data: { user: authUser },
       } = await supabase.auth.getUser();
-      if (authUser) {
-        const { data: profile } = await supabase
-          .from("users")
-          .select("*, roles(*)")
-          .eq("id", authUser.id)
-          .single();
-
-        setUser({
-          name: profile?.name || authUser.email || "User",
-          email: authUser.email || "",
-          avatar: profile?.avatar_url || undefined,
-          role: profile?.roles?.name || undefined,
-          roleSlug: profile?.roles?.slug || undefined,
-        });
+      if (!authUser) {
+        router.push("/admin/auth/login");
+        return;
       }
+      const { data: profile } = await supabase
+        .from("users")
+        .select("*, roles(*)")
+        .eq("id", authUser.id)
+        .single() as unknown as {
+        data: {
+          name: string;
+          avatar_url: string | null;
+          roles: { name: string; slug: string } | null;
+        } | null;
+      };
+
+      setUser({
+        name: profile?.name || authUser.email || "User",
+        email: authUser.email || "",
+        avatar: profile?.avatar_url || undefined,
+        role: profile?.roles?.name || undefined,
+        roleSlug: profile?.roles?.slug || undefined,
+      });
       setLoading(false);
     }
     loadUser();
-  }, [supabase]);
+  }, [supabase, router]);
 
   // Close sidebar on route change
   useEffect(() => {
@@ -206,14 +214,18 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                       <Link
                         key={item.href}
                         href={item.href}
+                        aria-current={isActive ? "page" : undefined}
                         className={cn(
-                          "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                          "relative flex cursor-pointer items-center gap-3 rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm font-medium transition-all duration-200 ease-out",
                           isActive
-                            ? "bg-primary-50 text-primary-700"
-                            : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-800"
+                            ? "border-l-accent-500 bg-primary-500 text-white font-semibold shadow-teal-sm"
+                            : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-800 hover:shadow-sm"
                         )}
                       >
-                        <item.icon size={18} />
+                        <item.icon
+                          size={18}
+                          className="transition-colors duration-200"
+                        />
                         <span>{item.label}</span>
                         {item.badge && (
                           <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-error-500 px-1.5 text-[10px] font-bold text-white">

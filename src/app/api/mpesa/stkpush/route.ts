@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
         amount: Number(amount),
         paymentMethod: "mpesa",
         status: "pending",
+        isRecurring: false,
         mpesaCheckoutRequestId: result.checkoutRequestId,
         merchantRequestId: result.merchantRequestId || "",
       });

@@ -21,7 +21,7 @@ export default function AdminProjectsPage() {
   async function loadProjects() {
     setLoading(true);
     try {
-      let query = supabase.from("projects").select("*").order("created_at", { ascending: false });
+      let query = (supabase.from("projects") as any).select("*").order("created_at", { ascending: false });
       if (search) query = query.or(`name.ilike.%${search}%,location.ilike.%${search}%`);
       const { data, error: fetchError } = await query;
       if (fetchError) throw fetchError;
@@ -35,7 +35,7 @@ export default function AdminProjectsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this project?")) return;
-    await supabase.from("projects").delete().eq("id", id);
+    await (supabase.from("projects") as any).delete().eq("id", id);
     loadProjects();
   };
 

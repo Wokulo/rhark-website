@@ -18,9 +18,9 @@ export default function AdminSettingsPage() {
 
   async function loadSettings() {
     try {
-      const { data } = await supabase.from("settings").select("*");
+      const { data } = await (supabase.from("settings") as any).select("*");
       const settingsMap: Record<string, any> = {};
-      data?.forEach((s) => {
+      data?.forEach((s: any) => {
         settingsMap[s.key] = s.value;
       });
       setSettings(settingsMap);
@@ -38,7 +38,7 @@ export default function AdminSettingsPage() {
 
     try {
       for (const [key, value] of Object.entries(settings)) {
-        await supabase.from("settings").upsert(
+        await (supabase.from("settings") as any).upsert(
           { key, value },
           { onConflict: "key" }
         );

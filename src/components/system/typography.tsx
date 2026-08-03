@@ -11,9 +11,9 @@ interface HeadingProps {
 }
 
 const headingSizes: Record<number, string> = {
-  1: "text-4xl lg:text-5xl font-extrabold",
-  2: "text-3xl lg:text-4xl font-extrabold",
-  3: "text-2xl lg:text-3xl font-bold",
+  1: "text-3xl lg:text-4xl font-extrabold",
+  2: "text-2xl lg:text-3xl font-extrabold",
+  3: "text-2xl lg:text-2xl font-bold",
   4: "text-xl lg:text-2xl font-bold",
   5: "text-lg font-semibold",
   6: "text-base font-semibold",
@@ -25,7 +25,7 @@ export function Heading({ level = 2, children, className, id, balance = true }: 
     <Tag
       id={id}
       className={cn(
-        "font-display text-neutral-900 tracking-tight",
+        "font-display text-neutral-800 tracking-tight",
         headingSizes[level],
         balance && "text-balance",
         className
@@ -45,9 +45,9 @@ interface SubHeadingProps {
 }
 
 const subTones = {
-  primary: "text-primary-500",
-  accent: "text-accent-600",
-  neutral: "text-neutral-500",
+  primary: "text-primary-400",
+  accent: "text-accent-500",
+  neutral: "text-neutral-400",
 };
 
 export function SubHeading({ children, className, tone = "primary" }: SubHeadingProps) {
@@ -81,7 +81,7 @@ export function Paragraph({ children, className, size = "base", muted = false }:
       className={cn(
         "leading-relaxed",
         paraSize[size],
-        muted ? "text-neutral-500" : "text-neutral-600",
+        muted ? "text-neutral-400" : "text-neutral-500",
         className
       )}
     >
@@ -94,7 +94,7 @@ export function Paragraph({ children, className, size = "base", muted = false }:
 
 export function Caption({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <p className={cn("text-xs text-neutral-400 leading-relaxed", className)}>
+    <p className={cn("text-xs text-neutral-300 leading-relaxed", className)}>
       {children}
     </p>
   );
@@ -113,7 +113,7 @@ export function Blockquote({ quote, attribution, role: attributionRole, classNam
   return (
     <blockquote
       className={cn(
-        "relative border-l-4 border-primary-400 pl-6 py-2",
+        "relative border-l-4 border-primary-300 pl-6 py-2",
         className
       )}
     >

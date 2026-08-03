@@ -5,15 +5,16 @@ import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { slugify } from "@/lib/admin-utils";
-import { ArrowLeft, Save, Send, Loader2, AlertCircle, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Send, Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function EditArticlePage() {
   const router = useRouter();
   const params = useParams();
+  const id = params.id as string;
   const supabase = createClient();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
   const [form, setForm] = useState({
@@ -31,36 +32,51 @@ export default function EditArticlePage() {
   });
 
   useEffect(() => {
-    async function loadData() {
-      const [catResult, articleResult] = await Promise.all([
-        supabase.from("news_categories").select("*").order("name"),
-        supabase.from("news").select("*").eq("id", params.id).single(),
-      ]);
-
-      setCategories(catResult.data || []);
-
-      if (articleResult.data) {
-        const a = articleResult.data;
-        setForm({
-          title: a.title || "",
-          slug: a.slug || "",
-          category: a.category || "news",
-          content: a.content || "",
-          excerpt: a.excerpt || "",
-          featured_image: a.featured_image || "",
-          tags: (a.tags || []).join(", "),
-          status: a.status || "draft",
-          publish_date: a.publish_date
-            ? new Date(a.publish_date).toISOString().slice(0, 16)
-            : "",
-          seo_title: a.seo_title || "",
-          seo_description: a.seo_description || "",
-        });
-      }
-      setLoading(false);
+    async function loadCategories() {
+      const { data } = await supabase
+        .from("news_categories")
+        .select("*")
+        .order("name");
+      setCategories(data || []);
     }
-    loadData();
-  }, [supabase, params.id]);
+    loadCategories();
+  }, [supabase]);
+
+  useEffect(() => {
+    async function loadArticle() {
+      setFetchLoading(true);
+      try {
+        const { data, error: fetchError } = await (supabase.from("news") as any)
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (fetchError) throw fetchError;
+        if (!data) throw new Error("Article not found");
+
+        setForm({
+          title: data.title || "",
+          slug: data.slug || "",
+          category: data.category || "news",
+          content: data.content || "",
+          excerpt: data.excerpt || "",
+          featured_image: data.featured_image || "",
+          tags: (data.tags || []).join(", "),
+          status: data.status || "draft",
+          publish_date: data.publish_date
+            ? new Date(data.publish_date).toISOString().slice(0, 16)
+            : "",
+          seo_title: data.seo_title || "",
+          seo_description: data.seo_description || "",
+        });
+      } catch (err: any) {
+        setError(err.message || "Failed to load article");
+      } finally {
+        setFetchLoading(false);
+      }
+    }
+    loadArticle();
+  }, [supabase, id]);
 
   const handleTitleChange = (title: string) => {
     setForm((f) => ({
@@ -71,7 +87,7 @@ export default function EditArticlePage() {
   };
 
   const handleSave = async (status: string) => {
-    setSaving(true);
+    setLoading(true);
     setError("");
 
     try {
@@ -80,8 +96,7 @@ export default function EditArticlePage() {
         .map((t) => t.trim())
         .filter(Boolean);
 
-      const { error: saveError } = await supabase
-        .from("news")
+      const { error: saveError } = await (supabase.from("news") as any)
         .update({
           title: form.title,
           slug: form.slug || slugify(form.title),
@@ -92,14 +107,16 @@ export default function EditArticlePage() {
           tags,
           status,
           publish_date:
-            status === "published"
+            status === "published" && !form.publish_date
               ? new Date().toISOString()
-              : form.publish_date || null,
+              : form.publish_date
+                ? new Date(form.publish_date).toISOString()
+                : null,
           seo_title: form.seo_title || null,
           seo_description: form.seo_description || null,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", params.id);
+        .eq("id", id);
 
       if (saveError) throw saveError;
 
@@ -108,30 +125,11 @@ export default function EditArticlePage() {
     } catch (err: any) {
       setError(err.message || "Failed to save article");
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this article?")) return;
-
-    setSaving(true);
-    const { error: deleteError } = await supabase
-      .from("news")
-      .delete()
-      .eq("id", params.id);
-
-    if (deleteError) {
-      setError("Failed to delete article");
-      setSaving(false);
-      return;
-    }
-
-    router.push("/admin/news");
-    router.refresh();
-  };
-
-  if (loading) {
+  if (fetchLoading) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent" />
@@ -154,25 +152,17 @@ export default function EditArticlePage() {
               Edit Article
             </h1>
             <p className="mt-1 text-sm text-neutral-500">
-              Editing: {form.title}
+              {form.title || "Update your article"}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={handleDelete}
-            disabled={saving}
-            className="flex items-center gap-2 rounded-xl border border-error-200 bg-white px-4 py-2.5 text-sm font-semibold text-error-600 transition-colors hover:bg-error-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <Trash2 size={16} />
-            Delete
-          </button>
-          <button
             onClick={() => handleSave("draft")}
-            disabled={saving || !form.title}
+            disabled={loading || !form.title}
             className="flex items-center gap-2 rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {saving ? (
+            {loading ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               <Save size={16} />
@@ -181,15 +171,15 @@ export default function EditArticlePage() {
           </button>
           <button
             onClick={() => handleSave("published")}
-            disabled={saving || !form.title}
+            disabled={loading || !form.title}
             className="flex items-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {saving ? (
+            {loading ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               <Send size={16} />
             )}
-            {form.status === "published" ? "Update" : "Publish"}
+            Publish
           </button>
         </div>
       </div>
@@ -212,7 +202,8 @@ export default function EditArticlePage() {
               type="text"
               value={form.title}
               onChange={(e) => handleTitleChange(e.target.value)}
-              className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              placeholder="Enter article title"
+              className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             />
           </div>
 
@@ -224,8 +215,12 @@ export default function EditArticlePage() {
               type="text"
               value={form.slug}
               onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              placeholder="article-url-slug"
+              className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             />
+            <p className="mt-1 text-xs text-neutral-400">
+              Auto-generated from title. You can customize it.
+            </p>
           </div>
 
           <div>
@@ -236,7 +231,8 @@ export default function EditArticlePage() {
               value={form.excerpt}
               onChange={(e) => setForm((f) => ({ ...f, excerpt: e.target.value }))}
               rows={3}
-              className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              placeholder="Brief summary of the article..."
+              className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
             />
           </div>
 
@@ -248,6 +244,7 @@ export default function EditArticlePage() {
               <RichTextEditor
                 value={form.content}
                 onChange={(content) => setForm((f) => ({ ...f, content }))}
+                placeholder="Write your article content here..."
               />
             </div>
           </div>
@@ -259,6 +256,7 @@ export default function EditArticlePage() {
             <h3 className="mb-4 text-sm font-semibold text-neutral-900">
               Article Settings
             </h3>
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700">
@@ -278,6 +276,7 @@ export default function EditArticlePage() {
                   ))}
                 </select>
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-neutral-700">
                   Tags
@@ -289,9 +288,13 @@ export default function EditArticlePage() {
                     setForm((f) => ({ ...f, tags: e.target.value }))
                   }
                   placeholder="tag1, tag2, tag3"
-                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
+                <p className="mt-1 text-xs text-neutral-400">
+                  Comma-separated tags
+                </p>
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-neutral-700">
                   Featured Image URL
@@ -302,9 +305,11 @@ export default function EditArticlePage() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, featured_image: e.target.value }))
                   }
-                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  placeholder="https://example.com/image.jpg"
+                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-neutral-700">
                   Publish Date
@@ -336,7 +341,8 @@ export default function EditArticlePage() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, seo_title: e.target.value }))
                   }
-                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  placeholder="Custom SEO title"
+                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
               <div>
@@ -349,7 +355,8 @@ export default function EditArticlePage() {
                     setForm((f) => ({ ...f, seo_description: e.target.value }))
                   }
                   rows={3}
-                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  placeholder="Meta description for search engines"
+                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
                 />
               </div>
             </div>

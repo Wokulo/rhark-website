@@ -40,7 +40,7 @@ The main objectives of the RHARK website are:
 | Build tool | Next.js |
 | Package manager | npm |
 
-## 4. Application Architecture
+## 4. Application Architecture 
 
 The website follows the Next.js App Router structure. Pages are stored inside `src/app`, reusable UI and layout elements are stored in `src/components`, shared data is stored in `src/data`, and business logic is separated into `src/lib`, `src/services`, `src/hooks`, `src/utils`, and `src/types`.
 

@@ -41,19 +41,19 @@ export function StoriesSection() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} aria-labelledby="stories-heading" className="bg-primary-600 py-20 lg:py-28">
+    <section ref={ref} aria-labelledby="stories-heading" className="bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_28%),linear-gradient(180deg,#0f766e_0%,#0d6e6e_100%)] py-16 lg:py-20">
       <div className="container-site">
-        <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0} className="mb-14 text-center">
-          <p className="text-sm font-bold uppercase tracking-widest text-primary-200">Success Stories</p>
-          <h2 id="stories-heading" className="mt-2 font-display text-3xl font-extrabold text-white text-balance lg:text-4xl">
+        <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0} className="mb-10 text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary-200">Success Stories</p>
+          <h2 id="stories-heading" className="mt-3 font-display text-3xl font-extrabold text-white text-balance lg:text-5xl">
             Voices from our community
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-primary-200">
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-primary-200">
             Real stories from the people whose lives have been transformed by RHARK's programmes.
           </p>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-3">
           {STORIES.map((story, i) => (
             <motion.blockquote
               key={story.name}
@@ -61,7 +61,7 @@ export function StoriesSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={i + 1}
-              className="flex flex-col rounded-2xl bg-white/10 p-7 backdrop-blur-sm ring-1 ring-white/20"
+              className="flex flex-col rounded-[1.6rem] border border-white/15 bg-white/10 p-6 backdrop-blur-xl shadow-[0_18px_50px_rgba(15,23,42,0.12)]"
             >
               <Quote size={28} className="mb-4 text-primary-300" aria-hidden="true" />
               <p className="flex-1 text-base leading-relaxed text-white">{story.quote}</p>

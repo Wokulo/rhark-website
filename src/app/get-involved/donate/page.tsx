@@ -8,7 +8,7 @@ import { Heart, ArrowRight, CheckCircle2, AlertCircle, Loader2, RefreshCw } from
 import { donationFormSchema, type DonationFormSchema } from "@/lib/validations";
 import { ORG } from "@/constants";
 import { cn, formatNumber } from "@/utils";
-import { Button, Input, Textarea, Alert } from "@/components/ui";
+import { Button, Input, Textarea, Alert } from "@/components/system/ui";
 
 const DONATION_AMOUNTS = [500, 1000, 2500, 5000, 10000];
 
@@ -166,7 +166,7 @@ export default function DonatePage() {
   if (status === "pending" && donationData) {
     return (
       <div className="bg-white">
-        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
+        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-20 lg:py-24" aria-labelledby="donate-hero-heading">
           <div className="container-site text-center">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
               <Heart size={30} className="text-white" aria-hidden="true" fill="currentColor" />
@@ -177,9 +177,9 @@ export default function DonatePage() {
           </div>
         </section>
 
-        <section className="py-20 lg:py-28" aria-labelledby="donate-pending-heading">
+        <section className="py-16 lg:py-20" aria-labelledby="donate-pending-heading">
           <div className="container-site max-w-2xl">
-            <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
+            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-200">
               <div className="flex flex-col items-center gap-4 text-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-warning-50">
                   <Loader2 size={32} className="text-warning-500 animate-spin" aria-hidden="true" />
@@ -190,7 +190,7 @@ export default function DonatePage() {
                 <p className="text-neutral-600">
                   We have sent an M-Pesa STK Push request to your phone.
                 </p>
-                <div className="mt-4 w-full rounded-xl bg-primary-50 p-6 text-left ring-1 ring-primary-100">
+                <div className="mt-3 w-full rounded-xl bg-primary-50 p-5 text-left ring-1 ring-primary-100">
                   <p className="text-sm font-semibold text-primary-700">Please check your phone now</p>
                   <ul className="mt-3 space-y-2 text-sm text-neutral-700">
                     <li>1. You should receive an M-Pesa prompt on your phone ({watch("phone")})</li>
@@ -201,7 +201,7 @@ export default function DonatePage() {
                 <p className="text-xs text-neutral-400">
                   This page will automatically update once your payment is confirmed.
                 </p>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                   <Button onClick={handleDonateAnother} variant="secondary" size="lg">
                     <RefreshCw size={18} aria-hidden="true" />
                     Cancel & Try Again
@@ -218,7 +218,7 @@ export default function DonatePage() {
   if (status === "successful" && donationData) {
     return (
       <div className="bg-white">
-        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
+        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-20 lg:py-24" aria-labelledby="donate-hero-heading">
           <div className="container-site text-center">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
               <Heart size={30} className="text-white" aria-hidden="true" fill="currentColor" />
@@ -229,9 +229,9 @@ export default function DonatePage() {
           </div>
         </section>
 
-        <section className="py-20 lg:py-28" aria-labelledby="donate-success-heading">
+        <section className="py-16 lg:py-20" aria-labelledby="donate-success-heading">
           <div className="container-site max-w-2xl">
-            <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
+            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-200">
               <div className="flex flex-col items-center gap-4 text-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-50">
                   <CheckCircle2 size={32} className="text-success-500" aria-hidden="true" />
@@ -242,14 +242,14 @@ export default function DonatePage() {
                 <p className="text-neutral-600">
                   {donationData.message}
                 </p>
-                <div className="mt-4 w-full rounded-xl bg-neutral-50 p-4 text-left">
+                <div className="mt-3 w-full rounded-xl bg-neutral-50 p-4 text-left">
                   <p className="text-sm font-semibold text-neutral-700">Transaction Reference</p>
                   <p className="mt-1 font-mono text-sm text-neutral-900">{donationData.transactionId}</p>
                   <p className="mt-2 text-sm text-neutral-500">
                     A confirmation email will be sent shortly. Thank you for your generosity!
                   </p>
                 </div>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                   <Button onClick={handleDonateAnother} size="lg">
                     Make Another Donation
                   </Button>
@@ -271,7 +271,7 @@ export default function DonatePage() {
   if (status === "failed" && donationData) {
     return (
       <div className="bg-white">
-        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
+        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-20 lg:py-24" aria-labelledby="donate-hero-heading">
           <div className="container-site text-center">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
               <Heart size={30} className="text-white" aria-hidden="true" fill="currentColor" />
@@ -282,9 +282,9 @@ export default function DonatePage() {
           </div>
         </section>
 
-        <section className="py-20 lg:py-28" aria-labelledby="donate-failed-heading">
+        <section className="py-16 lg:py-20" aria-labelledby="donate-failed-heading">
           <div className="container-site max-w-2xl">
-            <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
+            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-200">
               <div className="flex flex-col items-center gap-4 text-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-error-50">
                   <AlertCircle size={32} className="text-error-500" aria-hidden="true" />
@@ -295,7 +295,7 @@ export default function DonatePage() {
                 <p className="text-neutral-600">
                   {donationData.message}
                 </p>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                   <Button onClick={handleDonateAnother} size="lg">
                     Try Again
                   </Button>
@@ -317,7 +317,7 @@ export default function DonatePage() {
   if (status === "bank-pending" && donationData) {
     return (
       <div className="bg-white">
-        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
+        <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-20 lg:py-24" aria-labelledby="donate-hero-heading">
           <div className="container-site text-center">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
               <Heart size={30} className="text-white" aria-hidden="true" fill="currentColor" />
@@ -328,9 +328,9 @@ export default function DonatePage() {
           </div>
         </section>
 
-        <section className="py-20 lg:py-28" aria-labelledby="donate-bank-heading">
+        <section className="py-16 lg:py-20" aria-labelledby="donate-bank-heading">
           <div className="container-site max-w-2xl">
-            <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
+            <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-200">
               <div className="flex flex-col items-center gap-4 text-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-info-50">
                   <CheckCircle2 size={32} className="text-info-500" aria-hidden="true" />
@@ -341,14 +341,14 @@ export default function DonatePage() {
                 <p className="text-neutral-600">
                   {donationData.message}
                 </p>
-                <div className="mt-4 w-full rounded-xl bg-neutral-50 p-4 text-left">
+                <div className="mt-3 w-full rounded-xl bg-neutral-50 p-4 text-left">
                   <p className="text-sm font-semibold text-neutral-700">Transaction Reference</p>
                   <p className="mt-1 font-mono text-sm text-neutral-900">{donationData.transactionId}</p>
                   <p className="mt-2 text-sm text-neutral-500">
                     Please use this reference number when making your bank transfer. Your donation will be confirmed within 2-3 business days.
                   </p>
                 </div>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                   <Button onClick={handleDonateAnother} size="lg">
                     Make Another Donation
                   </Button>
@@ -369,7 +369,7 @@ export default function DonatePage() {
 
   return (
     <div className="bg-white">
-      <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-24 lg:py-32" aria-labelledby="donate-hero-heading">
+      <section className="bg-gradient-to-br from-accent-500 to-accent-700 py-20 lg:py-24" aria-labelledby="donate-hero-heading">
         <div className="container-site text-center">
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
             <Heart size={30} className="text-white" aria-hidden="true" fill="currentColor" />
@@ -383,8 +383,8 @@ export default function DonatePage() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-28" aria-labelledby="donate-content-heading">
-        <div className="container-site grid gap-14 lg:grid-cols-2 lg:gap-20">
+      <section className="py-16 lg:py-20" aria-labelledby="donate-content-heading">
+        <div className="container-site grid gap-10 lg:grid-cols-2 lg:gap-14">
           <div>
             <h2 id="donate-content-heading" className="font-display text-2xl font-bold text-neutral-900">
               Make a Donation
@@ -393,7 +393,7 @@ export default function DonatePage() {
               Choose an amount and payment method below. All donations are secure.
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate>
               <input type="text" {...register("_honeypot")} className="sr-only" tabIndex={-1} aria-hidden="true" autoComplete="off" />
 
               <Input

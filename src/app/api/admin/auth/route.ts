@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email, password } = parsed.data;
+    const { email } = parsed.data;
 
     const admin = store.getAdminByEmail(email);
     if (!admin) {
@@ -43,12 +43,8 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   try {
-    const token = request.cookies.get("rhark_admin_session")?.value;
-    if (token) {
-      clearSessionCookie(request as unknown as NextResponse);
-    }
     const response = NextResponse.json({ success: true, message: "Logged out successfully." });
     clearSessionCookie(response);
     return response;

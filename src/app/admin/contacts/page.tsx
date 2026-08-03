@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { MessageSquare, Search, Filter, Reply, Eye, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { cn, formatDate } from "@/utils";
-import { Button, Input, Select, Alert, Modal, Pagination } from "@/components/ui";
+import { Button, Input, Select, Alert, Modal, Pagination } from "@/components/system/ui";
 import type { ContactRequest, ContactStatus, InquiryType, CommunicationThread } from "@/types";
 
 const STATUS_OPTIONS = [

@@ -57,11 +57,11 @@ export function NewsSection() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} aria-labelledby="news-heading" className="bg-white py-20 lg:py-28">
+    <section ref={ref} aria-labelledby="news-heading" className="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-16 lg:py-20">
       <div className="container-site">
-        <div className="mb-14 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0}>
-            <p className="text-sm font-bold uppercase tracking-widest text-primary-500">Latest News</p>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary-500">Latest News</p>
             <h2 id="news-heading" className="mt-2 font-display text-3xl font-extrabold text-neutral-900 text-balance lg:text-4xl">
               Updates from RHARK
             </h2>
@@ -74,7 +74,7 @@ export function NewsSection() {
           </motion.div>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {NEWS.map((article, i) => (
             <motion.article
               key={article.title}
@@ -82,12 +82,12 @@ export function NewsSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={i + 2}
-              className="group flex flex-col overflow-hidden rounded-2xl bg-neutral-50 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300"
+              className="group flex flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/90 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-sm"
             >
-              <div className="relative h-48 overflow-hidden bg-neutral-100">
+              <div className="relative h-44 overflow-hidden bg-neutral-100">
                 <Image src={article.image} alt={article.alt} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" />
               </div>
-              <div className="flex flex-1 flex-col p-6">
+              <div className="flex flex-1 flex-col p-5">
                 <div className="flex items-center justify-between">
                   <span className={cn("rounded-full px-3 py-1 text-xs font-bold", article.categoryColor)}>
                     {article.category}
@@ -100,7 +100,7 @@ export function NewsSection() {
                   {article.title}
                 </h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-500 line-clamp-3">{article.excerpt}</p>
-                <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-4">
+                <div className="mt-3 flex items-center justify-between border-t border-neutral-100 pt-3">
                   <time className="text-xs text-neutral-400">{article.date}</time>
                   <Link href={article.href}
                     className="inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded">

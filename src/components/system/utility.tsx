@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowUp, Loader2, X } from "lucide-react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ThemeProvider } from "@/providers";
 import { cn } from "@/utils";
 import { Button, IconButton } from "./buttons";
 
@@ -14,9 +14,9 @@ import { Button, IconButton } from "./buttons";
  */
 export function SystemThemeProvider({ children }: { children: React.ReactNode }) {
   return (
-    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
       {children}
-    </NextThemesProvider>
+    </ThemeProvider>
   );
 }
 

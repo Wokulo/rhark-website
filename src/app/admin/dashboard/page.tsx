@@ -64,17 +64,17 @@ export default function AdminDashboardPage() {
       try {
         // Fetch all stats in parallel
         const results = await Promise.all([
-          supabase.from("donations").select("*", { count: "exact", head: true }),
-          supabase.from("projects").select("*", { count: "exact", head: true }).eq("status", "active"),
-          supabase.from("news").select("*", { count: "exact", head: true }).eq("status", "published"),
-          supabase.from("gallery").select("*", { count: "exact", head: true }),
-          supabase.from("volunteers").select("*", { count: "exact", head: true }),
-          supabase.from("contact_messages").select("*", { count: "exact", head: true }),
-          supabase.from("newsletter_subscribers").select("*", { count: "exact", head: true }),
-          supabase.from("events").select("*", { count: "exact", head: true }).gte("event_date", new Date().toISOString().split("T")[0]),
-          supabase.from("donations").select("amount, created_at").eq("status", "successful").order("created_at", { ascending: true }),
-          supabase.from("projects").select("status").in("status", ["active", "completed", "upcoming", "on-hold"]),
-          supabase.from("volunteers").select("created_at").order("created_at", { ascending: true }),
+          (supabase.from("donations") as any).select("*", { count: "exact", head: true }),
+          (supabase.from("projects") as any).select("*", { count: "exact", head: true }).eq("status", "active"),
+          (supabase.from("news") as any).select("*", { count: "exact", head: true }).eq("status", "published"),
+          (supabase.from("gallery") as any).select("*", { count: "exact", head: true }),
+          (supabase.from("volunteers") as any).select("*", { count: "exact", head: true }),
+          (supabase.from("contact_messages") as any).select("*", { count: "exact", head: true }),
+          (supabase.from("newsletter_subscribers") as any).select("*", { count: "exact", head: true }),
+          (supabase.from("events") as any).select("*", { count: "exact", head: true }).gte("event_date", new Date().toISOString().split("T")[0]),
+          (supabase.from("donations") as any).select("amount, created_at").eq("status", "successful").order("created_at", { ascending: true }),
+          (supabase.from("projects") as any).select("status").in("status", ["active", "completed", "upcoming", "on-hold"]),
+          (supabase.from("volunteers") as any).select("created_at").order("created_at", { ascending: true }),
         ]);
 
         const totalAmount = results[8].data?.reduce((sum: number, d: any) => sum + Number(d.amount), 0) || 0;

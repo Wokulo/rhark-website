@@ -14,7 +14,7 @@ const PARTNER_TYPES = [
   { type: "Government Partners", partners: ["Siaya County Government", "Ministry of Health Kenya", "National AIDS Control Council"] },
   { type: "Development Partners", partners: ["UNFPA Kenya", "WHO Kenya", "UNICEF Kenya"] },
   { type: "Implementing Partners", partners: ["Amref Health Africa", "Kenya Red Cross Society", "KEMRI"] },
-  { type: "Academic & Research", partners: ["University of Nairobi", "Maseno University", "Kenya Medical Training College"] },
+  { type: "Academic & Research", partners: ["Jaramogi Oginga Odinga University of Science and Technology", "Jooust", "Kenya Medical Training College"] },
 ];
 
 export default function PartnersPage() {

@@ -24,7 +24,7 @@ const TYPES = ["All", "Annual Report", "Research", "Policy Brief", "Factsheet", 
 export default function PublicationsPage() {
   return (
     <div className="bg-white">
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-24 lg:py-32" aria-labelledby="pubs-hero-heading">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-20 lg:py-24" aria-labelledby="pubs-hero-heading">
         <div className="container-site text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-primary-200">Knowledge Hub</p>
           <h1 id="pubs-hero-heading" className="mt-3 font-display text-4xl font-extrabold text-white text-balance lg:text-5xl">
@@ -41,9 +41,9 @@ export default function PublicationsPage() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-28" aria-labelledby="pubs-list-heading">
+      <section className="py-16 lg:py-20" aria-labelledby="pubs-list-heading">
         <div className="container-site">
-          <div className="mb-10 flex flex-wrap gap-2" role="list" aria-label="Filter by type">
+          <div className="mb-8 flex flex-wrap gap-2" role="list" aria-label="Filter by type">
             {TYPES.map((type, i) => (
               <span key={type} role="listitem" className={`rounded-full px-4 py-2 text-sm font-semibold cursor-default ${i === 0 ? "bg-primary-500 text-white" : "bg-neutral-100 text-neutral-600"}`}>
                 {type}
@@ -52,13 +52,13 @@ export default function PublicationsPage() {
           </div>
 
           <h2 id="pubs-list-heading" className="sr-only">All Publications</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {PUBLICATIONS.map((pub) => (
               <article
                 key={pub.title}
-                className="group flex flex-col rounded-2xl bg-neutral-50 p-6 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300"
+                className="group flex flex-col rounded-[1.6rem] bg-neutral-50 p-5 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300"
               >
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-50">
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50">
                   <FileText size={24} className="text-primary-500" aria-hidden="true" />
                 </div>
                 <div className="flex items-center gap-2">
@@ -71,7 +71,7 @@ export default function PublicationsPage() {
                   {pub.title}
                 </h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-500">{pub.description}</p>
-                <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-4">
+                <div className="mt-3 flex items-center justify-between border-t border-neutral-100 pt-3">
                   <span className="text-xs text-neutral-400">{pub.pages} pages</span>
                   <button
                     className="inline-flex items-center gap-1.5 rounded-full bg-primary-500 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"

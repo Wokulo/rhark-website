@@ -38,7 +38,7 @@ export default function VolunteerPage() {
 
   return (
     <div className="bg-white">
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-24 lg:py-32" aria-labelledby="vol-hero-heading">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-20 lg:py-24" aria-labelledby="vol-hero-heading">
         <div className="container-site text-center">
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20">
             <Users size={30} className="text-white" aria-hidden="true" />
@@ -57,8 +57,8 @@ export default function VolunteerPage() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-28">
-        <div className="container-site grid gap-14 lg:grid-cols-3 lg:gap-20">
+      <section className="py-16 lg:py-20">
+        <div className="container-site grid gap-10 lg:grid-cols-3 lg:gap-14">
           <aside className="space-y-6">
             <div className="rounded-2xl bg-primary-50 p-6 ring-1 ring-primary-100">
               <h2 className="font-display text-lg font-bold text-neutral-900">Why Volunteer?</h2>
@@ -83,7 +83,7 @@ export default function VolunteerPage() {
           <div className="lg:col-span-2">
             <h2 className="font-display text-2xl font-bold text-neutral-900">Volunteer Application</h2>
             {submitted ? (
-              <div className="mt-8 flex flex-col items-center gap-4 rounded-2xl bg-success-50 p-10 text-center ring-1 ring-success-100">
+              <div className="mt-6 flex flex-col items-center gap-4 rounded-2xl bg-success-50 p-8 text-center ring-1 ring-success-100">
                 <CheckCircle2 size={48} className="text-success-500" aria-hidden="true" />
                 <h3 className="font-display text-xl font-bold text-neutral-900">Application Received!</h3>
                 <p className="max-w-sm text-neutral-600">Thank you for applying. We will review your application and get back to you within 5 business days.</p>
@@ -92,17 +92,17 @@ export default function VolunteerPage() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate aria-label="Volunteer application form">
+              <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate aria-label="Volunteer application form">
                 <input type="text" {...register("_honeypot")} className="sr-only" tabIndex={-1} aria-hidden="true" autoComplete="off" />
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <VField label="First Name" error={errors.firstName?.message} required><input {...register("firstName")} type="text" placeholder="First name" className={ic(!!errors.firstName)} /></VField>
                   <VField label="Last Name" error={errors.lastName?.message} required><input {...register("lastName")} type="text" placeholder="Last name" className={ic(!!errors.lastName)} /></VField>
                 </div>
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <VField label="Email Address" error={errors.email?.message} required><input {...register("email")} type="email" placeholder="your@email.com" className={ic(!!errors.email)} /></VField>
                   <VField label="Phone Number" error={errors.phone?.message} required><input {...register("phone")} type="tel" placeholder="+254 7XX XXX XXX" className={ic(!!errors.phone)} /></VField>
                 </div>
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <VField label="County" error={errors.county?.message} required>
                     <select {...register("county")} className={ic(!!errors.county)}>
                       <option value="">Select county</option>

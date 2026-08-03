@@ -48,7 +48,7 @@ export function ImpactStatsSection() {
     <section
       ref={ref}
       aria-labelledby="impact-heading"
-      className="bg-white py-16 lg:py-20"
+      className="bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.07),transparent_28%),linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-16 lg:py-20"
     >
       <div className="container-site">
         <motion.div
@@ -56,20 +56,20 @@ export function ImpactStatsSection() {
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           custom={0}
-          className="mb-12 text-center"
+          className="mx-auto mb-10 max-w-3xl text-center"
         >
-          <p className="text-sm font-bold uppercase tracking-widest text-primary-500">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary-500">
             Our Impact
           </p>
           <h2
             id="impact-heading"
-            className="mt-2 font-display text-3xl font-extrabold text-neutral-900 lg:text-4xl"
+            className="mt-3 font-display text-3xl font-extrabold text-neutral-900 text-balance lg:text-5xl"
           >
             Measurable change in communities
           </h2>
         </motion.div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {STATS.map((stat, i) => (
             <motion.div
               key={stat.id}
@@ -77,12 +77,12 @@ export function ImpactStatsSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={i + 1}
-              className="group rounded-2xl bg-neutral-50 p-6 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300"
+              className="group rounded-[1.75rem] border border-white/75 bg-white/90 p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(15,23,42,0.1)] backdrop-blur-sm"
             >
-              <div className={cn("mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl", stat.bg)}>
+              <div className={cn("mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ring-black/5", stat.bg)}>
                 <stat.icon size={22} className={stat.color} aria-hidden="true" />
               </div>
-              <p className={cn("font-display text-4xl font-extrabold", stat.color)}>
+              <p className={cn("font-display text-4xl font-extrabold tracking-tight", stat.color)}>
                 {stat.valueText}
               </p>
               <p className="mt-1 font-semibold text-neutral-900">{stat.label}</p>

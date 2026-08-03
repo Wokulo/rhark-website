@@ -63,7 +63,7 @@ export default function NewArticlePage() {
         .map((t) => t.trim())
         .filter(Boolean);
 
-      const { error: saveError } = await supabase.from("news").insert({
+      const { error: saveError } = await (supabase.from("news") as any).insert({
         title: form.title,
         slug: form.slug || slugify(form.title),
         category: form.category,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
@@ -12,8 +12,8 @@ import {
   Shield,
   Leaf,
   Landmark,
-  CheckCircle2,
   Play,
+  X,
 } from "lucide-react";
 import { cn } from "@/utils";
 import { ROUTES, ORG } from "@/constants";
@@ -57,12 +57,105 @@ const FLOATING_CARDS = [
   { icon: Landmark, label: "Governance", color: "bg-info-500", delay: 1.35 },
 ];
 
-const TRUST_BADGES = [
-  { icon: CheckCircle2, text: "Registered CBO, Kenya" },
-  { icon: CheckCircle2, text: "Serving Siaya County & Beyond" },
-  { icon: CheckCircle2, text: "Community-Led Development" },
-  { icon: CheckCircle2, text: "Partnership Driven" },
-];
+// Real hero image that exists on disk
+const HERO_IMAGE = "/images/hero/DSC_0878.JPG";
+
+// Video file that exists on disk
+const STORY_VIDEO = "/videos/rhark-story.mp4.mp4";
+
+// ─── VideoModal ───────────────────────────────────────────────────────────────
+
+function VideoModal({ onClose }: { onClose: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+
+  // Autoplay when modal mounts
+  useEffect(() => {
+    videoRef.current?.play().catch(() => {
+      // Autoplay blocked by browser — user can press play manually
+    });
+  }, []);
+
+  // Prevent background scroll
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  // ESC to close
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  // Focus trap — keep focus inside modal
+  useEffect(() => {
+    const el = backdropRef.current;
+    if (!el) return;
+    const focusable = el.querySelectorAll<HTMLElement>(
+      "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    first?.focus();
+    const trap = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", trap);
+    return () => document.removeEventListener("keydown", trap);
+  }, []);
+
+  return (
+    <div
+      ref={backdropRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Watch Our Story video"
+      className="fixed inset-0 z-[900] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="relative w-full max-w-3xl rounded-2xl overflow-hidden bg-black shadow-2xl">
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          aria-label="Close video"
+          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        >
+          <X size={18} aria-hidden="true" />
+        </button>
+
+        {/* Video player */}
+        <video
+          ref={videoRef}
+          src={STORY_VIDEO}
+          controls
+          playsInline
+          className="w-full aspect-video"
+          aria-label="RHARK Our Story video"
+        />
+      </div>
+    </div>
+  );
+}
 
 // ─── FloatingInfoCard ─────────────────────────────────────────────────────────
 
@@ -86,14 +179,14 @@ function FloatingInfoCard({
       animate="visible"
       custom={delay}
       className={cn(
-        "absolute flex items-center gap-2.5 rounded-2xl bg-white px-4 py-3",
-        "shadow-lg ring-1 ring-neutral-100",
+        "absolute flex items-center gap-2.5 rounded-[1.35rem] border border-white/70 bg-white/80 px-3.5 py-2.5 backdrop-blur-xl",
+        "shadow-[0_18px_48px_rgba(15,23,42,0.12)]",
         className
       )}
     >
       <div
         className={cn(
-          "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl",
+          "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
           color
         )}
       >
@@ -117,7 +210,7 @@ function HeroVisual() {
         initial="hidden"
         animate="visible"
         custom={0.2}
-        className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-primary-100 via-primary-50 to-accent-50 opacity-60"
+        className="absolute -inset-12 rounded-[3rem] bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.16),transparent_42%),linear-gradient(135deg,rgba(13,110,110,0.08),rgba(245,158,11,0.12))] opacity-90 blur-2xl"
         aria-hidden="true"
       />
 
@@ -127,29 +220,32 @@ function HeroVisual() {
         initial="hidden"
         animate="visible"
         custom={0.3}
-        className="relative z-10 w-full max-w-lg overflow-hidden rounded-[2rem] shadow-2xl"
+        className="relative z-10 w-full max-w-xl overflow-hidden rounded-[2.2rem] border border-white/70 shadow-[0_34px_90px_rgba(15,23,42,0.18)]"
       >
-        <div className="relative aspect-[4/5] w-full bg-gradient-to-br from-primary-200 to-primary-400">
+        {/* aspect-[4/5] wrapper — image fills it with object-cover */}
+        <div className="relative aspect-[4/5] w-full">
           <Image
-            src="/images/logo/RHARK LOGO PNG.jpeg"
-            alt="RHARK - Community Based Organization Logo"
+            src={HERO_IMAGE}
+            alt="RHARK community members in Siaya County"
             fill
-            className="object-contain p-6"
+            className="object-cover"
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
           />
-          {/* Gradient overlay for text legibility */}
+
+          {/* Gradient overlay for text legibility — sits above image */}
           <div
-            className="absolute inset-0 bg-gradient-to-t from-primary-900/40 via-transparent to-transparent"
+            className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.25),transparent_42%),linear-gradient(to_top,rgba(13,110,110,0.55),transparent_60%)]"
             aria-hidden="true"
           />
-          {/* Bottom caption bar */}
-          <div className="absolute bottom-0 left-0 right-0 p-5">
-            <div className="rounded-xl bg-white/15 p-3 backdrop-blur-md">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
+
+          {/* Bottom caption bar — z-20 ensures it is above the gradient */}
+          <div className="absolute bottom-0 left-0 right-0 z-20 p-5">
+            <div className="rounded-[1.1rem] border border-white/20 bg-white/10 p-4 backdrop-blur-md">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/80">
                 Our Community
               </p>
-              <p className="mt-0.5 text-sm font-bold text-white">
+              <p className="mt-1 text-sm font-bold text-white">
                 Empowering lives in Siaya County
               </p>
             </div>
@@ -193,7 +289,7 @@ function HeroVisual() {
         initial="hidden"
         animate="visible"
         custom={0.4}
-        className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-accent-100 opacity-70"
+        className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-accent-100/80 blur-sm"
         aria-hidden="true"
       />
       <motion.div
@@ -201,7 +297,7 @@ function HeroVisual() {
         initial="hidden"
         animate="visible"
         custom={0.5}
-        className="absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-primary-100 opacity-50"
+        className="absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-primary-100/70 blur-sm"
         aria-hidden="true"
       />
     </div>
@@ -222,8 +318,8 @@ function HeroButtons() {
       <Link
         href={ROUTES.about}
         className={cn(
-          "inline-flex items-center gap-2 rounded-full bg-primary-500 px-6 py-3.5 text-sm font-bold text-white shadow-teal",
-          "transition-all duration-200 hover:bg-primary-600 hover:shadow-teal hover:-translate-y-0.5",
+          "inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-bold text-white shadow-teal",
+          "transition-all duration-200 hover:bg-primary-500 hover:shadow-teal hover:-translate-y-0.5",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
         )}
       >
@@ -234,8 +330,8 @@ function HeroButtons() {
       <Link
         href={ROUTES.programmes}
         className={cn(
-          "inline-flex items-center gap-2 rounded-full border-2 border-primary-500 px-6 py-3.5 text-sm font-bold text-primary-600",
-          "transition-all duration-200 hover:bg-primary-50 hover:-translate-y-0.5",
+          "inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white/70 px-5 py-3 text-sm font-bold text-primary-600 backdrop-blur-sm",
+          "transition-all duration-200 hover:border-primary-300 hover:bg-primary-50/90 hover:-translate-y-0.5 hover:shadow-md",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
         )}
       >
@@ -246,8 +342,8 @@ function HeroButtons() {
       <Link
         href={ROUTES.donate}
         className={cn(
-          "inline-flex items-center gap-2 rounded-full bg-accent-500 px-6 py-3.5 text-sm font-bold text-white shadow-amber",
-          "transition-all duration-200 hover:bg-accent-600 hover:shadow-amber hover:-translate-y-0.5",
+          "inline-flex items-center gap-2 rounded-full bg-accent-500 px-5 py-3 text-sm font-bold text-white shadow-[0_16px_36px_rgba(245,158,11,0.28)]",
+          "transition-all duration-200 hover:bg-accent-600 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(245,158,11,0.32)]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
         )}
       >
@@ -258,37 +354,11 @@ function HeroButtons() {
   );
 }
 
-// ─── HeroStats (trust badges) ─────────────────────────────────────────────────
-
-function HeroTrustBadges() {
-  return (
-    <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      animate="visible"
-      custom={0.55}
-      className="flex flex-wrap gap-x-5 gap-y-2"
-      aria-label="Trust indicators"
-    >
-      {TRUST_BADGES.map(({ icon: Icon, text }) => (
-        <div key={text} className="flex items-center gap-1.5">
-          <Icon
-            size={14}
-            className="shrink-0 text-primary-500"
-            aria-hidden="true"
-          />
-          <span className="text-xs font-medium text-neutral-600">{text}</span>
-        </div>
-      ))}
-    </motion.div>
-  );
-}
-
 // ─── HeroContent ──────────────────────────────────────────────────────────────
 
-function HeroContent() {
+function HeroContent({ onWatchStory }: { onWatchStory: () => void }) {
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-5">
       {/* Eyebrow label */}
       <motion.div
         variants={fadeUp}
@@ -296,9 +366,9 @@ function HeroContent() {
         animate="visible"
         custom={0.1}
       >
-        <span className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary-600 ring-1 ring-primary-100">
+        <span className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-[11px] font-semibold tracking-wide text-primary-500 ring-1 ring-primary-100">
           <span
-            className="h-1.5 w-1.5 rounded-full bg-primary-500 animate-pulse-soft"
+            className="h-1.5 w-1.5 rounded-full bg-primary-400 animate-pulse-soft"
             aria-hidden="true"
           />
           Community-Based Organization · Since {ORG.founded}
@@ -307,14 +377,11 @@ function HeroContent() {
 
       {/* Main heading */}
       <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.2}>
-        <h1 className="font-display text-fluid-2xl font-extrabold leading-[1.05] tracking-tight text-neutral-900 text-balance">
+        <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-neutral-800 text-balance sm:text-5xl lg:text-6xl">
           Empowering{" "}
-          <span className="relative">
-            <span className="text-gradient">Communities.</span>
-          </span>
+          <span className="text-gradient">Communities.</span>
           <br />
-          <span className="text-primary-600">Advancing</span> Sexual &amp;
-          <br />
+          <span className="text-primary-500">Advancing</span> Sexual &
           Reproductive Health
           <br />
           and Rights.
@@ -327,10 +394,10 @@ function HeroContent() {
         initial="hidden"
         animate="visible"
         custom={0.3}
-        className="max-w-xl text-lg leading-relaxed text-neutral-600"
+        className="max-w-xl text-sm leading-relaxed text-neutral-500 sm:text-base lg:text-[17px]"
       >
         RHARK is a community-based organization in{" "}
-        <strong className="font-semibold text-neutral-800">
+        <strong className="font-semibold text-neutral-600">
           Siaya County, Kenya
         </strong>
         , dedicated to advancing SRHR, mental health, gender equality, HIV
@@ -343,9 +410,22 @@ function HeroContent() {
       <HeroButtons />
 
       {/* Trust badges */}
-      <HeroTrustBadges />
+      <div className="grid max-w-xl grid-cols-3 gap-3 pt-2 sm:pt-3">
+        <div className="rounded-[1.35rem] border border-white/70 bg-white/80 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+          <h3 className="text-2xl font-bold text-primary-500">10K+</h3>
+          <p className="text-xs text-neutral-500">People Reached</p>
+        </div>
+        <div className="rounded-[1.35rem] border border-white/70 bg-white/80 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+          <h3 className="text-2xl font-bold text-primary-500">50+</h3>
+          <p className="text-xs text-neutral-500">Activities</p>
+        </div>
+        <div className="rounded-[1.35rem] border border-white/70 bg-white/80 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+          <h3 className="text-2xl font-bold text-primary-500">5+</h3>
+          <p className="text-xs text-neutral-500">Partners</p>
+        </div>
+      </div>
 
-      {/* Watch our story link */}
+      {/* Watch our story button — opens modal */}
       <motion.div
         variants={fadeUp}
         initial="hidden"
@@ -353,15 +433,21 @@ function HeroContent() {
         custom={0.6}
       >
         <button
+          type="button"
+          onClick={onWatchStory}
           className={cn(
-            "inline-flex items-center gap-2.5 text-sm font-semibold text-neutral-600",
+            "inline-flex items-center gap-2.5 rounded-full px-1.5 text-sm font-semibold text-neutral-600",
             "transition-colors duration-150 hover:text-primary-600",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-md"
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
           )}
-          aria-label="Watch our story video"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md ring-1 ring-neutral-200 transition-shadow duration-150 hover:shadow-teal-sm">
-            <Play size={14} className="ml-0.5 text-primary-500" aria-hidden="true" fill="currentColor" />
+            <Play
+              size={14}
+              className="ml-0.5 text-primary-500"
+              aria-hidden="true"
+              fill="currentColor"
+            />
           </span>
           Watch Our Story
         </button>
@@ -375,72 +461,78 @@ function HeroContent() {
 export function HeroSection() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [videoOpen, setVideoOpen] = useState(false);
+
+  const openVideo = useCallback(() => setVideoOpen(true), []);
+  const closeVideo = useCallback(() => setVideoOpen(false), []);
 
   return (
-    <section
-      ref={ref}
-      aria-label="Hero — RHARK mission and calls to action"
-      className="relative overflow-hidden bg-gradient-to-br from-neutral-50 via-white to-primary-50/30"
-    >
-      {/* ── Decorative background shapes ── */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Large teal circle — top right */}
-        <div className="absolute -right-40 -top-40 h-[600px] w-[600px] rounded-full bg-primary-50 opacity-60" />
-        {/* Amber accent circle — bottom left */}
-        <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-accent-50 opacity-50" />
-        {/* Grid dot pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, #0D6E6E 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-      </div>
+    <>
+      <section
+        ref={ref}
+        aria-label="Hero — RHARK mission and calls to action"
+        className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(13,110,110,0.12),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(245,158,11,0.12),transparent_22%),linear-gradient(180deg,#f8fbfb_0%,#ffffff_55%,#f7faf9_100%)]"
+      >
+        {/* ── Decorative background shapes ── */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -right-40 -top-40 h-[600px] w-[600px] rounded-full bg-primary-100/60 blur-3xl" />
+          <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-accent-100/50 blur-3xl" />
+          <div
+            className="absolute inset-0 opacity-[0.035]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, #0D6E6E 1px, transparent 1px)",
+              backgroundSize: "30px 30px",
+            }}
+          />
+        </div>
 
-      {/* ── Content ── */}
-      <div className="container-site relative z-10">
-        <div className="grid min-h-[calc(100vh-5rem)] items-center gap-12 py-20 lg:grid-cols-2 lg:gap-16 lg:py-24">
-          {/* Left — content */}
-          <div className={cn("transition-opacity duration-700", inView ? "opacity-100" : "opacity-0")}>
-            <HeroContent />
-          </div>
+        {/* ── Content ── */}
+        <div className="container-site relative z-10">
+          <div className="grid min-h-[86svh] items-center gap-10 py-12 lg:grid-cols-2 lg:gap-14 lg:py-16">
+            {/* Left — content */}
+            <div className={cn("transition-opacity duration-700", inView ? "opacity-100" : "opacity-0")}>
+              <HeroContent onWatchStory={openVideo} />
+            </div>
 
-          {/* Right — visual */}
-          <div className="relative hidden lg:block">
-            <HeroVisual />
+            {/* Right — visual */}
+            <div className="relative hidden lg:block">
+              <HeroVisual />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ── Mobile image strip ── */}
-      <div className="relative h-72 w-full overflow-hidden lg:hidden" aria-hidden="true">
-        <Image
-          src="/images/logo/RHARK LOGO PNG.jpeg"
-          alt=""
-          fill
-          className="object-contain p-6"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
-      </div>
-
-      {/* ── Bottom wave divider ── */}
-      <div aria-hidden="true" className="absolute bottom-0 left-0 right-0">
-        <svg
-          viewBox="0 0 1440 48"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full text-white"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0 48h1440V24C1200 8 960 0 720 0S240 8 0 24v24z"
-            fill="currentColor"
+        {/* ── Mobile image strip ── */}
+        <div className="relative h-48 w-full overflow-hidden lg:hidden" aria-hidden="true">
+          <Image
+            src={HERO_IMAGE}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
-        </svg>
-      </div>
-    </section>
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/35 to-transparent" />
+        </div>
+
+        {/* ── Bottom wave divider ── */}
+        <div aria-hidden="true" className="absolute bottom-0 left-0 right-0">
+          <svg
+            viewBox="0 0 1440 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-full text-white"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0 48h1440V24C1200 8 960 0 720 0S240 8 0 24v24z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </section>
+
+      {/* ── Video Modal ── */}
+      {videoOpen && <VideoModal onClose={closeVideo} />}
+    </>
   );
 }

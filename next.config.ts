@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const securityHeaders = [
   // Prevents clickjacking attacks
@@ -22,7 +23,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://images.unsplash.com",
-      "connect-src 'self'",
+      "connect-src 'self' https://mnbspqqslgcmelljttmk.supabase.co https://*.supabase.co",
       "frame-ancestors 'none'",
     ].join("; "),
   },
@@ -33,6 +34,9 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const nextConfig: NextConfig = {
   basePath,
   assetPrefix: basePath || undefined,
+  turbopack: {
+    root: path.join(__dirname),
+  },
 
   // Apply security headers to all routes
   async headers() {

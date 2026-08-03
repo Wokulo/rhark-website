@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Menu,
@@ -11,7 +12,6 @@ import {
   Heart,
   Phone,
   Mail,
-  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/utils";
 import { NAV_ITEMS, ORG, ROUTES } from "@/constants";
@@ -29,7 +29,7 @@ function AnnouncementBar({ onDismiss }: { onDismiss: () => void }) {
       className="relative bg-primary-600 px-4 py-2.5 text-center text-xs font-medium text-white sm:text-sm"
     >
       <span>
-        🌍 RHARK is hiring — join our team in Siaya County.{" "}
+        🌍RHARK is hiring — join our team in Siaya County.{" "}
         <Link
           href="/get-involved/volunteer"
           className="inline-flex items-center gap-1 underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white"
@@ -330,7 +330,7 @@ export function Header() {
           "fixed left-0 right-0 z-sticky transition-all duration-300",
           announcementVisible ? "top-[38px] sm:top-[42px]" : "top-0",
           isScrolled
-            ? "bg-white/95 shadow-sm backdrop-blur-md"
+            ? "border-b border-white/70 bg-white/80 shadow-sm backdrop-blur-xl"
             : "bg-transparent",
           isHidden && "-translate-y-[calc(100%+42px)]"
         )}
@@ -381,29 +381,32 @@ export function Header() {
 
         {/* ── Primary Nav Bar ── */}
         <div className="container-site">
-          <div className="flex h-16 items-center justify-between gap-6 lg:h-[72px]">
+          <div className="flex h-20 items-center justify-between gap-6 lg:h-[88px]">
 
             {/* Logo */}
             <Link
               href="/"
-              className="group flex shrink-0 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              className="group flex shrink-0 items-center gap-3 rounded-full border border-transparent bg-white/60 px-2 py-1.5 backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
               aria-label="RHARK — Reproductive Health Action and Rights Kenya, go to homepage"
             >
-              {/* Logo mark */}
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-500 shadow-teal-sm transition-all duration-200 group-hover:bg-primary-600 group-hover:shadow-teal">
-                <Heart
-                  size={18}
-                  className="text-white"
-                  aria-hidden="true"
-                  fill="currentColor"
+              {/* Logo Image */}
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl transition-transform duration-200 group-hover:scale-105">
+                <Image
+                  src="/images/logo/Newlogo.png"
+                  alt="RHARK Logo"
+                  fill
+                  className="object-contain"
+                  priority
                 />
               </div>
+
               {/* Wordmark */}
               <div className="flex flex-col leading-none">
-                <span className="font-display text-lg font-extrabold tracking-tight text-primary-600 lg:text-xl">
+                <span className="font-display text-xl font-extrabold tracking-tight text-primary-600 lg:text-2xl">
                   RHARK
                 </span>
-                <span className="hidden text-[10px] font-medium tracking-wide text-neutral-500 xs:block">
+
+                <span className="text-xs font-medium tracking-wide text-neutral-500">
                   Kenya
                 </span>
               </div>
@@ -494,21 +497,24 @@ export function Header() {
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-neutral-100 px-4">
           <Link
             href="/"
-            onClick={() => setMobileOpen(false)}
             className="flex items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
             aria-label="RHARK homepage"
+            onClick={() => setMobileOpen(false)}
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-500">
-              <Heart size={16} className="text-white" aria-hidden="true" fill="currentColor" />
+            <div className="relative h-10 w-10 overflow-hidden rounded-lg">
+              <Image
+                src="/images/logo/Newlogo.png"
+                alt="RHARK Logo"
+                fill
+                className="object-contain"
+              />
             </div>
-            <span className="font-display text-lg font-extrabold text-primary-600">
-              RHARK
-            </span>
           </Link>
+
           <button
             onClick={() => setMobileOpen(false)}
             aria-label="Close navigation menu"
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-100"
           >
             <X size={22} aria-hidden="true" />
           </button>
@@ -545,6 +551,7 @@ export function Header() {
             <Heart size={16} aria-hidden="true" fill="currentColor" />
             Donate to RHARK
           </Link>
+
           <div className="flex items-center justify-center gap-4 text-xs text-neutral-500">
             <a
               href={`mailto:${ORG.email}`}

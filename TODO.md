@@ -1,3 +1,22 @@
+# RHARK Website Tasks
+
+## Partners Section — Add Siaya County Government Logo (Home)
+- [x] Add Siaya County Government as first partner in `src/components/home/PartnersSection.tsx`
+- [x] Keep WHO and JOOUST partner cards unchanged
+- [x] Reference `/images/partners/siaya-county-government-logo.png` (asset to be added later)
+- [x] Verify no new TypeScript errors from the Partners component
+
+---
+
+## Programs Section — Add 4 New Programs (Home)
+- [x] Extend `ProgrammeSlug` union in `src/types/index.ts` with new slugs
+- [x] Fix pre-existing `Program` → `Programme` type import in `src/data/programmes.ts`
+- [x] Add 4 new program entries (Deep Canvassing, In-School CSE, Community Safe Spaces, Gumzo Chuoni) to `src/data/programmes.ts`
+- [x] Add new icons + image mappings to `src/components/home/ProgrammesSection.tsx`
+- [x] Verify no new TypeScript errors from modified Programs files
+
+---
+
 # RHARK CMS Implementation Todo
 
 ## Phase 1: Foundation ✅
@@ -56,3 +75,4 @@
 - [ ] Loading skeletons
 - [ ] Accessibility checks
 - [ ] SEO metadata
+

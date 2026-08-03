@@ -19,7 +19,7 @@ import type {
 } from "@/types";
 
 // These will be replaced with CMS API calls
-import { programmesData } from "@/data/programmes";
+import { programsData } from "@/data/programmes";
 import { projectsData } from "@/data/projects";
 import { teamData } from "@/data/team";
 import {
@@ -32,11 +32,11 @@ import {
 
 export async function getProgrammes(): Promise<Programme[]> {
   // Future: return await sanityClient.fetch(PROGRAMMES_QUERY);
-  return programmesData;
+  return programsData;
 }
 
 export async function getProgrammeBySlug(slug: string): Promise<Programme | null> {
-  return programmesData.find((p) => p.slug === slug) ?? null;
+  return programsData.find((p) => p.slug === slug) ?? null;
 }
 
 export async function getProjects(limit?: number): Promise<Project[]> {

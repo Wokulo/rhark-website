@@ -55,11 +55,11 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-neutral-900 text-neutral-300" role="contentinfo">
+    <footer className="bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.18),transparent_30%),linear-gradient(180deg,#0b1220_0%,#0f172a_100%)] text-neutral-300" role="contentinfo">
       {/* ── Donation CTA Strip ── */}
       <section aria-label="Donation call to action">
-        <div className="border-b border-neutral-800 bg-neutral-950">
-          <div className="mx-auto max-w-[1280px] flex flex-col items-center gap-3 px-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <div className="border-b border-white/10 bg-white/5">
+          <div className="mx-auto flex max-w-[1280px] flex-col items-center gap-3 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
             <div className="text-center sm:text-left">
               <h2 className="font-display text-lg font-bold text-white">
                 Support our work in Siaya County
@@ -85,14 +85,14 @@ export function Footer() {
 
       {/* ── Main Footer Grid ── */}
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-10">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-8">
 
           {/* Column 1: Brand + Social + Newsletter */}
           <div>
             {/* Logo */}
             <Link
               href="/"
-              className="group inline-flex items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+              className="group inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
               aria-label="RHARK homepage"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500 transition-colors duration-150 group-hover:bg-primary-400">
@@ -104,11 +104,11 @@ export function Footer() {
               </div>
             </Link>
 
-            <p className="text-sm leading-relaxed text-neutral-400">
+            <p className="text-sm leading-relaxed text-neutral-300">
               {ORG.name} — advancing Sexual and Reproductive Health and Rights, gender equality, and youth empowerment in Siaya County, Kenya.
             </p>
 
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-neutral-400">
               Established {ORG.founded} · {ORG.type}
             </p>
 
@@ -125,7 +125,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   aria-label={`Follow RHARK on ${label} (opens in new tab)`}
                   className={
-                    "flex h-11 w-11 items-center justify-center rounded-full bg-neutral-800 text-neutral-400 " +
+                    "flex h-11 w-11 items-center justify-center rounded-full bg-white/5 text-neutral-300 " +
                     "transition-all duration-200 ease-out hover:scale-110 hover:bg-primary-500 hover:text-white " +
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
                   }
@@ -138,16 +138,16 @@ export function Footer() {
 
           {/* Column 2: Programmes */}
           <div>
-            <h3 className="text-base font-bold text-neutral-100 mb-3">
+            <h3 className="mb-2 text-base font-bold text-neutral-100">
               Programmes
             </h3>
-            <ul className="space-y-3" role="list">
+            <ul className="space-y-2.5" role="list">
               {PROGRAMMES.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     className={
-                      "group flex items-center gap-2.5 text-sm leading-relaxed text-neutral-400 " +
+                      "group flex items-center gap-2.5 text-sm leading-relaxed text-neutral-300 " +
                       "transition-colors duration-150 hover:text-primary-400 " +
                       "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary-400 rounded"
                     }
@@ -166,10 +166,10 @@ export function Footer() {
 
           {/* Column 3: Quick Links */}
           <div>
-            <h3 className="text-base font-bold text-neutral-100 mb-3">
+            <h3 className="mb-2 text-base font-bold text-neutral-100">
               Quick Links
             </h3>
-            <ul className="space-y-3" role="list">
+            <ul className="space-y-2.5" role="list">
               {QUICK_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -188,19 +188,19 @@ export function Footer() {
 
           {/* Column 4: Contact */}
           <div>
-            <h3 className="text-base font-bold text-neutral-100 mb-3">
+            <h3 className="mb-2 text-base font-bold text-neutral-100">
               Contact Us
             </h3>
-            <address className="not-italic space-y-5">
+            <address className="not-italic space-y-4">
               <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-800">
+                <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/5">
                   <MapPin size={16} className="text-primary-400" aria-hidden="true" />
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
                     Head Office
                   </p>
-                  <p className="mt-1 text-sm leading-relaxed text-neutral-400">
+                  <p className="mt-1 text-sm leading-relaxed text-neutral-300">
                     {ORG.address}
                   </p>
                   <p className="mt-1 text-xs leading-relaxed text-neutral-500">
@@ -210,24 +210,24 @@ export function Footer() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-800">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/5">
                   <Mail size={16} className="text-primary-400" aria-hidden="true" />
                 </div>
                 <a
                   href={`mailto:${ORG.email}`}
-                  className="text-sm leading-relaxed text-neutral-400 transition-colors duration-150 hover:text-primary-400"
+                    className="text-sm leading-relaxed text-neutral-300 transition-colors duration-150 hover:text-primary-400"
                 >
                   {ORG.email}
                 </a>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-800">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/5">
                   <Phone size={16} className="text-primary-400" aria-hidden="true" />
                 </div>
                 <a
                   href={`tel:${ORG.phone.replace(/\s/g, "")}`}
-                  className="text-sm leading-relaxed text-neutral-400 transition-colors duration-150 hover:text-primary-400"
+                  className="text-sm leading-relaxed text-neutral-300 transition-colors duration-150 hover:text-primary-400"
                 >
                   {ORG.phone}
                 </a>
@@ -240,7 +240,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className={
-                "mt-4 inline-flex items-center gap-1.5 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-medium text-neutral-400 " +
+                "mt-3 inline-flex items-center gap-1.5 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-medium text-neutral-400 " +
                 "transition-colors duration-150 hover:border-primary-500 hover:text-primary-400 " +
                 "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary-400"
               }
@@ -255,7 +255,7 @@ export function Footer() {
 
       {/* ── Bottom Bar ── */}
       <div className="border-t border-neutral-800">
-        <div className="mx-auto max-w-[1280px] flex flex-col items-center justify-between gap-3 px-4 py-4 sm:flex-row sm:px-6 lg:flex-row lg:px-8">
+        <div className="mx-auto flex max-w-[1280px] flex-col items-center justify-between gap-2 px-4 py-3 sm:flex-row sm:px-6 lg:flex-row lg:px-8">
           <p className="text-xs text-neutral-500">
             © {year}{" "}
             <Link

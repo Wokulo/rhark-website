@@ -41,7 +41,7 @@ export default function ContactPage() {
   return (
     <div className="bg-white">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-24 lg:py-32" aria-labelledby="contact-hero-heading">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-20 lg:py-24" aria-labelledby="contact-hero-heading">
         <div className="container-site text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-primary-200">Get in Touch</p>
           <h1 id="contact-hero-heading" className="mt-3 font-display text-4xl font-extrabold text-white text-balance lg:text-5xl">
@@ -58,16 +58,16 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-28" aria-labelledby="contact-form-heading">
-        <div className="container-site grid gap-14 lg:grid-cols-3 lg:gap-20">
+      <section className="py-16 lg:py-20" aria-labelledby="contact-form-heading">
+        <div className="container-site grid gap-10 lg:grid-cols-3 lg:gap-14">
 
           {/* Contact info */}
-          <aside className="space-y-8">
+          <aside className="space-y-6">
             <div>
               <h2 id="contact-info-heading" className="font-display text-xl font-bold text-neutral-900">
                 Our Office
               </h2>
-              <div className="mt-5 space-y-5">
+              <div className="mt-4 space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-50">
                     <MapPin size={18} className="text-primary-500" aria-hidden="true" />
@@ -105,7 +105,7 @@ export default function ContactPage() {
 
             <div>
               <h3 className="font-display text-base font-bold text-neutral-900">Office Hours</h3>
-              <div className="mt-3 space-y-1 text-sm text-neutral-500">
+              <div className="mt-2.5 space-y-1 text-sm text-neutral-500">
                 <p>Monday – Friday: 8:00 AM – 5:00 PM EAT</p>
                 <p>Saturday: 9:00 AM – 1:00 PM EAT</p>
                 <p>Sunday: Closed</p>
@@ -114,7 +114,7 @@ export default function ContactPage() {
 
             <div>
               <h3 className="font-display text-base font-bold text-neutral-900">Follow Us</h3>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-2.5 flex flex-wrap gap-2">
                 {Object.entries(SOCIAL_LINKS).map(([platform, url]) => (
                   <a
                     key={platform}
@@ -137,7 +137,7 @@ export default function ContactPage() {
             </h2>
 
             {submitted ? (
-              <div className="mt-8 flex flex-col items-center gap-4 rounded-2xl bg-success-50 p-10 text-center ring-1 ring-success-100">
+              <div className="mt-6 flex flex-col items-center gap-4 rounded-2xl bg-success-50 p-8 text-center ring-1 ring-success-100">
                 <CheckCircle2 size={48} className="text-success-500" aria-hidden="true" />
                 <h3 className="font-display text-xl font-bold text-neutral-900">Message Sent!</h3>
                 <p className="max-w-sm text-neutral-600">
@@ -153,14 +153,14 @@ export default function ContactPage() {
             ) : (
               <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="mt-8 space-y-5"
+                className="mt-6 space-y-4"
                 aria-label="Contact form"
                 noValidate
               >
                 {/* Honeypot — hidden from real users */}
                 <input type="text" {...register("_honeypot")} className="sr-only" tabIndex={-1} aria-hidden="true" autoComplete="off" />
 
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Full Name" error={errors.name?.message} required>
                     <input
                       {...register("name")}
@@ -181,7 +181,7 @@ export default function ContactPage() {
                   </Field>
                 </div>
 
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Phone Number" error={errors.phone?.message}>
                     <input
                       {...register("phone")}

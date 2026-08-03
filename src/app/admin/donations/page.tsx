@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Heart, Search, Filter, Download, Eye, X, ChevronDown, ChevronUp, Loader2, CheckCircle2, Clock, XCircle, AlertCircle } from "lucide-react";
 import { cn, formatDate } from "@/utils";
-import { Button, Input, Select, Alert, Modal, Pagination } from "@/components/ui";
+import { Button, Input, Select, Alert, Modal, Pagination } from "@/components/system/ui";
 import type { Donation, DonationStatus, PaymentMethod } from "@/types";
 
 const STATUS_OPTIONS = [

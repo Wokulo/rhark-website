@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Users, Search, Eye, X } from "lucide-react";
 import { cn, formatDate } from "@/utils";
-import { Button, Input, Alert, Modal, Pagination } from "@/components/ui";
+import { Button, Input, Alert, Modal, Pagination } from "@/components/system/ui";
 import type { Subscriber } from "@/types";
 
 export default function AdminSubscribersPage() {

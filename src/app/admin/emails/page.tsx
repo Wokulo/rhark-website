@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Mail, Search, Eye, X } from "lucide-react";
 import { cn, formatDate } from "@/utils";
-import { Button, Input, Select, Alert, Modal, Pagination } from "@/components/ui";
+import { Button, Input, Select, Alert, Modal, Pagination } from "@/components/system/ui";
 import type { EmailMessage } from "@/types";
 
 const STATUS_OPTIONS = [

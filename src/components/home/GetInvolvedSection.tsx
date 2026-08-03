@@ -26,19 +26,19 @@ export function GetInvolvedSection() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} aria-labelledby="get-involved-heading" className="bg-neutral-50 py-20 lg:py-28">
+    <section ref={ref} aria-labelledby="get-involved-heading" className="bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.06),transparent_28%),linear-gradient(180deg,#f8fbfb_0%,#ffffff_100%)] py-16 lg:py-20">
       <div className="container-site">
-        <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0} className="mb-14 text-center">
-          <p className="text-sm font-bold uppercase tracking-widest text-primary-500">Get Involved</p>
-          <h2 id="get-involved-heading" className="mt-2 font-display text-3xl font-extrabold text-neutral-900 text-balance lg:text-4xl">
+        <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0} className="mb-10 text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary-500">Get Involved</p>
+          <h2 id="get-involved-heading" className="mt-3 font-display text-3xl font-extrabold text-neutral-900 text-balance lg:text-5xl">
             Join the movement for change
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-neutral-600">
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-neutral-600">
             There are many ways to support RHARK's mission. Every contribution — big or small — makes a difference.
           </p>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-3">
           {GET_INVOLVED.map((item, i) => (
             <motion.div
               key={item.title}
@@ -46,17 +46,17 @@ export function GetInvolvedSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={i + 1}
-              className="group flex flex-col rounded-2xl bg-white p-8 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300"
+              className="group flex flex-col rounded-[1.6rem] border border-white/75 bg-white/90 p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-sm"
             >
-              <div className={cn("mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl", item.color)}>
+              <div className={cn("mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm", item.color)}>
                 <item.icon size={26} className="text-white" aria-hidden="true" />
               </div>
               <h3 className="font-display text-xl font-bold text-neutral-900">{item.title}</h3>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-neutral-500">{item.description}</p>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-500">{item.description}</p>
               <Link
                 href={item.href}
                 className={cn(
-                  "mt-6 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5",
+                  "mt-5 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   item.color,
                   item.title === "Donate" ? "shadow-amber focus-visible:ring-accent-500" : item.title === "Volunteer" ? "shadow-teal-sm focus-visible:ring-primary-500" : "focus-visible:ring-secondary-400"

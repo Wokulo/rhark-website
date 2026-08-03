@@ -31,10 +31,10 @@ export function AboutPreviewSection() {
     <section
       ref={ref}
       aria-labelledby="about-heading"
-      className="bg-neutral-50 py-20 lg:py-28"
+      className="bg-[radial-gradient(circle_at_top_right,rgba(13,110,110,0.08),transparent_30%),linear-gradient(180deg,#f8fbfb_0%,#ffffff_100%)] py-16 lg:py-20"
     >
       <div className="container-site">
-        <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
 
           {/* Image side */}
           <motion.div
@@ -43,7 +43,7 @@ export function AboutPreviewSection() {
             animate={inView ? "visible" : "hidden"}
             className="relative"
           >
-            <div className="relative overflow-hidden rounded-[2rem] shadow-2xl">
+            <div className="relative overflow-hidden rounded-[2.25rem] border border-white/70 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
               <div className="relative aspect-[4/3] w-full bg-primary-100">
                 <Image
                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=85"
@@ -55,7 +55,7 @@ export function AboutPreviewSection() {
               </div>
             </div>
             {/* Floating stat card */}
-            <div className="absolute -bottom-6 -right-4 rounded-2xl bg-white p-5 shadow-xl ring-1 ring-neutral-100 lg:-right-8">
+            <div className="absolute -bottom-6 -right-4 rounded-[1.5rem] border border-white/70 bg-white/92 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.12)] backdrop-blur-md lg:-right-8">
               <p className="font-display text-3xl font-extrabold text-primary-500">2021</p>
               <p className="mt-0.5 text-sm font-medium text-neutral-600">Year Established</p>
               <p className="mt-0.5 text-xs text-neutral-400">{ORG.county}, Kenya</p>
@@ -65,13 +65,13 @@ export function AboutPreviewSection() {
           {/* Content side */}
           <div className="flex flex-col gap-6">
             <motion.p variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0}
-              className="text-sm font-bold uppercase tracking-widest text-primary-500">
+              className="text-xs font-bold uppercase tracking-[0.24em] text-primary-500">
               About RHARK
             </motion.p>
 
             <motion.h2 variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={1}
               id="about-heading"
-              className="font-display text-3xl font-extrabold leading-tight text-neutral-900 text-balance lg:text-4xl">
+              className="font-display text-3xl font-extrabold leading-tight text-neutral-900 text-balance lg:text-5xl">
               A community-driven force for health and rights in Kenya
             </motion.h2>
 
@@ -84,7 +84,7 @@ export function AboutPreviewSection() {
               <p className="mb-3 text-sm font-semibold text-neutral-700">Our Core Values</p>
               <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="list">
                 {VALUES.map((v) => (
-                  <li key={v} className="flex items-center gap-2 text-sm text-neutral-600">
+                  <li key={v} className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 text-sm text-neutral-600 shadow-sm ring-1 ring-neutral-100">
                     <CheckCircle2 size={15} className="shrink-0 text-primary-500" aria-hidden="true" />
                     {v}
                   </li>
@@ -95,11 +95,11 @@ export function AboutPreviewSection() {
             <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={4}
               className="flex flex-wrap gap-3 pt-2">
               <Link href={ROUTES.about}
-                className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-6 py-3 text-sm font-bold text-white shadow-teal-sm transition-all duration-200 hover:bg-primary-600 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
+                className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-6 py-3 text-sm font-bold text-white shadow-teal-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
                 Learn More About Us <ArrowRight size={15} aria-hidden="true" />
               </Link>
               <Link href={ROUTES.team}
-                className="inline-flex items-center gap-2 rounded-full border-2 border-neutral-200 px-6 py-3 text-sm font-bold text-neutral-700 transition-all duration-200 hover:border-primary-300 hover:text-primary-600 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
+                className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/80 px-6 py-3 text-sm font-bold text-neutral-700 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-300 hover:text-primary-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
                 Meet Our Team
               </Link>
             </motion.div>

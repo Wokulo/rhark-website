@@ -8,6 +8,7 @@ import {
   CookieConsent,
 } from "@/components/layout";
 import { buildMetadata, buildOrganisationJsonLd } from "@/lib/metadata";
+import { JsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
 // ─── Fonts ────────────────────────────────────────────────────────────────────
@@ -16,7 +17,13 @@ import "./globals.css";
 
 // ─── Root Metadata ────────────────────────────────────────────────────────────
 
-export const metadata: Metadata = buildMetadata();
+export const metadata: Metadata = {
+  title:"RHARK",
+  description:"Reproductive Health Accountability and Response Kenya",
+  icons: {
+    icon: "/favicon.png",
+  },
+};
 
 // ─── Root Layout ──────────────────────────────────────────────────────────────
 
@@ -25,23 +32,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const orgJsonLd = buildOrganisationJsonLd();
-
   return (
     <html
       lang="en"
-      // suppressHydrationWarning is required by next-themes to prevent
-      // a hydration mismatch when the theme class is applied client-side.
       suppressHydrationWarning
     >
-      <head>
-        {/* JSON-LD structured data — enables Google Knowledge Panel */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
-        />
-      </head>
       <body className="flex min-h-dvh flex-col bg-neutral-50 text-neutral-900 antialiased">
+        <JsonLd data={buildOrganisationJsonLd()} />
         <Providers>
           {/*
            * SkipToContent must be the FIRST focusable element in the DOM.
@@ -63,7 +60,7 @@ export default function RootLayout({
            */}
           <main
             id="main-content"
-            className="flex-1 pt-16 lg:pt-20"
+            className="flex-1 pt-14 lg:pt-16"
             tabIndex={-1}
           >
             {children}

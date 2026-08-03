@@ -22,7 +22,7 @@ const PROGRAMMES = [
 export default function ProgrammesPage() {
   return (
     <div className="bg-white">
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-24 lg:py-32" aria-labelledby="programmes-hero-heading">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-20 lg:py-24" aria-labelledby="programmes-hero-heading">
         <div className="container-site text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-primary-200">What We Do</p>
           <h1 id="programmes-hero-heading" className="mt-3 font-display text-4xl font-extrabold text-white text-balance lg:text-5xl">
@@ -39,24 +39,24 @@ export default function ProgrammesPage() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-28" aria-labelledby="programmes-list-heading">
+      <section className="py-16 lg:py-20" aria-labelledby="programmes-list-heading">
         <div className="container-site">
           <h2 id="programmes-list-heading" className="sr-only">All Programmes</h2>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {PROGRAMMES.map((prog) => (
               <Link
                 key={prog.href}
                 href={prog.href}
-                className="group flex flex-col rounded-2xl bg-neutral-50 p-7 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                className="group flex flex-col rounded-[1.6rem] bg-neutral-50 p-6 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               >
-                <div className={`mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl ${prog.color}`}>
+                <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl ${prog.color}`}>
                   <prog.icon size={26} className="text-white" aria-hidden="true" />
                 </div>
                 <h3 className="font-display text-lg font-bold text-neutral-900 group-hover:text-primary-600 transition-colors duration-150">
                   {prog.title}
                 </h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-neutral-500">{prog.description}</p>
-                <div className={`mt-5 flex items-center gap-1.5 text-sm font-semibold ${prog.textColor}`}>
+                <p className="mt-2.5 flex-1 text-sm leading-relaxed text-neutral-500">{prog.description}</p>
+                <div className={`mt-4 flex items-center gap-1.5 text-sm font-semibold ${prog.textColor}`}>
                   Learn more <ArrowRight size={14} aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1" />
                 </div>
               </Link>

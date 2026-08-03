@@ -30,7 +30,7 @@ export default function AboutPage() {
   return (
     <div className="bg-white">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-24 lg:py-32" aria-labelledby="about-hero-heading">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-20 lg:py-24" aria-labelledby="about-hero-heading">
         <div className="container-site text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-primary-200">About RHARK</p>
           <h1 id="about-hero-heading" className="mt-3 font-display text-4xl font-extrabold text-white text-balance lg:text-5xl">
@@ -48,8 +48,8 @@ export default function AboutPage() {
       </section>
 
       {/* Story + Image */}
-      <section className="py-20 lg:py-28" aria-labelledby="story-heading">
-        <div className="container-site grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+      <section className="py-16 lg:py-20" aria-labelledby="story-heading">
+        <div className="container-site grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
           <div>
             <p className="text-sm font-bold uppercase tracking-widest text-primary-500">Our Story</p>
             <h2 id="story-heading" className="mt-2 font-display text-3xl font-extrabold text-neutral-900 text-balance lg:text-4xl">
@@ -89,7 +89,7 @@ export default function AboutPage() {
       </section>
 
       {/* Vision & Mission */}
-      <section className="bg-neutral-50 py-20 lg:py-24" aria-labelledby="vision-mission-heading">
+      <section className="bg-neutral-50 py-16 lg:py-20" aria-labelledby="vision-mission-heading">
         <div className="container-site">
           <h2 id="vision-mission-heading" className="sr-only">Vision and Mission</h2>
           <div className="grid gap-8 md:grid-cols-2">
@@ -112,7 +112,7 @@ export default function AboutPage() {
       </section>
 
       {/* Core Values */}
-      <section id="values" className="py-20 lg:py-24" aria-labelledby="values-heading">
+      <section id="values" className="py-16 lg:py-20" aria-labelledby="values-heading">
         <div className="container-site">
           <div className="mb-12 text-center">
             <p className="text-sm font-bold uppercase tracking-widest text-primary-500">What Guides Us</p>
@@ -133,15 +133,15 @@ export default function AboutPage() {
       </section>
 
       {/* Strategic Areas */}
-      <section className="bg-neutral-50 py-20 lg:py-24" aria-labelledby="strategic-heading">
-        <div className="container-site grid gap-14 lg:grid-cols-2">
+      <section className="bg-neutral-50 py-16 lg:py-20" aria-labelledby="strategic-heading">
+        <div className="container-site grid gap-10 lg:grid-cols-2">
           <div>
             <p className="text-sm font-bold uppercase tracking-widest text-primary-500">What We Do</p>
             <h2 id="strategic-heading" className="mt-2 font-display text-3xl font-extrabold text-neutral-900 text-balance lg:text-4xl">
-              Strategic Programme Areas
+              Strategic Program Areas
             </h2>
             <p className="mt-4 text-base leading-relaxed text-neutral-600">
-              Our six strategic programme areas address the interconnected challenges facing communities in Siaya County and across Kenya.
+              Our six strategic program areas address the interconnected challenges facing communities in Siaya County and across Kenya.
             </p>
             <ul className="mt-6 space-y-3" role="list">
               {STRATEGIC_AREAS.map((area) => (

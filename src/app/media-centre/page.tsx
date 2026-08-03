@@ -14,7 +14,7 @@ export const metadata: Metadata = buildMetadata({
 export default function MediaCentrePage() {
   return (
     <div className="bg-white">
-      <section className="bg-primary-700 py-24 text-white lg:py-32">
+      <section className="bg-primary-700 py-20 text-white lg:py-24">
         <div className="container-site max-w-4xl">
           <p className="text-sm font-bold uppercase tracking-widest text-primary-200">
             Media Centre
@@ -29,21 +29,21 @@ export default function MediaCentrePage() {
         </div>
       </section>
 
-      <section className="py-16 lg:py-24">
-        <div className="container-site grid gap-6 md:grid-cols-3">
-          <Link href="/news" className="rounded-2xl bg-neutral-50 p-6 ring-1 ring-neutral-200 transition hover:shadow-lg">
+      <section className="py-12 lg:py-16">
+        <div className="container-site grid gap-5 md:grid-cols-3">
+          <Link href="/news" className="rounded-2xl bg-neutral-50 p-5 ring-1 ring-neutral-200 transition hover:shadow-lg">
             <Megaphone className="text-primary-600" size={24} aria-hidden="true" />
-            <h2 className="mt-4 font-display text-xl font-bold text-neutral-900">Latest news</h2>
+            <h2 className="mt-3 font-display text-xl font-bold text-neutral-900">Latest news</h2>
             <p className="mt-2 text-sm text-neutral-500">Official updates and public announcements.</p>
           </Link>
-          <Link href="/resources" className="rounded-2xl bg-neutral-50 p-6 ring-1 ring-neutral-200 transition hover:shadow-lg">
+          <Link href="/resources" className="rounded-2xl bg-neutral-50 p-5 ring-1 ring-neutral-200 transition hover:shadow-lg">
             <Camera className="text-primary-600" size={24} aria-hidden="true" />
-            <h2 className="mt-4 font-display text-xl font-bold text-neutral-900">Media kit</h2>
+            <h2 className="mt-3 font-display text-xl font-bold text-neutral-900">Media kit</h2>
             <p className="mt-2 text-sm text-neutral-500">Prepared area for logos, images, and profile PDFs.</p>
           </Link>
-          <a href={`mailto:${ORG.email}`} className="rounded-2xl bg-neutral-50 p-6 ring-1 ring-neutral-200 transition hover:shadow-lg">
+          <a href={`mailto:${ORG.email}`} className="rounded-2xl bg-neutral-50 p-5 ring-1 ring-neutral-200 transition hover:shadow-lg">
             <Mail className="text-primary-600" size={24} aria-hidden="true" />
-            <h2 className="mt-4 font-display text-xl font-bold text-neutral-900">Press contact</h2>
+            <h2 className="mt-3 font-display text-xl font-bold text-neutral-900">Press contact</h2>
             <p className="mt-2 text-sm text-neutral-500">{ORG.email}</p>
           </a>
         </div>

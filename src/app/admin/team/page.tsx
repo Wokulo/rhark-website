@@ -56,7 +56,7 @@ export default function AdminTeamPage() {
 
   const handleToggleStatus = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === "active" ? "inactive" : "active";
-    await supabase.from("members").update({ status: newStatus }).eq("id", id);
+    await (supabase.from("members") as any).update({ status: newStatus }).eq("id", id);
     loadMembers();
   };
 

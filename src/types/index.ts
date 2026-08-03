@@ -42,7 +42,11 @@ export type ProgrammeSlug =
   | "hiv-teen-pregnancy"
   | "gender-equality"
   | "governance-policy"
-  | "climate-justice";
+  | "climate-justice"
+  | "deep-canvassing"
+  | "inschool-cse"
+  | "community-safe-space"
+  | "gumzo-chuoni";
 
 export interface Programme {
   id: string;

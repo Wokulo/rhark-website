@@ -13,7 +13,7 @@ export const metadata: Metadata = buildMetadata({
 export default function ImpactPage() {
   return (
     <div className="bg-white">
-      <section className="bg-primary-700 py-24 text-white lg:py-32">
+      <section className="bg-primary-700 py-20 text-white lg:py-24">
         <div className="container-site max-w-4xl text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-primary-200">
             Impact Dashboard
@@ -28,9 +28,9 @@ export default function ImpactPage() {
         </div>
       </section>
 
-      <section className="py-16 lg:py-24" aria-labelledby="impact-metrics">
+      <section className="py-12 lg:py-16" aria-labelledby="impact-metrics">
         <div className="container-site">
-          <div className="mb-10 flex items-center gap-3">
+          <div className="mb-8 flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
               <BarChart3 size={22} aria-hidden="true" />
             </div>
@@ -44,11 +44,11 @@ export default function ImpactPage() {
             </div>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {IMPACT_STATS.map((stat) => (
               <article
                 key={stat.id}
-                className="rounded-2xl bg-neutral-50 p-6 ring-1 ring-neutral-200"
+                className="rounded-[1.6rem] bg-neutral-50 p-5 ring-1 ring-neutral-200"
               >
                 <Activity size={20} className="text-primary-500" aria-hidden="true" />
                 <p className="mt-4 font-display text-4xl font-extrabold text-neutral-900">
@@ -65,7 +65,7 @@ export default function ImpactPage() {
             ))}
           </div>
 
-          <div className="mt-10 rounded-2xl bg-primary-50 p-6 ring-1 ring-primary-100">
+          <div className="mt-8 rounded-2xl bg-primary-50 p-5 ring-1 ring-primary-100">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="mt-0.5 shrink-0 text-primary-600" size={20} aria-hidden="true" />
               <p className="text-sm leading-relaxed text-neutral-700">

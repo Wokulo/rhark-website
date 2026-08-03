@@ -47,9 +47,9 @@ const toneBg: Record<SectionTone, string> = {
 
 const paddingMap = {
   none: "",
-  sm: "py-10 md:py-14 lg:py-16",
-  md: "py-16 md:py-20 lg:py-24",
-  lg: "py-20 md:py-28 lg:py-32",
+  sm: "py-8 md:py-10 lg:py-12",
+  md: "py-12 md:py-16 lg:py-20",
+  lg: "py-16 md:py-20 lg:py-24",
 };
 
 export function Section({
@@ -89,7 +89,7 @@ const colsMap = {
   4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
 };
 
-const gapMap = { sm: "gap-4", md: "gap-6", lg: "gap-8 lg:gap-10" };
+const gapMap = { sm: "gap-3", md: "gap-4 md:gap-5", lg: "gap-6 lg:gap-8" };
 
 export function Grid({ children, cols = 3, gap = "md", className }: GridProps) {
   return (
@@ -108,7 +108,7 @@ interface StackProps {
   as?: React.ElementType;
 }
 
-const stackGap = { xs: "space-y-2", sm: "space-y-4", md: "space-y-6", lg: "space-y-10" };
+const stackGap = { xs: "space-y-2", sm: "space-y-3", md: "space-y-5", lg: "space-y-8" };
 
 export function Stack({ children, gap = "md", className, as: Tag = "div" }: StackProps) {
   return <Tag className={cn(stackGap[gap], className)}>{children}</Tag>;
@@ -128,7 +128,7 @@ export function PageHeader({ eyebrow, title, description, breadcrumb, className 
   return (
     <section
       className={cn(
-        "bg-gradient-to-br from-primary-600 to-primary-800 py-24 lg:py-32",
+        "bg-gradient-to-br from-primary-600 to-primary-800 py-20 lg:py-24",
         className
       )}
       aria-labelledby="page-header-title"
@@ -147,14 +147,14 @@ export function PageHeader({ eyebrow, title, description, breadcrumb, className 
             {title}
           </h1>
           {description && (
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-primary-200">
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-primary-200">
               {description}
             </p>
           )}
           {breadcrumb && breadcrumb.length > 0 && (
             <nav
               aria-label="Breadcrumb"
-              className="mt-6 flex items-center justify-center gap-2 text-sm text-primary-300"
+              className="mt-5 flex items-center justify-center gap-2 text-sm text-primary-300"
             >
               {breadcrumb.map((crumb, i) => (
                 <span key={i} className="flex items-center gap-2">

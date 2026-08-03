@@ -75,8 +75,7 @@ export default function AdminNewsPage() {
 
   const handleToggleStatus = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === "published" ? "draft" : "published";
-    const { error: updateError } = await supabase
-      .from("news")
+    const { error: updateError } = await (supabase.from("news") as any)
       .update({ status: newStatus })
       .eq("id", id);
 

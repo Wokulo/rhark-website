@@ -24,7 +24,7 @@ const CATEGORIES = ["All", "News", "Press Release", "Blog", "Success Story", "An
 export default function NewsPage() {
   return (
     <div className="bg-white">
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-24 lg:py-32" aria-labelledby="news-hero-heading">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 py-20 lg:py-24" aria-labelledby="news-hero-heading">
         <div className="container-site text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-primary-200">Media Centre</p>
           <h1 id="news-hero-heading" className="mt-3 font-display text-4xl font-extrabold text-white text-balance lg:text-5xl">
@@ -41,10 +41,10 @@ export default function NewsPage() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-28" aria-labelledby="news-list-heading">
+      <section className="py-16 lg:py-20" aria-labelledby="news-list-heading">
         <div className="container-site">
           {/* Category filter — static for now */}
-          <div className="mb-10 flex flex-wrap gap-2" role="list" aria-label="Filter by category">
+          <div className="mb-8 flex flex-wrap gap-2" role="list" aria-label="Filter by category">
             {CATEGORIES.map((cat, i) => (
               <span
                 key={cat}
@@ -57,18 +57,18 @@ export default function NewsPage() {
           </div>
 
           <h2 id="news-list-heading" className="sr-only">All Articles</h2>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {ARTICLES.map((article) => (
               <article
                 key={article.title}
-                className="group flex flex-col rounded-2xl bg-neutral-50 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300"
+                className="group flex flex-col rounded-[1.6rem] bg-neutral-50 ring-1 ring-neutral-200 transition-all duration-250 hover:shadow-lg hover:ring-neutral-300"
               >
-                <div className="relative h-48 overflow-hidden rounded-t-2xl bg-gradient-to-br from-primary-100 to-primary-200">
+                <div className="relative h-44 overflow-hidden rounded-t-[1.6rem] bg-gradient-to-br from-primary-100 to-primary-200">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Tag size={40} className="text-primary-300" aria-hidden="true" />
                   </div>
                 </div>
-                <div className="flex flex-1 flex-col p-6">
+                <div className="flex flex-1 flex-col p-5">
                   <div className="flex items-center justify-between">
                     <span className={`rounded-full px-3 py-1 text-xs font-bold ${article.tagColor}`}>
                       {article.category}
@@ -83,7 +83,7 @@ export default function NewsPage() {
                   <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-500 line-clamp-3">
                     {article.excerpt}
                   </p>
-                  <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-4">
+                <div className="mt-3 flex items-center justify-between border-t border-neutral-100 pt-3">
                     <time className="text-xs text-neutral-400">{article.date}</time>
                     <Link
                       href={ROUTES.news}
