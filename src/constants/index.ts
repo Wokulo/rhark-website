@@ -87,6 +87,7 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: "Contact", href: "/contact" },
+  { label: "Admin", href: "/admin" },
 ];
 
 // ─── Impact Statistics (placeholder — replace with real data) ─────────────────
@@ -137,4 +138,7 @@ export const ROUTES = {
   internship: "/get-involved/internship",
   donate: "/get-involved/donate",
   contact: "/contact",
+  admin: "/admin",
+  adminLogin: "/admin/auth/login",
+  adminDashboard: "/admin/dashboard",
 } as const;
