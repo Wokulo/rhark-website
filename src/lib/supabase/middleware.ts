@@ -66,3 +66,39 @@ export async function updateSession(request: NextRequest) {
 
   return supabaseResponse;
 }
+
+/**
+ * Role-based route protection helper.
+ * Checks if the authenticated user has one of the required roles.
+ * Intended for use in route handlers and middleware extensions.
+ */
+export async function getUserRole(
+  request: NextRequest
+): Promise<string | null> {
+  const cookieValue = request.cookies.get("rhark_admin_session")?.value;
+  if (!cookieValue) return null;
+
+  try {
+    const [encoded] = cookieValue.split(".");
+    if (!encoded) return null;
+    const decoded = atob(encoded);
+    const [, role] = decoded.split(":");
+    return role ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function requireRole(
+  request: NextRequest,
+  allowedRoles: string[]
+): Promise<{ authorized: boolean; role?: string }> {
+  const userRole = await getUserRole(request);
+  if (!userRole) {
+    return { authorized: false };
+  }
+  if (!allowedRoles.includes(userRole)) {
+    return { authorized: false, role: userRole };
+  }
+  return { authorized: true, role: userRole };
+}

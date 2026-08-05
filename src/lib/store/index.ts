@@ -54,7 +54,7 @@ class Store {
       id: adminId,
       email: "rharkenya@gmail.com",
       name: "RHARK Admin",
-      role: "superadmin",
+      role: "super-administrator",
       createdAt: new Date().toISOString(),
     });
   }

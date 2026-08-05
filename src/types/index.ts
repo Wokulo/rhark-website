@@ -331,7 +331,16 @@ export interface AdminUser {
   id: string;
   email: string;
   name: string;
-  role: "admin" | "superadmin";
+  role:
+    | "super-administrator"
+    | "executive-director"
+    | "programs-manager"
+    | "communications-officer"
+    | "finance-officer"
+    | "hr-administration"
+    | "monitoring-evaluation-officer"
+    | "volunteer-coordinator"
+    | "editor";
   createdAt: string;
 }
 

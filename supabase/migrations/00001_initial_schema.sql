@@ -290,11 +290,14 @@ CREATE INDEX idx_media_library_folder ON media_library(folder);
 
 -- ─── Seed Default Roles ────────────────────────────────────────────────────────
 INSERT INTO roles (name, slug, description, is_system) VALUES
-  ('Super Admin', 'super-admin', 'Full system access', true),
+  ('Super Administrator', 'super-administrator', 'Full system access', true),
   ('Executive Director', 'executive-director', 'Strategic oversight and management', true),
+  ('Programs Manager', 'programs-manager', 'Programme planning and implementation oversight', true),
   ('Communications Officer', 'communications-officer', 'Manage news, gallery, and public content', true),
   ('Finance Officer', 'finance-officer', 'Manage donations and financial reports', true),
-  ('Volunteer Manager', 'volunteer-manager', 'Manage volunteer applications', true),
+  ('HR & Administration', 'hr-administration', 'Human resources and office administration', true),
+  ('Monitoring & Evaluation Officer', 'monitoring-evaluation-officer', 'Track programme performance and impact', true),
+  ('Volunteer Coordinator', 'volunteer-coordinator', 'Manage volunteer recruitment and coordination', true),
   ('Editor', 'editor', 'Create and edit content', true);
 
 -- ─── Seed Default Permissions ──────────────────────────────────────────────────

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/utils";
 import {
   LayoutDashboard,
@@ -29,6 +28,7 @@ import {
 } from "lucide-react";
 import type { RoleSlug } from "@/lib/rbac";
 import { canAccessModule, RESOURCES } from "@/lib/rbac";
+import { useAuth } from "@/context";
 
 // ─── Navigation Configuration ──────────────────────────────────────────────────
 
@@ -90,7 +90,7 @@ interface AdminLayoutProps {
 export function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const supabase = createClient();
+  const { session, loading: authLoading, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [user, setUser] = useState<{
@@ -103,37 +103,25 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadUser() {
-      const {
-        data: { user: authUser },
-      } = await supabase.auth.getUser();
-      if (!authUser) {
-        router.push("/admin/auth/login");
-        return;
-      }
-      const { data: profile } = await supabase
-        .from("users")
-        .select("*, roles(*)")
-        .eq("id", authUser.id)
-        .single() as unknown as {
-        data: {
-          name: string;
-          avatar_url: string | null;
-          roles: { name: string; slug: string } | null;
-        } | null;
-      };
+    if (authLoading) return;
 
-      setUser({
-        name: profile?.name || authUser.email || "User",
-        email: authUser.email || "",
-        avatar: profile?.avatar_url || undefined,
-        role: profile?.roles?.name || undefined,
-        roleSlug: profile?.roles?.slug || undefined,
-      });
+    if (!session) {
+      router.push("/admin/auth/login");
       setLoading(false);
+      return;
     }
-    loadUser();
-  }, [supabase, router]);
+
+    const roleSlug = session.role;
+
+    setUser({
+      name: session.name,
+      email: session.email,
+      avatar: session.avatar,
+      role: session.roleLabel,
+      roleSlug: roleSlug,
+    });
+    setLoading(false);
+  }, [session, authLoading, router]);
 
   // Close sidebar on route change
   useEffect(() => {
@@ -141,7 +129,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   }, [pathname]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await signOut();
     router.push("/admin/auth/login");
     router.refresh();
   };
