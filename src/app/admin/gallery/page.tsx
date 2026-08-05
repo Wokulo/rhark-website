@@ -1,32 +1,52 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { Images, Plus, Trash2, Search } from "lucide-react";
+import { uploadFeaturedImage } from "@/lib/upload";
+import {
+  Images,
+  Plus,
+  Trash2,
+  Search,
+  Star,
+  GripVertical,
+  Upload,
+  Loader2,
+  AlertCircle,
+  Film,
+  ImageIcon,
+} from "lucide-react";
 import { formatDate } from "@/lib/admin-utils";
 
 export default function AdminGalleryPage() {
   const supabase = createClient();
+
   const [images, setImages] = useState<any[]>([]);
   const [albums, setAlbums] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [albumFilter, setAlbumFilter] = useState("all");
+  const [showUpload, setShowUpload] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadForm, setUploadForm] = useState({
+    title: "",
+    description: "",
+    category: "general",
+    file: null as File | null,
+    videoUrl: "",
+    mediaType: "image" as "image" | "video",
+  });
+  const [draggedId, setDraggedId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchImages();
-    fetchAlbums();
-  }, [albumFilter, search, supabase]);
-
-  async function fetchImages() {
+  const fetchImages = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
       let query = (supabase.from("gallery") as any)
         .select("*, album:albums(title)")
-        .order("created_at", { ascending: false });
+        .order("sort_order", { ascending: true });
 
       if (albumFilter !== "all") {
         query = query.eq("album_id", albumFilter);
@@ -45,15 +65,20 @@ export default function AdminGalleryPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [supabase, albumFilter, search]);
 
-  async function fetchAlbums() {
+  const fetchAlbums = useCallback(async () => {
     const { data, error: fetchError } = await (supabase.from("albums") as any)
       .select("*")
       .order("created_at", { ascending: false });
 
     if (!fetchError) setAlbums((data || []) as any[]);
-  }
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchImages();
+    fetchAlbums();
+  }, [fetchImages, fetchAlbums]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this image?")) return;
@@ -86,33 +111,246 @@ export default function AdminGalleryPage() {
     fetchImages();
   };
 
+  const handleToggleFeatured = async (id: string) => {
+    const item = images.find((i) => i.id === id);
+    if (!item) return;
+
+    const { error } = await (supabase.from("gallery") as any)
+      .update({ featured: !item.featured })
+      .eq("id", id);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    fetchImages();
+  };
+
+  const handleUpload = async () => {
+    if (!uploadForm.title) {
+      setError("Title is required");
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+
+    try {
+      let imageUrl = uploadForm.videoUrl || "";
+
+      if (uploadForm.file && uploadForm.mediaType === "image") {
+        imageUrl = await uploadFeaturedImage(uploadForm.file);
+      }
+
+      const { error: insertError } = await (supabase.from("gallery") as any)
+        .insert({
+          album_id: uploadForm.category === "general" ? null : uploadForm.category,
+          image_url: imageUrl,
+          caption: uploadForm.description || null,
+          alt_text: uploadForm.title,
+          media_type: uploadForm.mediaType,
+          video_url: uploadForm.mediaType === "video" ? uploadForm.videoUrl : null,
+          featured: false,
+          sort_order: images.length,
+        });
+
+      if (insertError) throw insertError;
+
+      setShowUpload(false);
+      setUploadForm({
+        title: "",
+        description: "",
+        category: "general",
+        file: null,
+        videoUrl: "",
+        mediaType: "image",
+      });
+      fetchImages();
+    } catch (err: any) {
+      setError(err.message || "Failed to upload");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDragStart = (id: string) => {
+    setDraggedId(id);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = async (targetId: string) => {
+    if (!draggedId || draggedId === targetId) return;
+
+    const draggedIndex = images.findIndex((i) => i.id === draggedId);
+    const targetIndex = images.findIndex((i) => i.id === targetId);
+
+    if (draggedIndex === -1 || targetIndex === -1) return;
+
+    const newImages = [...images];
+    const [draggedItem] = newImages.splice(draggedIndex, 1);
+    newImages.splice(targetIndex, 0, draggedItem);
+
+    setImages(newImages);
+    setDraggedId(null);
+
+    // Update sort_order for all items
+    const updates = newImages.map((item, index) => ({
+      id: item.id,
+      sortOrder: index,
+    }));
+
+    await Promise.all(
+      updates.map((u) =>
+        (supabase.from("gallery") as any).update({ sort_order: u.sortOrder }).eq("id", u.id)
+      )
+    );
+  };
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold text-neutral-900">Photo Gallery</h1>
+          <h1 className="font-display text-2xl font-bold text-neutral-900">
+            Photo Gallery
+          </h1>
           <p className="mt-1 text-sm text-neutral-500">
             Manage gallery images and albums. {images.length} images across {albums.length} albums.
           </p>
         </div>
-        <Link
-          href="/admin/media"
-          className="flex items-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
-        >
-          <Plus size={16} />
-          Upload New
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowUpload(!showUpload)}
+            className="flex items-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
+          >
+            <Plus size={16} />
+            {showUpload ? "Cancel" : "Upload New"}
+          </button>
+          <Link
+            href="/admin/media"
+            className="flex items-center gap-2 rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-50"
+          >
+            <Upload size={16} />
+            Media Library
+          </Link>
+        </div>
       </div>
 
       {error && (
         <div className="mb-6 flex items-start gap-3 rounded-xl bg-error-50 p-4 text-sm text-error-700">
-          <svg className="mt-0.5 h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path fillRule="evenodd" d="M11.99 2C6.47 2 2 6.48 2 12.01c0 .62.43 1.15.99 1.28L4 15v5c0 .55.45 1 1 1h6.5c.28 0 .5-.22.5-.5v-1h2v1c0 .28.22.5.5.5H19c.55 0 1-.45 1-1v-5l.01-.01c.55-.13.99-.66.99-1.28C22 6.48 17.52 2 11.99 2zm1 14h-2v-2h2v2zm0-3.5h-2V7h2v5.5z" />
-          </svg>
+          <AlertCircle size={18} className="mt-0.5 shrink-0" />
           <p>{error}</p>
         </div>
       )}
 
+      {/* Upload Form */}
+      {showUpload && (
+        <div className="mb-6 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 font-semibold text-neutral-900">Upload New Item</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-neutral-700">Media Type</label>
+              <select
+                value={uploadForm.mediaType}
+                onChange={(e) =>
+                  setUploadForm((f) => ({
+                    ...f,
+                    mediaType: e.target.value as "image" | "video",
+                  }))
+                }
+                className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-700 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              >
+                <option value="image">Image</option>
+                <option value="video">Video</option>
+              </select>
+            </div>
+            {uploadForm.mediaType === "image" ? (
+              <div>
+                <label className="block text-sm font-medium text-neutral-700">Image File</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    setUploadForm((f) => ({ ...f, file: e.target.files?.[0] || null }))
+                  }
+                  className="mt-1.5 block w-full text-sm text-neutral-700"
+                />
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium text-neutral-700">Video URL</label>
+                <input
+                  type="url"
+                  value={uploadForm.videoUrl}
+                  onChange={(e) =>
+                    setUploadForm((f) => ({ ...f, videoUrl: e.target.value }))
+                  }
+                  placeholder="https://youtube.com/..."
+                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                />
+              </div>
+            )}
+            <div>
+              <label className="block text-sm font-medium text-neutral-700">Title</label>
+              <input
+                type="text"
+                value={uploadForm.title}
+                onChange={(e) =>
+                  setUploadForm((f) => ({ ...f, title: e.target.value }))
+                }
+                placeholder="Image title"
+                className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-neutral-700">Caption</label>
+              <textarea
+                value={uploadForm.description}
+                onChange={(e) =>
+                  setUploadForm((f) => ({ ...f, description: e.target.value }))
+                }
+                rows={3}
+                placeholder="Add a caption..."
+                className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-neutral-700">Album</label>
+              <select
+                value={uploadForm.category}
+                onChange={(e) =>
+                  setUploadForm((f) => ({ ...f, category: e.target.value }))
+                }
+                className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-700 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              >
+                <option value="general">No Album</option>
+                {albums.map((album) => (
+                  <option key={album.id} value={album.id}>
+                    {album.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              onClick={handleUpload}
+              disabled={uploading || !uploadForm.title}
+              className="flex items-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-600 disabled:opacity-50"
+            >
+              {uploading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Upload size={16} />
+              )}
+              Upload
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Filters */}
       <div className="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="relative">
@@ -140,6 +378,7 @@ export default function AdminGalleryPage() {
         </div>
       </div>
 
+      {/* Albums */}
       {albums.length > 0 && (
         <div className="mb-8">
           <h2 className="mb-4 text-sm font-semibold text-neutral-700">Albums</h2>
@@ -168,6 +407,7 @@ export default function AdminGalleryPage() {
         </div>
       )}
 
+      {/* Gallery Grid */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent" />
@@ -177,18 +417,26 @@ export default function AdminGalleryPage() {
           <Images size={40} className="text-neutral-300" />
           <p className="mt-4 text-lg font-medium text-neutral-500">No gallery images found</p>
           <p className="mt-1 text-sm text-neutral-400">
-            Upload images via the Media Library to get started.
+            Upload images to get started.
           </p>
         </div>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {images.map((img) => (
+          {images.map((img, index) => (
             <div
               key={img.id}
+              draggable
+              onDragStart={() => handleDragStart(img.id)}
+              onDragOver={handleDragOver}
+              onDrop={() => handleDrop(img.id)}
               className="group rounded-2xl border border-neutral-200 bg-white shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="aspect-video w-full overflow-hidden rounded-t-2xl">
-                {img.image_url ? (
+              <div className="relative aspect-video w-full overflow-hidden rounded-t-2xl">
+                {img.media_type === "video" ? (
+                  <div className="flex h-full w-full items-center justify-center bg-neutral-900">
+                    <Film size={32} className="text-neutral-400" />
+                  </div>
+                ) : img.image_url ? (
                   <img
                     src={img.image_url}
                     alt={img.alt_text || img.caption || ""}
@@ -199,9 +447,22 @@ export default function AdminGalleryPage() {
                     <Images size={32} className="text-neutral-400" />
                   </div>
                 )}
+                {img.featured && (
+                  <span className="absolute left-2 top-2 rounded-full bg-warning-400 px-2 py-0.5 text-xs font-bold text-neutral-900">
+                    Featured
+                  </span>
+                )}
+                <div className="absolute bottom-2 right-2 flex items-center gap-1">
+                  <span className="rounded-full bg-black/50 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                    {img.media_type === "video" ? "Video" : "Image"}
+                  </span>
+                </div>
               </div>
               <div className="p-4">
-                <p className="font-medium text-neutral-800">{img.caption || img.alt_text || "Untitled"}</p>
+                <div className="flex items-center gap-2">
+                  <GripVertical size={14} className="text-neutral-300" />
+                  <p className="font-medium text-neutral-800">{img.caption || img.alt_text || "Untitled"}</p>
+                </div>
                 {img.album && (
                   <p className="text-xs text-neutral-500">{img.album.title}</p>
                 )}
@@ -210,8 +471,21 @@ export default function AdminGalleryPage() {
                 </p>
                 <div className="mt-3 flex items-center gap-2">
                   <button
+                    onClick={() => handleToggleFeatured(img.id)}
+                    className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border p-1.5 text-xs ${
+                      img.featured
+                        ? "border-warning-300 bg-warning-50 text-warning-700"
+                        : "border-neutral-200 text-neutral-600 hover:bg-warning-50 hover:text-warning-600"
+                    }`}
+                    aria-label={img.featured ? "Unfeature image" : "Feature image"}
+                    title={img.featured ? "Remove from featured" : "Mark as featured"}
+                  >
+                    <Star size={14} /> {img.featured ? "Featured" : "Feature"}
+                  </button>
+                  <button
                     onClick={() => handleDelete(img.id)}
                     className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-neutral-200 p-1.5 text-xs text-neutral-600 hover:bg-error-50 hover:text-error-600"
+                    aria-label="Delete image"
                   >
                     <Trash2 size={14} /> Delete
                   </button>

@@ -194,7 +194,11 @@ export interface Database {
           caption: string | null;
           alt_text: string | null;
           sort_order: number;
+          featured: boolean;
+          media_type: string;
+          video_url: string | null;
           created_at: string;
+          updated_at: string;
         };
         Insert: {
           id?: string;
@@ -203,7 +207,11 @@ export interface Database {
           caption?: string | null;
           alt_text?: string | null;
           sort_order?: number;
+          featured?: boolean;
+          media_type?: string;
+          video_url?: string | null;
           created_at?: string;
+          updated_at?: string;
         };
         Update: {
           id?: string;
@@ -212,7 +220,11 @@ export interface Database {
           caption?: string | null;
           alt_text?: string | null;
           sort_order?: number;
+          featured?: boolean;
+          media_type?: string;
+          video_url?: string | null;
           created_at?: string;
+          updated_at?: string;
         };
         Relationships: [
           {

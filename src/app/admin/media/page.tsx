@@ -2,42 +2,46 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { uploadFeaturedImage } from "@/lib/upload";
 import {
   Upload,
   Trash2,
   Image as ImageIcon,
   Loader2,
+  Star,
+  Film,
 } from "lucide-react";
 
 export default function AdminMediaPage() {
   const supabase = createClient();
 
-  const [images, setImages] = useState<any[]>([]);
+  const [items, setItems] = useState<any[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("general");
+  const [mediaType, setMediaType] = useState("image");
+  const [videoUrl, setVideoUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  async function fetchImages() {
+  async function fetchItems() {
     const { data, error } = await supabase
-      .from("media_library")
+      .from("gallery")
       .select("*")
       .order("created_at", { ascending: false });
 
     if (!error) {
-      setImages(data || []);
+      setItems(data || []);
     }
   }
 
   useEffect(() => {
-    fetchImages();
+    fetchItems();
   }, []);
 
-  async function uploadImage() {
-    if (!file || !title) {
-      setMessage("Title and image are required");
+  async function uploadItem() {
+    if (!title) {
+      setMessage("Title is required");
       return;
     }
 
@@ -45,93 +49,76 @@ export default function AdminMediaPage() {
     setMessage("");
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      let url = "";
 
-      if (!user) {
-        throw new Error("Not authenticated");
+      if (mediaType === "image" && file) {
+        url = await uploadFeaturedImage(file);
+      } else if (mediaType === "video") {
+        url = videoUrl;
       }
 
-      const fileName = `rhark-media/${Date.now()}-${file.name}`;
-
-      // Upload to Storage
-      const { error: uploadError } = await supabase.storage
-        .from("Gallery")
-        .upload(fileName, file);
-
-      if (uploadError) throw uploadError;
-
-
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage
-        .from("Gallery")
-        .getPublicUrl(fileName);
-
-
-      // Save database record
       const { error: insertError } = await supabase
-        .from("media_library")
+        .from("gallery")
         .insert({
-          name: title,
-          url: publicUrl,
-          type: file.type,
-          size: file.size,
-          folder: category,
-          alt_text: description,
+          image_url: url,
+          caption: description || null,
+          alt_text: title,
+          media_type: mediaType,
+          video_url: mediaType === "video" ? videoUrl : null,
+          featured: false,
+          sort_order: items.length,
         } as any);
-
 
       if (insertError) throw insertError;
 
-
-      setMessage("Image uploaded successfully");
-
+      setMessage("Item uploaded successfully");
       setTitle("");
       setDescription("");
       setFile(null);
+      setVideoUrl("");
+      setMediaType("image");
 
-      fetchImages();
-
-    } catch (error:any) {
+      fetchItems();
+    } catch (error: any) {
       setMessage(error.message);
     } finally {
       setLoading(false);
     }
   }
 
+  async function deleteItem(id: string, imageUrl: string) {
+    const fileName = imageUrl.split("/").pop() || "";
 
-  async function deleteImage(id:string, url:string) {
+    await supabase.storage.from("featured-images").remove([fileName]);
 
-   await supabase.storage
-     .from("Gallery")
-     .remove([url.split("/").pop() || ""]);
+    const { error } = await supabase
+      .from("gallery")
+      .delete()
+      .eq("id", id);
 
-   const { error } = await supabase
-     .from("media_library")
-     .delete()
-     .eq("id", id);
-
-  if(!error){
-    fetchImages();
+    if (!error) {
+      fetchItems();
+    }
   }
-}
+
+  async function toggleFeatured(id: string, currentFeatured: boolean) {
+    const { error } = await (supabase.from("gallery") as any)
+      .update({ featured: !currentFeatured })
+      .eq("id", id);
+
+    if (!error) {
+      fetchItems();
+    }
+  }
 
   return (
     <div>
-
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">
-          Media Gallery
-        </h1>
-
+        <h1 className="text-2xl font-bold">Media Library</h1>
         <p className="text-sm text-neutral-500">
-          Upload and manage RHARK images
+          Upload and manage gallery images and videos
         </p>
       </div>
-
 
       {message && (
         <div className="mb-5 rounded-lg bg-neutral-100 p-4">
@@ -139,126 +126,139 @@ export default function AdminMediaPage() {
         </div>
       )}
 
-
       <div className="rounded-xl border bg-white p-6 mb-8">
+        <h2 className="font-semibold mb-4">Upload New Item</h2>
 
-        <h2 className="font-semibold mb-4">
-          Upload New Image
-        </h2>
-
-
-        <input
-          type="text"
-          placeholder="Image title"
-          value={title}
-          onChange={(e)=>setTitle(e.target.value)}
-          className="border rounded-lg p-2 w-full mb-3"
-        />
-
-
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e)=>setDescription(e.target.value)}
-          className="border rounded-lg p-2 w-full mb-3"
-        />
-
-
-        <select
-          value={category}
-          onChange={(e)=>setCategory(e.target.value)}
-          className="border rounded-lg p-2 w-full mb-3"
-        >
-          <option value="general">
-            General
-          </option>
-
-          <option value="events">
-            Events
-          </option>
-
-          <option value="projects">
-            Projects
-          </option>
-
-          <option value="campaigns">
-            Campaigns
-          </option>
-        </select>
-
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e)=>setFile(e.target.files?.[0] || null)}
-          className="mb-4"
-        />
-
-
-        <button
-          onClick={uploadImage}
-          disabled={loading}
-          className="flex items-center gap-2 bg-primary-500 text-white px-5 py-2 rounded-lg"
-        >
-
-          {
-            loading ?
-            <Loader2 className="animate-spin" size={18}/>
-            :
-            <Upload size={18}/>
-          }
-
-          Upload Image
-
-        </button>
-
-      </div>
-
-
-
-      <div className="grid md:grid-cols-3 gap-5">
-
-        {images.map((img)=>(
-
-          <div
-            key={img.id}
-            className="border rounded-xl overflow-hidden bg-white"
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-neutral-700">
+            Media Type
+          </label>
+          <select
+            value={mediaType}
+            onChange={(e) => setMediaType(e.target.value)}
+            className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-700 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
           >
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+          </select>
+        </div>
 
-           <img
-               src={img.url}
-               className="w-full h-48 object-cover"
-             />
-
-            <div className="p-4">
-              <h3 className="font-semibold">{img.name}</h3>
-              <p className="text-sm text-neutral-500">{img.alt_text}</p>
-              <button
-               onClick={()=>deleteImage(img.id, img.url)}
-                className="mt-3 flex items-center gap-2 text-red-600"
-              >
-
-                <Trash2 size={16}/>
-                Delete
-
-              </button>
-
-            </div>
-
+        {mediaType === "image" ? (
+          <div>
+            <label className="block text-sm font-medium text-neutral-700">
+              Image File
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="mt-1.5 block w-full text-sm text-neutral-700"
+            />
           </div>
-
-        ))}
-
-
-        {images.length===0 && (
-          <div className="text-neutral-400">
-            <ImageIcon/>
-            No images uploaded
+        ) : (
+          <div>
+            <label className="block text-sm font-medium text-neutral-700">
+              Video URL
+            </label>
+            <input
+              type="url"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              placeholder="https://youtube.com/..."
+              className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+            />
           </div>
         )}
 
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="mt-4 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+        />
+
+        <textarea
+          placeholder="Description / Caption"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={3}
+          className="mt-3 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+        />
+
+        <button
+          onClick={uploadItem}
+          disabled={loading || !title}
+          className="mt-4 flex items-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-600 disabled:opacity-50"
+        >
+          {loading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Upload size={16} />
+          )}
+          Upload {mediaType === "image" ? "Image" : "Video"}
+        </button>
       </div>
 
+      <div className="grid md:grid-cols-3 gap-5">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className="border rounded-xl overflow-hidden bg-white"
+          >
+            {item.media_type === "video" ? (
+              <div className="h-48 flex items-center justify-center bg-neutral-900">
+                <Film size={32} className="text-neutral-400" />
+              </div>
+            ) : item.image_url ? (
+              <img
+                src={item.image_url}
+                className="w-full h-48 object-cover"
+                alt={item.alt_text || item.caption || ""}
+              />
+            ) : (
+              <div className="h-48 flex items-center justify-center bg-neutral-100">
+                <ImageIcon size={32} className="text-neutral-400" />
+              </div>
+            )}
+
+            <div className="p-4">
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold">{item.alt_text || item.caption || "Untitled"}</h3>
+                {item.featured && (
+                  <Star size={12} className="text-warning-500 fill-warning-500" />
+                )}
+              </div>
+              <p className="text-sm text-neutral-500">{item.caption}</p>
+              <span className="mt-1 inline-block text-xs text-neutral-400">
+                {item.media_type === "video" ? "Video" : "Image"}
+              </span>
+              <div className="mt-3 flex items-center gap-3">
+                <button
+                  onClick={() => toggleFeatured(item.id, item.featured)}
+                  className="text-sm text-neutral-600 hover:text-warning-600"
+                >
+                  {item.featured ? "Unfeature" : "Feature"}
+                </button>
+                <button
+                  onClick={() => deleteItem(item.id, item.image_url)}
+                  className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700"
+                >
+                  <Trash2 size={14} />
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {items.length === 0 && (
+          <div className="text-neutral-400 col-span-3">
+            <ImageIcon size={32} />
+            <p className="mt-2">No media uploaded</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

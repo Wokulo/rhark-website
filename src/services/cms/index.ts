@@ -32,6 +32,7 @@ import {
 import { getHomepageContent } from "@/services/homepage";
 import { getNewsArticles, getNewsArticleBySlug, createNewsArticle, updateNewsArticle, deleteNewsArticle, toggleNewsStatus } from "@/services/news";
 import { getEvents, getUpcomingEvents, getPastEvents, createEvent, updateEvent, deleteEvent, archiveEvent, completeEvent } from "@/services/events";
+import { getGalleryItems, getGalleryItemById, getFeaturedGalleryItems, getGalleryItemsByAlbum, createGalleryItem, updateGalleryItem, deleteGalleryItem, toggleGalleryFeatured, reorderGalleryItems } from "@/services/gallery";
 
 export async function getProgrammes(): Promise<Programme[]> {
   // Future: return await sanityClient.fetch(PROGRAMMES_QUERY);
@@ -96,3 +97,6 @@ export { getNewsArticles as getNewsFromCMS, getNewsArticleBySlug as getNewsArtic
 // ─── Events CMS ──────────────────────────────────────────────────────────────
 
 export { getEvents as getEventsFromCMS, getUpcomingEvents, getPastEvents, createEvent, updateEvent, deleteEvent, archiveEvent, completeEvent };
+// ─── Gallery CMS ──────────────────────────────────────────────────
+
+export { getGalleryItems, getGalleryItemById, getFeaturedGalleryItems, getGalleryItemsByAlbum, createGalleryItem, updateGalleryItem, deleteGalleryItem, toggleGalleryFeatured, reorderGalleryItems };
