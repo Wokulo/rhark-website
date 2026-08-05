@@ -14,7 +14,7 @@ const fadeUp = {
 };
 
 // Official partner logos live in public/images/partners/.
-const PARTNERS = [
+const DEFAULT_PARTNERS = [
   {
     name: "Siaya County Government",
     logo: "/images/partners/siaya-county-government-logo.webp",
@@ -29,9 +29,12 @@ const PARTNERS = [
   },
 ];
 
-export function PartnersSection() {
+export function PartnersSection({ content }: { content?: { heading: string; partners: Array<{ name: string; logo: string }> } }) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+
+  const partners = content?.partners ?? DEFAULT_PARTNERS;
+  const heading = content?.heading ?? "Working together for greater impact";
 
   return (
     <section
@@ -54,7 +57,7 @@ export function PartnersSection() {
             id="partners-heading"
             className="mt-2 font-display text-2xl font-bold text-neutral-700"
           >
-            Working together for greater impact
+            {heading}
           </h2>
         </motion.div>
 
@@ -66,7 +69,7 @@ export function PartnersSection() {
           role="list"
           className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-6 lg:grid-cols-3"
         >
-          {PARTNERS.map((partner, i) => (
+          {partners.map((partner, i) => (
             <motion.li
               key={partner.name}
               variants={fadeUp}

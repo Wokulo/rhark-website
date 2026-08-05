@@ -34,13 +34,19 @@ const STAT_PRESENTATION = [
   { icon: Handshake, color: "text-success-500", bg: "bg-success-50" },
 ];
 
-const STATS = IMPACT_STATS.map((stat, index) => ({
-  ...stat,
-  valueText: `${stat.value.toLocaleString()}${stat.suffix ?? ""}`,
-  ...STAT_PRESENTATION[index % STAT_PRESENTATION.length],
-}));
+interface ImpactStatsSectionProps {
+  content?: Array<{ value: number; suffix?: string; label: string; description: string; icon: string }>;
+}
 
-export function ImpactStatsSection() {
+export function ImpactStatsSection({ content }: ImpactStatsSectionProps) {
+  const stats = content ?? IMPACT_STATS;
+
+  const STATS = stats.map((stat, index) => ({
+    ...stat,
+    id: stat.label,
+    valueText: `${stat.value.toLocaleString()}${stat.suffix ?? ""}`,
+    ...STAT_PRESENTATION[index % STAT_PRESENTATION.length],
+  }));
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 

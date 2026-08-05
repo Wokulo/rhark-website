@@ -29,6 +29,7 @@ import {
   publicationsData,
   successStoriesData,
 } from "@/data/content";
+import { getHomepageContent } from "@/services/homepage";
 
 export async function getProgrammes(): Promise<Programme[]> {
   // Future: return await sanityClient.fetch(PROGRAMMES_QUERY);
@@ -80,4 +81,8 @@ export async function getSuccessStoryBySlug(slug: string): Promise<SuccessStory 
 
 export async function getDownloads(limit?: number): Promise<DownloadAsset[]> {
   return limit ? downloadsData.slice(0, limit) : downloadsData;
+}
+
+export async function getHomepage(): Promise<Awaited<ReturnType<typeof getHomepageContent>>> {
+  return getHomepageContent();
 }

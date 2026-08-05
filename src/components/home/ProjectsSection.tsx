@@ -16,7 +16,7 @@ const fadeUp = {
   }),
 };
 
-const PROJECTS = [
+const DEFAULT_PROJECTS = [
   {
     title: "Ujana Salama",
     summary: "Safe youth spaces providing SRHR education and counselling for adolescents in Bondo Sub-County.",
@@ -55,7 +55,27 @@ const PROJECTS = [
   },
 ];
 
-export function ProjectsSection() {
+interface ProjectsSectionProps {
+  content?: {
+    heading: string;
+    projects: Array<{
+      title: string;
+      summary: string;
+      location: string;
+      beneficiaries: string;
+      status: string;
+      tag: string;
+      tagColor: string;
+      image: string;
+      alt: string;
+      href: string;
+    }>;
+  };
+}
+
+export function ProjectsSection({ content }: ProjectsSectionProps) {
+  const projects = content?.projects ?? DEFAULT_PROJECTS;
+  const heading = content?.heading ?? "Programmes in action";
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -66,7 +86,7 @@ export function ProjectsSection() {
           <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0}>
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary-500">Featured Projects</p>
             <h2 id="projects-heading" className="mt-3 font-display text-3xl font-extrabold text-neutral-900 text-balance lg:text-5xl">
-              Programmes in action
+              {heading}
             </h2>
           </motion.div>
           <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={1}>
@@ -78,7 +98,7 @@ export function ProjectsSection() {
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.map((project, i) => (
+          {projects.map((project, i) => (
             <motion.article
               key={project.title}
               variants={fadeUp}

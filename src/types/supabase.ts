@@ -733,40 +733,72 @@ export interface Database {
           updated_at?: string;
         };
       };
-      activity_logs: {
-        Row: {
-          id: string;
-          user_id: string | null;
-          action: string;
-          resource: string;
-          resource_id: string | null;
-          details: Json | null;
-          ip_address: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id?: string | null;
-          action: string;
-          resource: string;
-          resource_id?: string | null;
-          details?: Json | null;
-          ip_address?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string | null;
-          action?: string;
-          resource?: string;
-          resource_id?: string | null;
-          details?: Json | null;
-          ip_address?: string | null;
-          created_at?: string;
-        };
-      };
-    };
-    Views: Record<string, never>;
+       activity_logs: {
+         Row: {
+           id: string;
+           user_id: string | null;
+           action: string;
+           resource: string;
+           resource_id: string | null;
+           details: Json | null;
+           ip_address: string | null;
+           created_at: string;
+         };
+         Insert: {
+           id?: string;
+           user_id?: string | null;
+           action?: string;
+           resource?: string;
+           resource_id?: string | null;
+           details?: Json | null;
+           ip_address?: string | null;
+           created_at?: string;
+         };
+         Update: {
+           id?: string;
+           user_id?: string | null;
+           action?: string;
+           resource?: string;
+           resource_id?: string | null;
+           details?: Json | null;
+           ip_address?: string | null;
+           created_at?: string;
+         };
+       };
+       homepage_content: {
+         Row: {
+           id: string;
+           section: string;
+           field: string;
+           value: Json;
+           is_active: boolean;
+           sort_order: number;
+           created_at: string;
+           updated_at: string;
+         };
+         Insert: {
+           id?: string;
+           section: string;
+           field: string;
+           value?: Json;
+           is_active?: boolean;
+           sort_order?: number;
+           created_at?: string;
+           updated_at?: string;
+         };
+         Update: {
+           id?: string;
+           section?: string;
+           field?: string;
+           value?: Json;
+           is_active?: boolean;
+           sort_order?: number;
+           created_at?: string;
+           updated_at?: string;
+         };
+       };
+     };
+     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: Record<string, never>;
   };

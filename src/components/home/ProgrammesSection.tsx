@@ -44,7 +44,11 @@ const IMAGE_MAP: Record<string, string> = {
   "gumzo-chuoni": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80",
 };
 
-export function ProgrammesSection() {
+interface ProgrammesSectionProps {
+  content?: { heading: string; subheading: string; previewCount: number };
+}
+
+export function ProgrammesSection({ content }: ProgrammesSectionProps) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -54,10 +58,10 @@ export function ProgrammesSection() {
         <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0} className="mx-auto mb-10 max-w-3xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary-500">Our Programmes</p>
           <h2 id="programmes-heading" className="mt-3 font-display text-3xl font-extrabold text-neutral-900 text-balance lg:text-5xl">
-            Integrated approaches to health and rights
+            {content?.heading ?? "Integrated approaches to health and rights"}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-neutral-600">
-            RHARK delivers holistic programmes across six thematic areas to create lasting impact in Siaya County and beyond.
+            {content?.subheading ?? "RHARK delivers holistic programmes across six thematic areas to create lasting impact in Siaya County and beyond."}
           </p>
         </motion.div>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/metadata";
+import { getHomepage } from "@/services/cms";
 import { HeroSection } from "@/components/home/HeroSection";
 import { ImpactStatsSection } from "@/components/home/ImpactStatsSection";
 import { AboutPreviewSection } from "@/components/home/AboutPreviewSection";
@@ -18,19 +19,21 @@ export const metadata: Metadata = buildMetadata({
   path: "/",
 });
 
-export default function HomePage() {
+export default async function HomePage() {
+  const homepage = await getHomepage();
+
   return (
     <>
-      <HeroSection />
-      <ImpactStatsSection />
+      <HeroSection content={homepage.hero} />
+      <ImpactStatsSection content={homepage.stats} />
       <AboutPreviewSection />
-      <ProgrammesSection />
-      <ProjectsSection />
+      <ProgrammesSection content={homepage.programmes} />
+      <ProjectsSection content={{ heading: "Programmes in action", projects: homepage.projects.map((p) => ({ ...p, tagColor: "bg-primary-100 text-primary-700", image: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=600&q=80", alt: p.title, href: `/projects/${p.title.toLowerCase().replace(/\s+/g, "-")}` })) }} />
       <StoriesSection />
-      <NewsSection />
-      <GetInvolvedSection />
+      <NewsSection content={homepage.announcements} />
+      <GetInvolvedSection content={homepage.cta} />
       <NewsletterSection />
-      <PartnersSection />
+      <PartnersSection content={{ heading: homepage.partners.length > 0 ? "Working together for greater impact" : "", partners: homepage.partners }} />
     </>
   );
 }

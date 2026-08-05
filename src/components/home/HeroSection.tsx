@@ -18,6 +18,18 @@ import {
 import { cn } from "@/utils";
 import { ROUTES, ORG } from "@/constants";
 
+export interface HeroContentData {
+  title: string;
+  subtitle: string;
+  description: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta: { label: string; href: string };
+  tertiaryCta: { label: string; href: string };
+  videoSrc: string;
+  trustBadges: Array<{ value: string; label: string }>;
+  images: string[];
+}
+
 // ─── Animation Variants ───────────────────────────────────────────────────────
 
 const fadeUp = {
@@ -79,6 +91,39 @@ const HERO_IMAGES = [
 
 const HERO_ALT = "RHARK community members in Siaya County";
 
+const DEFAULT_HERO: HeroContentData = {
+  title: "Empowering Communities.",
+  subtitle: "Community-Based Organization · Since 2021",
+  description: "RHARK is a community-based organization in Siaya County, Kenya, dedicated to advancing SRHR, mental health, gender equality, HIV prevention, governance, and climate justice — empowering youth, women, adolescents, persons with disabilities, and rural communities through advocacy, education, and health promotion.",
+  primaryCta: { label: "Learn About RHARK", href: "/about" },
+  secondaryCta: { label: "Explore Our Programs", href: "/programmes" },
+  tertiaryCta: { label: "Support Our Mission", href: "/get-involved/donate" },
+  videoSrc: "/videos/rhark-story.mp4",
+  trustBadges: [
+    { value: "10K+", label: "People Reached" },
+    { value: "50+", label: "Activities" },
+    { value: "5+", label: "Partners" },
+  ],
+  images: [
+    "/images/hero/DSC_0878.JPG",
+    "/images/hero/photo_2026-07-26_20-07-27.jpg",
+    "/images/hero/photo_2025-11-13_09-32-11.jpg",
+    "/images/hero/IMG-20250212-WA0153.jpg",
+    "/images/hero/IMG-20250131-WA0044.jpg",
+    "/images/hero/IMG-20250130-WA0175.jpg",
+    "/images/hero/IMG-20250130-WA0164.jpg",
+    "/images/hero/IMG-20250129-WA0062.jpg",
+    "/images/hero/hunkgraphy -9019.jpg",
+    "/images/hero/hunkgraphy -8992.jpg",
+    "/images/hero/DSC_1827.jpg",
+    "/images/hero/DSC_0849.JPG",
+    "/images/hero/DSC_0239.JPG",
+    "/images/hero/DSC_0230.JPG",
+    "/images/hero/DSC_0226.JPG",
+    "/images/hero/DSC_0222.JPG",
+  ],
+};
+
 // Video file that exists on disk
 const STORY_VIDEO = "/videos/rhark-story.mp4";
 
@@ -91,7 +136,7 @@ const KEN_BURNS = [
 
 // ─── VideoModal ───────────────────────────────────────────────────────────────
 
-const VideoModal = memo(function VideoModal({ onClose }: { onClose: () => void }) {
+const VideoModal = memo(function VideoModal({ onClose, videoSrc }: { onClose: () => void; videoSrc: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
 
@@ -172,7 +217,7 @@ const VideoModal = memo(function VideoModal({ onClose }: { onClose: () => void }
         {/* Video player */}
         <video
           ref={videoRef}
-          src={STORY_VIDEO}
+          src={videoSrc}
           controls
           playsInline
           className="w-full aspect-video"
@@ -281,7 +326,7 @@ const HeroSlideshow = memo(function HeroSlideshow({ images }: { images: string[]
 
 // ─── HeroVisual ───────────────────────────────────────────────────────────────
 
-const HeroVisual = memo(function HeroVisual() {
+const HeroVisual = memo(function HeroVisual({ content }: { content?: HeroContentData }) {
   return (
     <div className="relative flex items-center justify-center">
       {/* Decorative background blob — z-[1], behind everything */}
@@ -304,7 +349,7 @@ const HeroVisual = memo(function HeroVisual() {
       >
         {/* aspect-[4/5] wrapper — slides fill it */}
         <div className="relative aspect-[4/5] w-full">
-          <HeroSlideshow images={HERO_IMAGES} />
+          <HeroSlideshow images={content?.images ?? DEFAULT_HERO.images} />
 
           {/* Gradient overlay for text legibility — z-20 */}
           <div
@@ -379,7 +424,7 @@ const HeroVisual = memo(function HeroVisual() {
 
 // ─── HeroButtons ──────────────────────────────────────────────────────────────
 
-function HeroButtons() {
+function HeroButtons({ primaryCta, secondaryCta, tertiaryCta }: { primaryCta: { label: string; href: string }; secondaryCta: { label: string; href: string }; tertiaryCta: { label: string; href: string } }) {
   return (
     <motion.div
       variants={fadeUp}
@@ -389,19 +434,19 @@ function HeroButtons() {
       className="flex flex-wrap gap-3"
     >
       <Link
-        href={ROUTES.about}
+        href={primaryCta.href}
         className={cn(
           "inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-bold text-white shadow-teal",
           "transition-all duration-200 hover:bg-primary-500 hover:shadow-teal hover:-translate-y-0.5",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
         )}
       >
-        Learn About RHARK
+        {primaryCta.label}
         <ArrowRight size={16} aria-hidden="true" />
       </Link>
 
       <Link
-        href={ROUTES.programmes}
+        href={secondaryCta.href}
         className={cn(
           "inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white/70 px-5 py-3 text-sm font-bold text-primary-600 backdrop-blur-sm",
           "transition-all duration-200 hover:border-primary-300 hover:bg-primary-50/90 hover:-translate-y-0.5 hover:shadow-md",
@@ -409,11 +454,11 @@ function HeroButtons() {
         )}
       >
         <Landmark size={16} aria-hidden="true" />
-        Explore Our Programs
+        {secondaryCta.label}
       </Link>
 
       <Link
-        href={ROUTES.donate}
+        href={tertiaryCta.href}
         className={cn(
           "inline-flex items-center gap-2 rounded-full bg-accent-500 px-5 py-3 text-sm font-bold text-white shadow-[0_16px_36px_rgba(245,158,11,0.28)]",
           "transition-all duration-200 hover:bg-accent-600 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(245,158,11,0.32)]",
@@ -421,7 +466,7 @@ function HeroButtons() {
         )}
       >
         <Heart size={16} aria-hidden="true" fill="currentColor" />
-        Support Our Mission
+        {tertiaryCta.label}
       </Link>
     </motion.div>
   );
@@ -429,7 +474,7 @@ function HeroButtons() {
 
 // ─── HeroContent ──────────────────────────────────────────────────────────────
 
-const HeroContent = memo(function HeroContent({ onWatchStory }: { onWatchStory: () => void }) {
+const HeroContent = memo(function HeroContent({ onWatchStory, content }: { onWatchStory: () => void; content: HeroContentData }) {
   return (
     <div className="flex flex-col gap-5">
       {/* Eyebrow label */}
@@ -451,13 +496,7 @@ const HeroContent = memo(function HeroContent({ onWatchStory }: { onWatchStory: 
       {/* Main heading */}
       <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.2}>
         <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-neutral-800 text-balance sm:text-5xl lg:text-6xl">
-          Empowering{" "}
-          <span className="text-gradient">Communities.</span>
-          <br />
-          <span className="text-primary-500">Advancing</span> Sexual &
-          Reproductive Health
-          <br />
-          and Rights.
+          {content.title}
         </h1>
       </motion.div>
 
@@ -469,33 +508,24 @@ const HeroContent = memo(function HeroContent({ onWatchStory }: { onWatchStory: 
         custom={0.3}
         className="max-w-xl text-sm leading-relaxed text-neutral-500 sm:text-base lg:text-[17px]"
       >
-        RHARK is a community-based organization in{" "}
-        <strong className="font-semibold text-neutral-600">
-          Siaya County, Kenya
-        </strong>
-        , dedicated to advancing SRHR, mental health, gender equality, HIV
-        prevention, governance, and climate justice — empowering youth, women,
-        adolescents, persons with disabilities, and rural communities through
-        advocacy, education, and health promotion.
+        {content.description}
       </motion.p>
 
       {/* CTA Buttons */}
-      <HeroButtons />
+      <HeroButtons
+        primaryCta={content.primaryCta}
+        secondaryCta={content.secondaryCta}
+        tertiaryCta={content.tertiaryCta}
+      />
 
       {/* Trust badges */}
       <div className="grid max-w-xl grid-cols-3 gap-3 pt-2 sm:pt-3">
-        <div className="rounded-[1.35rem] border border-white/70 bg-white/80 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-sm">
-          <h3 className="text-2xl font-bold text-primary-500">10K+</h3>
-          <p className="text-xs text-neutral-500">People Reached</p>
-        </div>
-        <div className="rounded-[1.35rem] border border-white/70 bg-white/80 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-sm">
-          <h3 className="text-2xl font-bold text-primary-500">50+</h3>
-          <p className="text-xs text-neutral-500">Activities</p>
-        </div>
-        <div className="rounded-[1.35rem] border border-white/70 bg-white/80 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-sm">
-          <h3 className="text-2xl font-bold text-primary-500">5+</h3>
-          <p className="text-xs text-neutral-500">Partners</p>
-        </div>
+        {content.trustBadges.map((badge, i) => (
+          <div key={i} className="rounded-[1.35rem] border border-white/70 bg-white/80 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+            <h3 className="text-2xl font-bold text-primary-500">{badge.value}</h3>
+            <p className="text-xs text-neutral-500">{badge.label}</p>
+          </div>
+        ))}
       </div>
 
       {/* Watch our story button — opens modal */}
@@ -531,7 +561,11 @@ const HeroContent = memo(function HeroContent({ onWatchStory }: { onWatchStory: 
 
 // ─── HeroSection ─────────────────────────────────────────────────────────────
 
-export function HeroSection() {
+interface HeroSectionProps {
+  content?: HeroContentData;
+}
+
+export function HeroSection({ content }: HeroSectionProps) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [videoOpen, setVideoOpen] = useState(false);
@@ -565,12 +599,12 @@ export function HeroSection() {
           <div className="grid min-h-[86svh] items-center gap-10 py-12 lg:grid-cols-2 lg:gap-14 lg:py-16">
             {/* Left — content */}
             <div className={cn("transition-opacity duration-700", inView ? "opacity-100" : "opacity-0")}>
-              <HeroContent onWatchStory={openVideo} />
+              <HeroContent onWatchStory={openVideo} content={content ?? DEFAULT_HERO} />
             </div>
 
             {/* Right — visual */}
             <div className="relative hidden lg:block">
-              <HeroVisual />
+              <HeroVisual content={content} />
             </div>
           </div>
         </div>
@@ -599,7 +633,7 @@ export function HeroSection() {
       </section>
 
       {/* ── Video Modal ── */}
-      {videoOpen && <VideoModal onClose={closeVideo} />}
+      {videoOpen && <VideoModal onClose={closeVideo} videoSrc={content?.videoSrc ?? DEFAULT_HERO.videoSrc} />}
     </>
   );
 }
