@@ -26,7 +26,7 @@ function AnnouncementBar({ onDismiss }: { onDismiss: () => void }) {
     <div
       role="banner"
       aria-label="Site announcement"
-      className="relative bg-primary-600 px-4 py-2.5 text-center text-xs font-medium text-white sm:text-sm"
+      className="relative bg-primary-600 px-4 py-2 text-center text-xs font-medium text-white sm:text-sm"
     >
       <span>
         🌍RHARK is hiring — join our team in Siaya County.{" "}
@@ -342,7 +342,7 @@ export function Header() {
             isScrolled ? "h-0 overflow-hidden border-transparent" : "h-auto"
           )}
         >
-          <div className="container-site flex items-center justify-between py-2">
+          <div className="container-site flex items-center justify-between py-1.5">
             <div className="flex items-center gap-4 text-xs text-neutral-500">
               <a
                 href={`mailto:${ORG.email}`}
@@ -381,16 +381,16 @@ export function Header() {
 
         {/* ── Primary Nav Bar ── */}
         <div className="container-site">
-          <div className="flex h-20 items-center justify-between gap-6 lg:h-[88px]">
+          <div className="flex h-16 items-center justify-between gap-4 lg:h-[70px]">
 
             {/* Logo */}
             <Link
               href="/"
-              className="group flex shrink-0 items-center gap-3 rounded-full border border-transparent bg-white/60 px-2 py-1.5 backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              className="group flex shrink-0 items-center gap-2 rounded-full border border-transparent bg-white/60 px-1.5 py-1 backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
               aria-label="RHARK — Reproductive Health Action and Rights Kenya, go to homepage"
             >
               {/* Logo Image */}
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl transition-transform duration-200 group-hover:scale-105">
+              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl transition-transform duration-200 group-hover:scale-105">
                 <Image
                   src="/images/logo/Newlogo.png"
                   alt="RHARK Logo"
@@ -402,13 +402,13 @@ export function Header() {
 
               {/* Wordmark */}
               <div className="flex flex-col leading-none">
-                <span className="font-display text-xl font-extrabold tracking-tight text-primary-600 lg:text-2xl">
-                  RHARK
-                </span>
+<span className="font-display text-base font-extrabold tracking-tight text-primary-600 lg:text-lg">
+	                   RHARK
+	                 </span>
 
-                <span className="text-xs font-medium tracking-wide text-neutral-500">
-                  Kenya
-                </span>
+	                 <span className="text-[10px] font-medium tracking-wide text-neutral-500">
+	                   Kenya
+	                 </span>
               </div>
             </Link>
 
@@ -494,27 +494,27 @@ export function Header() {
         )}
       >
         {/* Mobile header bar */}
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-neutral-100 px-4">
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-100 px-4">
           <Link
             href="/"
             className="flex items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
             aria-label="RHARK homepage"
             onClick={() => setMobileOpen(false)}
           >
-            <div className="relative h-10 w-10 overflow-hidden rounded-lg">
-              <Image
-                src="/images/logo/Newlogo.png"
-                alt="RHARK Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
+<div className="relative h-9 w-9 overflow-hidden rounded-lg">
+	               <Image
+	                 src="/images/logo/Newlogo.png"
+	                 alt="RHARK Logo"
+	                 fill
+	                 className="object-contain"
+	               />
+	             </div>
           </Link>
 
-          <button
-            onClick={() => setMobileOpen(false)}
-            aria-label="Close navigation menu"
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-100"
+<button
+	                 onClick={() => setMobileOpen(false)}
+	                 aria-label="Close navigation menu"
+	                 className="flex h-9 w-9 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-100"
           >
             <X size={22} aria-hidden="true" />
           </button>
@@ -542,8 +542,8 @@ export function Header() {
           <Link
             href={ROUTES.donate}
             onClick={() => setMobileOpen(false)}
-            className={cn(
-              "flex w-full items-center justify-center gap-2 rounded-full bg-accent-500 py-3.5 text-sm font-bold text-white shadow-amber",
+className={cn(
+	               "flex w-full items-center justify-center gap-2 rounded-full bg-accent-500 py-3 text-sm font-bold text-white shadow-amber",
               "transition-colors duration-150 hover:bg-accent-600",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
             )}
