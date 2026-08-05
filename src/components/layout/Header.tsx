@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   Menu,
   X,
@@ -93,13 +94,20 @@ function MegaDropdown({
         className={cn(
           "relative rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
           "hover:text-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1",
-          isActive ? "text-primary-500" : "text-neutral-700"
+          isActive
+            ? "text-primary-700 font-semibold"
+            : "text-neutral-700"
         )}
         aria-current={pathname === item.href ? "page" : undefined}
       >
         {item.label}
         {isActive && (
-          <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary-500" />
+          <motion.span
+            layoutId="nav-underline"
+            className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-primary-500"
+            initial={false}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          />
         )}
       </Link>
     );
@@ -115,7 +123,9 @@ function MegaDropdown({
         className={cn(
           "relative flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
           "hover:text-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1",
-          isActive ? "text-primary-500" : "text-neutral-700"
+          isActive
+            ? "text-primary-700 font-semibold"
+            : "text-neutral-700"
         )}
       >
         {item.label}
@@ -128,7 +138,12 @@ function MegaDropdown({
           )}
         />
         {isActive && (
-          <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary-500" />
+          <motion.span
+            layoutId="nav-underline"
+            className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-primary-500"
+            initial={false}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          />
         )}
       </button>
 
@@ -213,7 +228,7 @@ function MobileNavItem({
           className={cn(
             "flex items-center rounded-xl px-4 py-3.5 text-base font-medium transition-colors duration-150",
             isActive
-              ? "bg-primary-50 text-primary-600"
+              ? "bg-primary-50 text-primary-700 font-semibold"
               : "text-neutral-800 hover:bg-neutral-50 hover:text-primary-600"
           )}
           aria-current={pathname === item.href ? "page" : undefined}
@@ -260,7 +275,7 @@ function MobileNavItem({
                 className={cn(
                   "block rounded-lg px-3 py-2.5 text-sm transition-colors duration-150",
                   pathname === child.href
-                    ? "font-semibold text-primary-600"
+                    ? "font-semibold text-primary-700"
                     : "text-neutral-600 hover:text-primary-600"
                 )}
               >
