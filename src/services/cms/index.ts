@@ -30,6 +30,8 @@ import {
   successStoriesData,
 } from "@/data/content";
 import { getHomepageContent } from "@/services/homepage";
+import { getNewsArticles, getNewsArticleBySlug, createNewsArticle, updateNewsArticle, deleteNewsArticle, toggleNewsStatus } from "@/services/news";
+import { getEvents, getUpcomingEvents, getPastEvents, createEvent, updateEvent, deleteEvent, archiveEvent, completeEvent } from "@/services/events";
 
 export async function getProgrammes(): Promise<Programme[]> {
   // Future: return await sanityClient.fetch(PROGRAMMES_QUERY);
@@ -55,20 +57,20 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
 
 // ─── Stubs for future CMS content types ──────────────────────────────────────
 
-export async function getNewsArticles(_limit?: number): Promise<NewsArticle[]> {
-  return _limit ? newsArticlesData.slice(0, _limit) : newsArticlesData;
+export async function getNewsArticles(limit?: number): Promise<NewsArticle[]> {
+  return limit ? newsArticlesData.slice(0, limit) : newsArticlesData;
 }
 
 export async function getNewsArticleBySlug(_slug: string): Promise<NewsArticle | null> {
   return newsArticlesData.find((article) => article.slug === _slug) ?? null;
 }
 
-export async function getPublications(_limit?: number): Promise<Publication[]> {
-  return _limit ? publicationsData.slice(0, _limit) : publicationsData;
+export async function getPublications(limit?: number): Promise<Publication[]> {
+  return limit ? publicationsData.slice(0, limit) : publicationsData;
 }
 
-export async function getEvents(_limit?: number): Promise<RharkEvent[]> {
-  return _limit ? eventsData.slice(0, _limit) : eventsData;
+export async function getEvents(limit?: number): Promise<RharkEvent[]> {
+  return limit ? eventsData.slice(0, limit) : eventsData;
 }
 
 export async function getSuccessStories(limit?: number): Promise<SuccessStory[]> {
@@ -86,3 +88,11 @@ export async function getDownloads(limit?: number): Promise<DownloadAsset[]> {
 export async function getHomepage(): Promise<Awaited<ReturnType<typeof getHomepageContent>>> {
   return getHomepageContent();
 }
+
+// ─── News CMS ────────────────────────────────────────────────────────────────
+
+export { getNewsArticles as getNewsFromCMS, getNewsArticleBySlug as getNewsArticleBySlugFromCMS, createNewsArticle, updateNewsArticle, deleteNewsArticle, toggleNewsStatus };
+
+// ─── Events CMS ──────────────────────────────────────────────────────────────
+
+export { getEvents as getEventsFromCMS, getUpcomingEvents, getPastEvents, createEvent, updateEvent, deleteEvent, archiveEvent, completeEvent };

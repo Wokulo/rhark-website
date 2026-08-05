@@ -5,7 +5,8 @@ import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { slugify } from "@/lib/admin-utils";
-import { ArrowLeft, Save, Send, Loader2, AlertCircle } from "lucide-react";
+import { uploadFeaturedImage } from "@/lib/upload";
+import { ArrowLeft, Save, Send, Loader2, AlertCircle, ImageIcon, X } from "lucide-react";
 import Link from "next/link";
 
 export default function EditArticlePage() {
@@ -17,6 +18,7 @@ export default function EditArticlePage() {
   const [fetchLoading, setFetchLoading] = useState(true);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [form, setForm] = useState({
     title: "",
     slug: "",
@@ -24,6 +26,7 @@ export default function EditArticlePage() {
     content: "",
     excerpt: "",
     featured_image: "",
+    featuredImageFile: null as File | null,
     tags: "",
     status: "draft",
     publish_date: "",
@@ -61,6 +64,7 @@ export default function EditArticlePage() {
           content: data.content || "",
           excerpt: data.excerpt || "",
           featured_image: data.featured_image || "",
+          featuredImageFile: null,
           tags: (data.tags || []).join(", "),
           status: data.status || "draft",
           publish_date: data.publish_date
@@ -91,6 +95,12 @@ export default function EditArticlePage() {
     setError("");
 
     try {
+      let featuredImageUrl = form.featured_image || null;
+
+      if (form.featuredImageFile) {
+        featuredImageUrl = await uploadFeaturedImage(form.featuredImageFile);
+      }
+
       const tags = form.tags
         .split(",")
         .map((t) => t.trim())
@@ -103,7 +113,7 @@ export default function EditArticlePage() {
           category: form.category,
           content: form.content,
           excerpt: form.excerpt,
-          featured_image: form.featured_image || null,
+          featured_image: featuredImageUrl,
           tags,
           status,
           publish_date:
@@ -297,17 +307,48 @@ export default function EditArticlePage() {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700">
-                  Featured Image URL
+                  Featured Image
                 </label>
-                <input
-                  type="url"
-                  value={form.featured_image}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, featured_image: e.target.value }))
-                  }
-                  placeholder="https://example.com/image.jpg"
-                  className="mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                />
+                <div className="mt-1.5 flex items-center gap-4">
+                  <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50">
+                    <ImageIcon size={16} />
+                    Upload Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setForm((f) => ({ ...f, featuredImageFile: file }));
+                          setImagePreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </label>
+                  {imagePreview && (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Featured preview"
+                        className="h-16 w-24 rounded-xl object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setForm((f) => ({ ...f, featured_image: "", featuredImageFile: null }));
+                          setImagePreview(null);
+                        }}
+                        className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-error-500 text-white"
+                      >
+                        <X size={10} />
+                      </button>
+                    </div>
+                  )}
+                  {form.featured_image && !imagePreview && (
+                    <span className="text-xs text-neutral-400">Current image will be replaced</span>
+                  )}
+                </div>
               </div>
 
               <div>
