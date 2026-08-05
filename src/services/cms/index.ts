@@ -33,6 +33,8 @@ import { getHomepageContent } from "@/services/homepage";
 import { getNewsArticles, getNewsArticleBySlug, createNewsArticle, updateNewsArticle, deleteNewsArticle, toggleNewsStatus } from "@/services/news";
 import { getEvents, getUpcomingEvents, getPastEvents, createEvent, updateEvent, deleteEvent, archiveEvent, completeEvent } from "@/services/events";
 import { getGalleryItems, getGalleryItemById, getFeaturedGalleryItems, getGalleryItemsByAlbum, createGalleryItem, updateGalleryItem, deleteGalleryItem, toggleGalleryFeatured, reorderGalleryItems } from "@/services/gallery";
+import { getPartners, getActivePartners, getFeaturedPartners, getPartnerBySlug, getPartnerById, createPartner, updatePartner, deletePartner, togglePartnerActive, togglePartnerFeatured, reorderPartners } from "@/services/partners";
+import { getPublications, getActivePublications, getPublicationsByType, getPublicationBySlug, getPublicationById, createPublication, updatePublication, deletePublication, archivePublication, restorePublication, togglePublicationArchive, reorderPublications } from "@/services/publications";
 
 export async function getProgrammes(): Promise<Programme[]> {
   // Future: return await sanityClient.fetch(PROGRAMMES_QUERY);
@@ -97,10 +99,15 @@ export { getNewsArticles as getNewsFromCMS, getNewsArticleBySlug as getNewsArtic
 // ─── Events CMS ──────────────────────────────────────────────────────────────
 
 export { getEvents as getEventsFromCMS, getUpcomingEvents, getPastEvents, createEvent, updateEvent, deleteEvent, archiveEvent, completeEvent };
-// ─── Gallery CMS ──────────────────────────────────────────────────
+
+// ─── Gallery CMS ──────────────────────────────────────────────────────────────
 
 export { getGalleryItems, getGalleryItemById, getFeaturedGalleryItems, getGalleryItemsByAlbum, createGalleryItem, updateGalleryItem, deleteGalleryItem, toggleGalleryFeatured, reorderGalleryItems };
 
-// ─── Partners CMS ──────────────────────────────────────
+// ─── Partners CMS ──────────────────────────────────────────────────────────────
 
-export { getPartners, getActivePartners, getFeaturedPartners, getPartnerBySlug, getPartnerById, createPartner, updatePartner, deletePartner, togglePartnerActive, togglePartnerFeatured, reorderPartners } from "@/services/partners";
+export { getPartners, getActivePartners, getFeaturedPartners, getPartnerBySlug, getPartnerById, createPartner, updatePartner, deletePartner, togglePartnerActive, togglePartnerFeatured, reorderPartners };
+
+// ─── Publications CMS ──────────────────────────────────────────────────────────
+
+export { getPublications, getActivePublications, getPublicationsByType, getPublicationBySlug, getPublicationById, createPublication, updatePublication, deletePublication, archivePublication, restorePublication, togglePublicationArchive, reorderPublications };

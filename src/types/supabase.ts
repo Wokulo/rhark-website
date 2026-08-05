@@ -280,6 +280,59 @@ export interface Database {
           updated_at?: string;
         };
       };
+      publications: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          description: string | null;
+          type: string;
+          file_url: string;
+          file_size_kb: number;
+          file_type: string;
+          cover_image: string | null;
+          tags: string[] | null;
+          category: string;
+          is_archived: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          slug: string;
+          description?: string | null;
+          type?: string;
+          file_url: string;
+          file_size_kb?: number;
+          file_type?: string;
+          cover_image?: string | null;
+          tags?: string[] | null;
+          category?: string;
+          is_archived?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          slug?: string;
+          description?: string | null;
+          type?: string;
+          file_url?: string;
+          file_size_kb?: number;
+          file_type?: string;
+          cover_image?: string | null;
+          tags?: string[] | null;
+          category?: string;
+          is_archived?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       albums: {
         Row: {
           id: string;

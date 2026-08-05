@@ -59,6 +59,7 @@ const NAV_SECTIONS: NavSection[] = [
       { label: "News", href: "/admin/news", icon: Newspaper, resource: RESOURCES.NEWS },
       { label: "Gallery", href: "/admin/gallery", icon: Images, resource: RESOURCES.GALLERY },
       { label: "Partners", href: "/admin/partners", icon: LinkIcon, resource: RESOURCES.PARTNERS },
+      { label: "Publications", href: "/admin/publications", icon: FileText, resource: RESOURCES.PUBLICATIONS },
       { label: "Team", href: "/admin/team", icon: Users, resource: RESOURCES.MEMBERS },
       { label: "Projects", href: "/admin/projects", icon: FolderKanban, resource: RESOURCES.PROJECTS },
       { label: "Programmes", href: "/admin/programmes", icon: Newspaper, resource: RESOURCES.PROGRAMMES },
