@@ -25,7 +25,7 @@ const fadeUp = {
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94], delay },
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94], delay },
   }),
 };
 
@@ -33,7 +33,7 @@ const fadeIn = {
   hidden: { opacity: 0 },
   visible: (delay = 0) => ({
     opacity: 1,
-    transition: { duration: 0.5, delay },
+    transition: { duration: 0.4, delay },
   }),
 };
 
@@ -42,7 +42,7 @@ const scaleIn = {
   visible: (delay = 0) => ({
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.55, ease: [0.34, 1.56, 0.64, 1], delay },
+    transition: { duration: 0.5, ease: [0.34, 1.56, 0.64, 1], delay },
   }),
 };
 
@@ -80,7 +80,7 @@ const HERO_IMAGES = [
 const HERO_ALT = "RHARK community members in Siaya County";
 
 // Video file that exists on disk
-const STORY_VIDEO = "/videos/rhark-story.mp4.mp4";
+const STORY_VIDEO = "/videos/rhark-story.mp4";
 
 // ─── VideoModal ───────────────────────────────────────────────────────────────
 
@@ -227,15 +227,15 @@ function HeroSlideshow({ images }: { images: string[] }) {
     if (images.length <= 1) return;
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length);
-    }, 3000);
+    }, 3500);
     return () => clearInterval(timer);
   }, [images.length]);
 
   const kenBurns = [
-    { scale: 1.05, x: 0, y: 0 },
-    { scale: 1.12, x: 100, y: 0 },
-    { scale: 1.05, x: 0, y: 100 },
-    { scale: 1.08, x: 100, y: 100 },
+    { scale: 1.03, x: 0, y: 0 },
+    { scale: 1.06, x: 50, y: 0 },
+    { scale: 1.03, x: 0, y: 50 },
+    { scale: 1.04, x: 50, y: 50 },
   ];
 
   return (
@@ -249,25 +249,26 @@ function HeroSlideshow({ images }: { images: string[] }) {
             className="absolute inset-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: isActive ? 1 : 0 }}
-            transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
             aria-hidden={!isActive}
           >
             <motion.div
               className="relative h-full w-full"
               initial={{ scale: kb.scale, x: `${kb.x}%`, y: `${kb.y}%` }}
-              animate={{ scale: isActive ? kb.scale + 0.05 : kb.scale }}
+              animate={{ scale: isActive ? kb.scale + 0.03 : kb.scale }}
               transition={{
-    duration: 12,
-    ease: "easeInOut",
-    repeat: Infinity,
-    repeatType: "reverse",
-  }}
+                duration: 10,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
             >
               <Image
                 src={src}
                 alt={HERO_ALT}
                 fill
-                className="object-cover"
+                className="object-cover object-center"
+                quality={100}
                 priority={index === 0}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 loading={index === 0 ? "eager" : "lazy"}
@@ -577,7 +578,7 @@ export function HeroSection() {
         </div>
 
         {/* ── Mobile image strip ── */}
-        <div className="relative h-48 w-full overflow-hidden lg:hidden" aria-hidden="true">
+        <div className="relative h-64 w-full overflow-hidden lg:hidden" aria-hidden="true">
           <HeroSlideshow images={HERO_IMAGES} />
           <div className="absolute inset-0 bg-gradient-to-t from-white via-white/35 to-transparent" />
         </div>
