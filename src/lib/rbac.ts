@@ -25,7 +25,7 @@ export type RoleSlug = (typeof ROLES)[keyof typeof ROLES];
 
 export const RESOURCES = {
   DASHBOARD: "dashboard",
-  PROGRAMS: "programs",
+  PROGRAMMES: "programmes",
   PROJECTS: "projects",
   NEWS: "news",
   EVENTS: "events",
