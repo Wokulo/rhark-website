@@ -60,6 +60,7 @@ function MegaDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isActive =
     item.children?.some(
       (c) => pathname === c.href || pathname.startsWith(c.href + "/")
@@ -86,6 +87,58 @@ function MegaDropdown({
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [open]);
+
+  // Cleanup close timer on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, []);
+
+  // Keyboard navigation within dropdown
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!item.children) return;
+      const count = item.children.length;
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          if (!open) setOpen(true);
+          setFocusedIndex((prev) => (prev < count - 1 ? prev + 1 : 0));
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          if (!open) setOpen(true);
+          setFocusedIndex((prev) => (prev > 0 ? prev - 1 : count - 1));
+          break;
+        case "Enter":
+        case " ":
+          e.preventDefault();
+          if (!open) setOpen(true);
+          break;
+        case "Home":
+          e.preventDefault();
+          setFocusedIndex(0);
+          break;
+        case "End":
+          e.preventDefault();
+          setFocusedIndex(count - 1);
+          break;
+      }
+    },
+    [item.children, open]
+  );
+
+  // Focus the focused child item
+  useEffect(() => {
+    if (!open || focusedIndex < 0) return;
+    const panel = ref.current?.querySelector('[role="menu"]');
+    if (!panel) return;
+    const items = panel.querySelectorAll<HTMLElement>('[role="menuitem"]');
+    items[focusedIndex]?.focus();
+  }, [focusedIndex, open]);
 
   if (!item.children) {
     return (
@@ -118,6 +171,7 @@ function MegaDropdown({
       <button
         onClick={() => setOpen((v) => !v)}
         onMouseEnter={() => setOpen(true)}
+        onKeyDown={handleKeyDown}
         aria-expanded={open}
         aria-haspopup="menu"
         className={cn(
@@ -151,11 +205,17 @@ function MegaDropdown({
       <div
         role="menu"
         aria-label={`${item.label} submenu`}
-        onMouseLeave={() => setOpen(false)}
+        onMouseEnter={() => {
+          if (closeTimer.current) clearTimeout(closeTimer.current);
+        }}
+        onMouseLeave={() => {
+          if (closeTimer.current) clearTimeout(closeTimer.current);
+          closeTimer.current = setTimeout(() => setOpen(false), 150);
+        }}
         className={cn(
-          "absolute left-0 top-full z-dropdown mt-2 min-w-[240px] rounded-2xl bg-white p-2",
+          "absolute left-0 top-full z-dropdown mt-2 min-w-[240px] max-h-[80vh] overflow-y-auto rounded-2xl bg-white p-3",
           "shadow-xl ring-1 ring-neutral-200/80",
-          "transition-all duration-200 origin-top",
+          "transition-all duration-150 origin-top",
           open
             ? "pointer-events-auto translate-y-0 opacity-100 scale-100"
             : "pointer-events-none -translate-y-2 opacity-0 scale-95"
@@ -166,18 +226,18 @@ function MegaDropdown({
             pathname === child.href ||
             pathname.startsWith(child.href + "/");
           return (
-            <Link
-              key={child.href}
-              href={child.href}
-              role="menuitem"
-              onClick={() => setOpen(false)}
-              className={cn(
-                "group flex items-start gap-3 rounded-xl px-4 py-3 transition-colors duration-150",
-                childActive
-                  ? "bg-primary-50 text-primary-600"
-                  : "text-neutral-700 hover:bg-neutral-50 hover:text-primary-600"
-              )}
-            >
+<Link
+                key={child.href}
+                href={child.href}
+                role="menuitem"
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "group flex items-start gap-3 rounded-xl px-4 py-3.5 transition-colors duration-150",
+                  childActive
+                    ? "bg-primary-50 text-primary-700 font-semibold"
+                    : "text-neutral-700 hover:bg-neutral-50 hover:text-primary-600"
+                )}
+              >
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold leading-tight">
                   {child.label}
