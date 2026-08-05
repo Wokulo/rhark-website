@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   X,
@@ -22,12 +22,12 @@ import type { NavItem } from "@/types";
 
 // ─── Announcement Bar ─────────────────────────────────────────────────────────
 
-function AnnouncementBar({ onDismiss }: { onDismiss: () => void }) {
+const AnnouncementBar = memo(function AnnouncementBar({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div
       role="banner"
       aria-label="Site announcement"
-      className="relative bg-primary-600 px-4 py-2 text-center text-xs font-medium text-white sm:text-sm"
+       className="relative bg-primary-600 px-4 py-1.5 text-center text-xs font-medium text-white sm:text-sm"
     >
       <span>
         🌍RHARK is hiring — join our team in Siaya County.{" "}
@@ -47,11 +47,11 @@ function AnnouncementBar({ onDismiss }: { onDismiss: () => void }) {
       </button>
     </div>
   );
-}
+});
 
 // ─── Desktop Mega Dropdown ────────────────────────────────────────────────────
 
-function MegaDropdown({
+const MegaDropdown = memo(function MegaDropdown({
   item,
   pathname,
 }: {
@@ -148,7 +148,7 @@ function MegaDropdown({
           "relative rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
           "hover:text-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1",
           isActive
-            ? "text-primary-700 font-semibold"
+            ? "text-primary-800 font-bold bg-primary-50/70"
             : "text-neutral-700"
         )}
         aria-current={pathname === item.href ? "page" : undefined}
@@ -157,7 +157,7 @@ function MegaDropdown({
         {isActive && (
           <motion.span
             layoutId="nav-underline"
-            className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-primary-500"
+            className="absolute bottom-0 left-0 right-0 h-[3px] rounded-full bg-primary-600"
             initial={false}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
@@ -170,7 +170,13 @@ function MegaDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        onMouseEnter={() => setOpen(true)}
+        onMouseEnter={() => {
+          if (closeTimer.current) {
+            clearTimeout(closeTimer.current);
+            closeTimer.current = null;
+          }
+          setOpen(true);
+        }}
         onKeyDown={handleKeyDown}
         aria-expanded={open}
         aria-haspopup="menu"
@@ -178,7 +184,7 @@ function MegaDropdown({
           "relative flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150",
           "hover:text-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1",
           isActive
-            ? "text-primary-700 font-semibold"
+            ? "text-primary-800 font-bold bg-primary-50/70"
             : "text-neutral-700"
         )}
       >
@@ -194,7 +200,7 @@ function MegaDropdown({
         {isActive && (
           <motion.span
             layoutId="nav-underline"
-            className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-primary-500"
+            className="absolute bottom-0 left-0 right-0 h-[3px] rounded-full bg-primary-600"
             initial={false}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
@@ -213,9 +219,9 @@ function MegaDropdown({
           closeTimer.current = setTimeout(() => setOpen(false), 150);
         }}
         className={cn(
-          "absolute left-0 top-full z-dropdown mt-2 min-w-[240px] max-h-[80vh] overflow-y-auto rounded-2xl bg-white p-3",
+          "absolute left-0 top-full z-dropdown mt-1.5 min-w-[240px] max-h-[80vh] overflow-y-auto rounded-2xl bg-white p-3",
           "shadow-xl ring-1 ring-neutral-200/80",
-          "transition-all duration-150 origin-top",
+          "transition-all duration-100 origin-top",
           open
             ? "pointer-events-auto translate-y-0 opacity-100 scale-100"
             : "pointer-events-none -translate-y-2 opacity-0 scale-95"
@@ -259,11 +265,11 @@ function MegaDropdown({
       </div>
     </div>
   );
-}
+});
 
 // ─── Mobile Accordion Item ────────────────────────────────────────────────────
 
-function MobileNavItem({
+const MobileNavItem = memo(function MobileNavItem({
   item,
   pathname,
   onNavigate,
@@ -286,7 +292,7 @@ function MobileNavItem({
           href={item.href}
           onClick={onNavigate}
           className={cn(
-            "flex items-center rounded-xl px-4 py-3.5 text-base font-medium transition-colors duration-150",
+            "flex min-h-[40px] items-center rounded-xl px-3 py-2.5 text-base font-medium transition-colors duration-150",
             isActive
               ? "bg-primary-50 text-primary-700 font-semibold"
               : "text-neutral-800 hover:bg-neutral-50 hover:text-primary-600"
@@ -304,12 +310,12 @@ function MobileNavItem({
       <button
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
-        className={cn(
-          "flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-base font-medium transition-colors duration-150",
-          isActive
-            ? "bg-primary-50 text-primary-600"
-            : "text-neutral-800 hover:bg-neutral-50 hover:text-primary-600"
-        )}
+          className={cn(
+            "flex min-h-[40px] w-full items-center justify-between rounded-xl px-3 py-2.5 text-base font-medium transition-colors duration-150",
+            isActive
+              ? "bg-primary-50 text-primary-600"
+              : "text-neutral-800 hover:bg-neutral-50 hover:text-primary-600"
+          )}
       >
         {item.label}
         <ChevronDown
@@ -323,17 +329,22 @@ function MobileNavItem({
       </button>
 
       {expanded && (
-        <ul
-          className="ml-4 mt-1 space-y-0.5 border-l-2 border-primary-100 pl-4"
-          role="list"
-        >
-          {item.children.map((child) => (
-            <li key={child.href}>
-              <Link
-                href={child.href}
-                onClick={onNavigate}
-                className={cn(
-                  "block rounded-lg px-3 py-2.5 text-sm transition-colors duration-150",
+        <AnimatePresence>
+<motion.ul
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="ml-3 mt-1.5 space-y-1.5 border-l-2 border-primary-100 pl-3"
+            role="list"
+          >
+            {item.children.map((child) => (
+              <li key={child.href}>
+                <Link
+                  href={child.href}
+                  onClick={onNavigate}
+                  className={cn(
+                    "flex min-h-[34px] items-center rounded-lg px-3 py-1.5 text-sm transition-colors duration-150",
                   pathname === child.href
                     ? "font-semibold text-primary-700"
                     : "text-neutral-600 hover:text-primary-600"
@@ -343,11 +354,12 @@ function MobileNavItem({
               </Link>
             </li>
           ))}
-        </ul>
+          </motion.ul>
+        </AnimatePresence>
       )}
     </li>
   );
-}
+});
 
 // ─── Header ───────────────────────────────────────────────────────────────────
 
@@ -369,6 +381,10 @@ export function Header() {
     setAnnouncementVisible(false);
     localStorage.setItem("rhark-announcement-dismissed", "1");
   }, []);
+
+  const handleMobileNavigate = useCallback(() => {
+    setMobileOpen(false);
+  }, [setMobileOpen]);
 
   // Close mobile menu on route change
   useEffect(() => setMobileOpen(false), [pathname]);
@@ -403,7 +419,7 @@ export function Header() {
         role="banner"
         className={cn(
           "fixed left-0 right-0 z-sticky transition-all duration-300",
-          announcementVisible ? "top-[38px] sm:top-[42px]" : "top-0",
+          announcementVisible ? "top-[34px] sm:top-[38px]" : "top-0",
           isScrolled
             ? "border-b border-white/70 bg-white/80 shadow-sm backdrop-blur-xl"
             : "bg-transparent",
@@ -417,7 +433,7 @@ export function Header() {
             isScrolled ? "h-0 overflow-hidden border-transparent" : "h-auto"
           )}
         >
-          <div className="container-site flex items-center justify-between py-1.5">
+          <div className="container-site flex items-center justify-between py-1">
             <div className="flex items-center gap-4 text-xs text-neutral-500">
               <a
                 href={`mailto:${ORG.email}`}
@@ -456,16 +472,16 @@ export function Header() {
 
         {/* ── Primary Nav Bar ── */}
         <div className="container-site">
-          <div className="flex h-16 items-center justify-between gap-4 lg:h-[70px]">
+          <div className="flex h-12 items-center justify-between gap-4 lg:h-[56px]">
 
             {/* Logo */}
             <Link
               href="/"
-              className="group flex shrink-0 items-center gap-2 rounded-full border border-transparent bg-white/60 px-1.5 py-1 backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              className="group flex shrink-0 items-center gap-2 rounded-full border border-transparent bg-white/60 px-1 py-0.5 backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
               aria-label="RHARK — Reproductive Health Action and Rights Kenya, go to homepage"
             >
               {/* Logo Image */}
-              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl transition-transform duration-200 group-hover:scale-105">
+               <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl transition-transform duration-200 group-hover:scale-105">
                 <Image
                   src="/images/logo/Newlogo.png"
                   alt="RHARK Logo"
@@ -477,7 +493,7 @@ export function Header() {
 
               {/* Wordmark */}
               <div className="flex flex-col leading-none">
-<span className="font-display text-base font-extrabold tracking-tight text-primary-600 lg:text-lg">
+ <span className="font-display text-sm font-extrabold tracking-tight text-primary-600 lg:text-base">
 	                   RHARK
 	                 </span>
 
@@ -553,7 +569,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* ── Mobile Menu Overlay ── */}
+{/* ── Mobile Menu Overlay ── */}
       <div
         id="mobile-menu"
         ref={mobileMenuRef}
@@ -562,34 +578,34 @@ export function Header() {
         aria-label="Navigation menu"
         className={cn(
           "fixed inset-0 z-overlay flex flex-col bg-white lg:hidden",
-          "transition-all duration-300",
+          "transition-transform duration-250 ease-out",
           mobileOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
+            ? "translate-x-0 opacity-100 pointer-events-auto"
+            : "translate-x-full opacity-0 pointer-events-none"
         )}
       >
         {/* Mobile header bar */}
-        <div className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-100 px-4">
+        <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-100 px-3">
           <Link
             href="/"
-            className="flex items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+            className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
             aria-label="RHARK homepage"
             onClick={() => setMobileOpen(false)}
           >
-<div className="relative h-9 w-9 overflow-hidden rounded-lg">
-	               <Image
-	                 src="/images/logo/Newlogo.png"
-	                 alt="RHARK Logo"
-	                 fill
-	                 className="object-contain"
-	               />
-	             </div>
+            <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-md">
+              <Image
+                src="/images/logo/Newlogo.png"
+                alt="RHARK Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
           </Link>
 
-<button
-	                 onClick={() => setMobileOpen(false)}
-	                 aria-label="Close navigation menu"
-	                 className="flex h-9 w-9 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-100"
+          <button
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close navigation menu"
+            className="flex h-11 w-11 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-100"
           >
             <X size={22} aria-hidden="true" />
           </button>
@@ -598,27 +614,27 @@ export function Header() {
         {/* Scrollable nav list */}
         <nav
           aria-label="Mobile navigation"
-          className="flex-1 overflow-y-auto px-4 py-4"
+          className="flex-1 overflow-y-auto px-3 py-1.5"
         >
-          <ul className="space-y-1" role="list">
+          <ul className="space-y-2" role="list">
             {NAV_ITEMS.map((item) => (
               <MobileNavItem
                 key={item.href}
                 item={item}
                 pathname={pathname}
-                onNavigate={() => setMobileOpen(false)}
+                onNavigate={handleMobileNavigate}
               />
             ))}
           </ul>
         </nav>
 
         {/* Mobile footer actions */}
-        <div className="shrink-0 space-y-3 border-t border-neutral-100 p-4">
+        <div           className="shrink-0 space-y-3 border-t border-neutral-100 p-3">
           <Link
             href={ROUTES.donate}
             onClick={() => setMobileOpen(false)}
-className={cn(
-	               "flex w-full items-center justify-center gap-2 rounded-full bg-accent-500 py-3 text-sm font-bold text-white shadow-amber",
+              className={cn(
+                "flex w-full items-center justify-center gap-2 rounded-full bg-accent-500 py-2.5 text-sm font-bold text-white shadow-amber",
               "transition-colors duration-150 hover:bg-accent-600",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
             )}

@@ -24,7 +24,7 @@ export function NewsletterSection() {
   };
 
   return (
-    <section ref={ref} aria-labelledby="newsletter-heading" className="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-16 lg:py-20">
+    <section ref={ref} aria-labelledby="newsletter-heading" className="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-12 lg:py-16">
       <div className="container-site">
         <motion.div
           variants={fadeUp}

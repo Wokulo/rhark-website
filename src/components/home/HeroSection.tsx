@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   Heart,
@@ -82,9 +82,16 @@ const HERO_ALT = "RHARK community members in Siaya County";
 // Video file that exists on disk
 const STORY_VIDEO = "/videos/rhark-story.mp4";
 
+const KEN_BURNS = [
+  { scale: 1.03, x: 0, y: 0 },
+  { scale: 1.06, x: 50, y: 0 },
+  { scale: 1.03, x: 0, y: 50 },
+  { scale: 1.04, x: 50, y: 50 },
+];
+
 // ─── VideoModal ───────────────────────────────────────────────────────────────
 
-function VideoModal({ onClose }: { onClose: () => void }) {
+const VideoModal = memo(function VideoModal({ onClose }: { onClose: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
 
@@ -174,11 +181,11 @@ function VideoModal({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   );
-}
+});
 
 // ─── FloatingInfoCard ─────────────────────────────────────────────────────────
 
-function FloatingInfoCard({
+const FloatingInfoCard = memo(function FloatingInfoCard({
   icon: Icon,
   label,
   color,
@@ -216,11 +223,11 @@ function FloatingInfoCard({
       </span>
     </motion.div>
   );
-}
+});
 
 // ─── HeroSlideshow ──────────────────────────────────────────────────────────────
 
-function HeroSlideshow({ images }: { images: string[] }) {
+const HeroSlideshow = memo(function HeroSlideshow({ images }: { images: string[] }) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -231,59 +238,50 @@ function HeroSlideshow({ images }: { images: string[] }) {
     return () => clearInterval(timer);
   }, [images.length]);
 
-  const kenBurns = [
-    { scale: 1.03, x: 0, y: 0 },
-    { scale: 1.06, x: 50, y: 0 },
-    { scale: 1.03, x: 0, y: 50 },
-    { scale: 1.04, x: 50, y: 50 },
-  ];
+  const kb = KEN_BURNS[current % KEN_BURNS.length];
 
   return (
     <div className="relative h-full w-full overflow-hidden">
-      {images.map((src, index) => {
-        const kb = kenBurns[index % kenBurns.length];
-        const isActive = index === current;
-        return (
+      <AnimatePresence>
+        <motion.div
+          key={current}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35, ease: "easeInOut" }}
+        >
           <motion.div
-            key={src}
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isActive ? 1 : 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
-            aria-hidden={!isActive}
+            className="relative h-full w-full"
+            initial={{ scale: kb.scale, x: `${kb.x}%`, y: `${kb.y}%` }}
+            animate={{ scale: kb.scale + 0.03 }}
+            transition={{
+              duration: 10,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
           >
-            <motion.div
-              className="relative h-full w-full"
-              initial={{ scale: kb.scale, x: `${kb.x}%`, y: `${kb.y}%` }}
-              animate={{ scale: isActive ? kb.scale + 0.03 : kb.scale }}
-              transition={{
-                duration: 10,
-                ease: "easeInOut",
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-            >
-              <Image
-                src={src}
-                alt={HERO_ALT}
-                fill
-                className="object-cover object-center"
-                quality={100}
-                priority={index === 0}
-                sizes="(max-width: 768px) 100vw, 50vw"
-                loading={index === 0 ? "eager" : "lazy"}
-              />
-            </motion.div>
+            <Image
+              src={images[current]}
+              alt={HERO_ALT}
+              fill
+              className="object-cover object-center"
+              quality={90}
+              priority={current === 0}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              loading={current === 0 ? "eager" : "lazy"}
+            />
           </motion.div>
-        );
-      })}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
-}
+});
 
 // ─── HeroVisual ───────────────────────────────────────────────────────────────
 
-function HeroVisual() {
+const HeroVisual = memo(function HeroVisual() {
   return (
     <div className="relative flex items-center justify-center">
       {/* Decorative background blob — z-[1], behind everything */}
@@ -377,7 +375,7 @@ function HeroVisual() {
       />
     </div>
   );
-}
+});
 
 // ─── HeroButtons ──────────────────────────────────────────────────────────────
 
@@ -431,7 +429,7 @@ function HeroButtons() {
 
 // ─── HeroContent ──────────────────────────────────────────────────────────────
 
-function HeroContent({ onWatchStory }: { onWatchStory: () => void }) {
+const HeroContent = memo(function HeroContent({ onWatchStory }: { onWatchStory: () => void }) {
   return (
     <div className="flex flex-col gap-5">
       {/* Eyebrow label */}
@@ -529,7 +527,7 @@ function HeroContent({ onWatchStory }: { onWatchStory: () => void }) {
       </motion.div>
     </div>
   );
-}
+});
 
 // ─── HeroSection ─────────────────────────────────────────────────────────────
 

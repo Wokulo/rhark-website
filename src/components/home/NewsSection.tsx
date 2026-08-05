@@ -57,7 +57,7 @@ export function NewsSection() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} aria-labelledby="news-heading" className="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-16 lg:py-20">
+    <section ref={ref} aria-labelledby="news-heading" className="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-12 lg:py-16">
       <div className="container-site">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0}>
@@ -82,10 +82,10 @@ export function NewsSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={i + 2}
-              className="group flex flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/90 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-sm"
+              className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/90 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-sm"
             >
               <div className="relative h-44 overflow-hidden bg-neutral-100">
-                <Image src={article.image} alt={article.alt} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" />
+                <Image src={article.image} alt={article.alt} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" quality={90} />
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <div className="flex items-center justify-between">

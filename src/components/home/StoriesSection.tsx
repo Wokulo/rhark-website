@@ -41,9 +41,9 @@ export function StoriesSection() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} aria-labelledby="stories-heading" className="bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_28%),linear-gradient(180deg,#0f766e_0%,#0d6e6e_100%)] py-16 lg:py-20">
+    <section ref={ref} aria-labelledby="stories-heading" className="bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.14),transparent_28%),linear-gradient(180deg,#0f766e_0%,#0d6e6e_100%)] py-12 lg:py-16">
       <div className="container-site">
-        <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0} className="mb-10 text-center">
+        <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0}           className="mx-auto mb-10 max-w-3xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary-200">Success Stories</p>
           <h2 id="stories-heading" className="mt-3 font-display text-3xl font-extrabold text-white text-balance lg:text-5xl">
             Voices from our community
@@ -61,7 +61,7 @@ export function StoriesSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={i + 1}
-              className="flex flex-col rounded-[1.6rem] border border-white/15 bg-white/10 p-6 backdrop-blur-xl shadow-[0_18px_50px_rgba(15,23,42,0.12)]"
+              className="flex h-full flex-col rounded-[1.6rem] border border-white/15 bg-white/10 p-6 backdrop-blur-xl shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)]"
             >
               <Quote size={28} className="mb-4 text-primary-300" aria-hidden="true" />
               <p className="flex-1 text-base leading-relaxed text-white">{story.quote}</p>

@@ -31,7 +31,7 @@ export function AboutPreviewSection() {
     <section
       ref={ref}
       aria-labelledby="about-heading"
-      className="bg-[radial-gradient(circle_at_top_right,rgba(13,110,110,0.08),transparent_30%),linear-gradient(180deg,#f8fbfb_0%,#ffffff_100%)] py-16 lg:py-20"
+      className="bg-[radial-gradient(circle_at_top_right,rgba(13,110,110,0.08),transparent_30%),linear-gradient(180deg,#f8fbfb_0%,#ffffff_100%)] py-12 lg:py-16"
     >
       <div className="container-site">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
@@ -45,13 +45,14 @@ export function AboutPreviewSection() {
           >
             <div className="relative overflow-hidden rounded-[2.25rem] border border-white/70 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
               <div className="relative aspect-[4/3] w-full bg-primary-100">
-                <Image
-                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=85"
-                  alt="RHARK team members working with community members in Siaya County on reproductive health education"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
+                 <Image
+                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=85"
+                   alt="RHARK team members working with community members in Siaya County on reproductive health education"
+                   fill
+                   className="object-cover"
+                   sizes="(max-width: 1024px) 100vw, 50vw"
+                   quality={90}
+                 />
               </div>
             </div>
             {/* Floating stat card */}

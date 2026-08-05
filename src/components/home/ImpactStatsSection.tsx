@@ -48,7 +48,7 @@ export function ImpactStatsSection() {
     <section
       ref={ref}
       aria-labelledby="impact-heading"
-      className="bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.07),transparent_28%),linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-16 lg:py-20"
+      className="bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.07),transparent_28%),linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-12 lg:py-16"
     >
       <div className="container-site">
         <motion.div
@@ -69,7 +69,7 @@ export function ImpactStatsSection() {
           </h2>
         </motion.div>
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {STATS.map((stat, i) => (
             <motion.div
               key={stat.id}
@@ -77,7 +77,7 @@ export function ImpactStatsSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={i + 1}
-              className="group rounded-[1.75rem] border border-white/75 bg-white/90 p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(15,23,42,0.1)] backdrop-blur-sm"
+              className="group flex h-full flex-col rounded-[1.6rem] border border-white/75 bg-white/90 p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-sm"
             >
               <div className={cn("mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ring-black/5", stat.bg)}>
                 <stat.icon size={22} className={stat.color} aria-hidden="true" />

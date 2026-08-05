@@ -45,7 +45,7 @@ export function PartnersSection() {
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           custom={0}
-          className="mb-10 text-center"
+          className="mx-auto mb-10 max-w-3xl text-center"
         >
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-neutral-400">
             Our Partners &amp; Supporters
@@ -64,7 +64,7 @@ export function PartnersSection() {
           animate={inView ? "visible" : "hidden"}
           custom={1}
           role="list"
-          className="mx-auto grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-3"
+          className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-6 lg:grid-cols-3"
         >
           {PARTNERS.map((partner, i) => (
             <motion.li
@@ -73,7 +73,7 @@ export function PartnersSection() {
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
               custom={i + 2}
-              className="group flex min-h-28 items-center justify-center rounded-[1.4rem] border border-white/75 bg-white/90 px-6 py-5 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary-100 hover:shadow-[0_18px_44px_rgba(13,110,110,0.14)]"
+              className="group flex items-center justify-center rounded-[1.6rem] border border-white/75 bg-white/90 px-6 py-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary-100 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)]"
               title={partner.name}
             >
               <Image
@@ -82,8 +82,9 @@ export function PartnersSection() {
                 width={200}
                 height={80}
                 sizes="(max-width: 640px) 100vw, 33vw"
-                className="h-16 w-auto max-w-full object-contain grayscale transition-all duration-300 group-hover:grayscale-0"
-              />
+                 className="h-16 w-auto max-w-full object-contain grayscale transition-all duration-300 ease-out group-hover:grayscale-0 group-hover:scale-105"
+                 quality={90}
+               />
             </motion.li>
           ))}
         </motion.ul>

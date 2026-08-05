@@ -7,6 +7,7 @@ import { ArrowRight, Heart, Brain, Shield, Users, Landmark, Leaf, MessageCircle,
 import { cn } from "@/utils";
 import { ROUTES } from "@/constants";
 import { programsData } from "@/data/programmes";
+import Image from "next/image";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -48,7 +49,7 @@ export function ProgrammesSection() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} aria-labelledby="programmes-heading" className="bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.06),transparent_28%),linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-16 lg:py-20">
+    <section ref={ref} aria-labelledby="programmes-heading" className="bg-[radial-gradient(circle_at_top,rgba(13,110,110,0.06),transparent_28%),linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-12 lg:py-16">
       <div className="container-site">
         <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={0} className="mx-auto mb-10 max-w-3xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-primary-500">Our Programmes</p>
@@ -72,13 +73,17 @@ export function ProgrammesSection() {
                 initial="hidden"
                 animate={inView ? "visible" : "hidden"}
                 custom={i + 1}
-              className="group flex flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/90 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-sm"
+              className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/90 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-sm"
               >
                 <div className="relative h-52 overflow-hidden bg-neutral-100">
-                  <img
+                  <Image
                     src={imageSrc}
                     alt={programme.image?.alt || programme.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    fill
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    quality={90}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/35 via-transparent to-transparent" aria-hidden="true" />
                   <span className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-bold shadow-sm backdrop-blur-sm", programme.color === "primary" ? "bg-primary-100/90 text-primary-700" : programme.color === "secondary" ? "bg-secondary-100/90 text-secondary-600" : "bg-accent-100/90 text-accent-700")}>
