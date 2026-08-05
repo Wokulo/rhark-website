@@ -100,3 +100,7 @@ export { getEvents as getEventsFromCMS, getUpcomingEvents, getPastEvents, create
 // ─── Gallery CMS ──────────────────────────────────────────────────
 
 export { getGalleryItems, getGalleryItemById, getFeaturedGalleryItems, getGalleryItemsByAlbum, createGalleryItem, updateGalleryItem, deleteGalleryItem, toggleGalleryFeatured, reorderGalleryItems };
+
+// ─── Partners CMS ──────────────────────────────────────
+
+export { getPartners, getActivePartners, getFeaturedPartners, getPartnerBySlug, getPartnerById, createPartner, updatePartner, deletePartner, togglePartnerActive, togglePartnerFeatured, reorderPartners } from "@/services/partners";

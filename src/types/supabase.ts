@@ -236,6 +236,50 @@ export interface Database {
           }
         ];
       };
+      partners: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          logo_url: string;
+          website: string | null;
+          type: string;
+          description: string | null;
+          is_active: boolean;
+          is_featured: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          logo_url: string;
+          website?: string | null;
+          type?: string;
+          description?: string | null;
+          is_active?: boolean;
+          is_featured?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          slug?: string;
+          logo_url?: string;
+          website?: string | null;
+          type?: string;
+          description?: string | null;
+          is_active?: boolean;
+          is_featured?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       albums: {
         Row: {
           id: string;

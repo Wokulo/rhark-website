@@ -33,7 +33,7 @@ export default async function HomePage() {
       <NewsSection content={homepage.announcements} />
       <GetInvolvedSection content={homepage.cta} />
       <NewsletterSection />
-      <PartnersSection content={{ heading: homepage.partners.length > 0 ? "Working together for greater impact" : "", partners: homepage.partners }} />
+      <PartnersSection content={{ heading: homepage.partners.length > 0 ? "Working together for greater impact" : "", partners: homepage.partners.map((p: any, i: number) => ({ id: `partner-${i}`, name: p.name, logoUrl: p.logo })) }} />
     </>
   );
 }

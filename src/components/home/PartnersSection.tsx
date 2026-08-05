@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
+import { getPartners } from "@/services/partners";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -13,27 +14,52 @@ const fadeUp = {
   }),
 };
 
-// Official partner logos live in public/images/partners/.
-const DEFAULT_PARTNERS = [
+interface Partner {
+  id: string;
+  name: string;
+  logoUrl: string;
+  website?: string | null;
+}
+
+const DEFAULT_PARTNERS: Partner[] = [
   {
+    id: "default-1",
     name: "Siaya County Government",
-    logo: "/images/partners/siaya-county-government-logo.webp",
+    logoUrl: "/images/partners/siaya-county-government-logo.webp",
   },
   {
+    id: "default-2",
     name: "World Health Organization (WHO)",
-    logo: "/images/partners/who-logo.png",
+    logoUrl: "/images/partners/who-logo.png",
   },
   {
+    id: "default-3",
     name: "Jaramogi Oginga Odinga University of Science and Technology (JOOUST)",
-    logo: "/images/partners/jooust-logo.png",
+    logoUrl: "/images/partners/jooust-logo.png",
   },
 ];
 
-export function PartnersSection({ content }: { content?: { heading: string; partners: Array<{ name: string; logo: string }> } }) {
+export function PartnersSection({ content }: { content?: { heading: string; partners?: Partner[] } }) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const partners = content?.partners ?? DEFAULT_PARTNERS;
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getPartners();
+        setPartners(data);
+      } catch {
+        setPartners(content?.partners ?? DEFAULT_PARTNERS);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  const displayPartners = loading ? (content?.partners ?? DEFAULT_PARTNERS) : partners;
   const heading = content?.heading ?? "Working together for greater impact";
 
   return (
@@ -69,9 +95,9 @@ export function PartnersSection({ content }: { content?: { heading: string; part
           role="list"
           className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-6 lg:grid-cols-3"
         >
-          {partners.map((partner, i) => (
+          {displayPartners.map((partner, i) => (
             <motion.li
-              key={partner.name}
+              key={partner.id}
               variants={fadeUp}
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
@@ -80,14 +106,14 @@ export function PartnersSection({ content }: { content?: { heading: string; part
               title={partner.name}
             >
               <Image
-                src={partner.logo}
+                src={partner.logoUrl}
                 alt={`${partner.name} logo`}
                 width={200}
                 height={80}
                 sizes="(max-width: 640px) 100vw, 33vw"
-                 className="h-16 w-auto max-w-full object-contain grayscale transition-all duration-300 ease-out group-hover:grayscale-0 group-hover:scale-105"
-                 quality={90}
-               />
+                className="h-16 w-auto max-w-full object-contain grayscale transition-all duration-300 ease-out group-hover:grayscale-0 group-hover:scale-105"
+                quality={90}
+              />
             </motion.li>
           ))}
         </motion.ul>
