@@ -11,11 +11,13 @@ const PARTNERSHIP_TYPES = ["Funding & Grant", "Programme Implementation", "Gover
 
 export default function PartnerForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState("");
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<PartnershipInquirySchema>({
     resolver: zodResolver(partnershipInquirySchema),
   });
 
   const onSubmit = async (data: PartnershipInquirySchema) => {
+    setServerError("");
     try {
       const res = await fetch("/api/partner", {
         method: "POST",
@@ -29,7 +31,7 @@ export default function PartnerForm() {
       setSubmitted(true);
       reset();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to submit inquiry");
+      setServerError(err instanceof Error ? err.message : "Failed to submit inquiry. Please try again.");
     }
   };
 
@@ -58,41 +60,46 @@ export default function PartnerForm() {
         <input type="text" {...register("_honeypot")} className="sr-only" tabIndex={-1} aria-hidden="true" autoComplete="off" />
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-neutral-700">Organization Name <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
-            <input {...register("organizationName")} className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.organizationName ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="Organization name" />
-            {errors.organizationName && <p role="alert" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.organizationName.message}</p>}
+            <label htmlFor="organizationName" className="text-sm font-medium text-neutral-700">Organization Name <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
+            <input {...register("organizationName")} id="organizationName" aria-describedby={errors.organizationName ? "organizationName-error" : undefined} aria-invalid={errors.organizationName ? true : undefined} className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.organizationName ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="Organization name" />
+            {errors.organizationName && <p id="organizationName-error" role="alert" aria-live="polite" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.organizationName.message}</p>}
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-neutral-700">Contact Name <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
-            <input {...register("contactName")} className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.contactName ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="Your full name" />
-            {errors.contactName && <p role="alert" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.contactName.message}</p>}
+            <label htmlFor="contactName" className="text-sm font-medium text-neutral-700">Contact Name <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
+            <input {...register("contactName")} id="contactName" aria-describedby={errors.contactName ? "contactName-error" : undefined} aria-invalid={errors.contactName ? true : undefined} className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.contactName ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="Your full name" />
+            {errors.contactName && <p id="contactName-error" role="alert" aria-live="polite" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.contactName.message}</p>}
           </div>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-neutral-700">Email Address <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
-            <input {...register("email")} type="email" className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.email ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="your@email.com" />
-            {errors.email && <p role="alert" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.email.message}</p>}
+            <label htmlFor="p-email" className="text-sm font-medium text-neutral-700">Email Address <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
+            <input {...register("email")} id="p-email" type="email" aria-describedby={errors.email ? "p-email-error" : undefined} aria-invalid={errors.email ? true : undefined} className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.email ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="your@email.com" />
+            {errors.email && <p id="p-email-error" role="alert" aria-live="polite" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.email.message}</p>}
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-neutral-700">Phone Number</label>
-            <input {...register("phone")} type="tel" className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.phone ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="+254 7XX XXX XXX" />
-            {errors.phone && <p role="alert" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.phone.message}</p>}
+            <label htmlFor="p-phone" className="text-sm font-medium text-neutral-700">Phone Number</label>
+            <input {...register("phone")} id="p-phone" type="tel" aria-describedby={errors.phone ? "p-phone-error" : undefined} aria-invalid={errors.phone ? true : undefined} className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.phone ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="+254 7XX XXX XXX" />
+            {errors.phone && <p id="p-phone-error" role="alert" aria-live="polite" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.phone.message}</p>}
           </div>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-neutral-700">Partnership Type <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
-          <select {...register("partnershipType")} className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.partnershipType ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")}>
+          <label htmlFor="partnershipType" className="text-sm font-medium text-neutral-700">Partnership Type <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
+          <select {...register("partnershipType")} id="partnershipType" aria-describedby={errors.partnershipType ? "partnershipType-error" : undefined} aria-invalid={errors.partnershipType ? true : undefined} className={cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", !!errors.partnershipType ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")}>
             <option value="">Select partnership type</option>
             {PARTNERSHIP_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
-          {errors.partnershipType && <p role="alert" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.partnershipType.message}</p>}
+          {errors.partnershipType && <p id="partnershipType-error" role="alert" aria-live="polite" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.partnershipType.message}</p>}
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-neutral-700">Message <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
-          <textarea {...register("message")} rows={5} className={cn("w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-y min-h-[120px]", !!errors.message ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="Tell us about your organization and how you would like to partner with RHARK..." />
-          {errors.message && <p role="alert" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.message.message}</p>}
+          <label htmlFor="p-message" className="text-sm font-medium text-neutral-700">Message <span className="ml-1 text-error-500" aria-hidden="true">*</span></label>
+          <textarea {...register("message")} id="p-message" rows={5} aria-describedby={errors.message ? "p-message-error" : undefined} aria-invalid={errors.message ? true : undefined} className={cn("w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-y min-h-[120px]", !!errors.message ? "border-error-500" : "border-neutral-300 hover:border-neutral-400")} placeholder="Tell us about your organization and how you would like to partner with RHARK..." />
+          {errors.message && <p id="p-message-error" role="alert" aria-live="polite" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {errors.message.message}</p>}
         </div>
+        {serverError && (
+          <p role="alert" aria-live="assertive" className="rounded-xl bg-error-50 px-4 py-3 text-sm text-error-600 ring-1 ring-error-200">
+            {serverError}
+          </p>
+        )}
         <button type="submit" disabled={isSubmitting} aria-busy={isSubmitting} className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-8 py-3.5 text-sm font-bold text-white shadow-teal-sm transition-all duration-200 hover:bg-primary-600 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
           {isSubmitting ? "Submitting…" : <><Send size={15} aria-hidden="true" /> Submit Inquiry</>}
         </button>

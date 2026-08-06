@@ -25,7 +25,7 @@ const DEFAULT_PROJECTS = [
     status: "Active",
     image: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=600&q=80",
     alt: "Youth group participating in SRHR education session in Bondo, Siaya County",
-    href: "/projects/ujana-salama",
+    href: "/projects",
     tag: "SRHR",
     tagColor: "bg-primary-100 text-primary-700",
   },
@@ -37,7 +37,7 @@ const DEFAULT_PROJECTS = [
     status: "Active",
     image: "https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&q=80",
     alt: "Community health worker providing maternal health support to a mother in rural Siaya",
-    href: "/projects/mama-na-mtoto",
+    href: "/projects",
     tag: "Maternal Health",
     tagColor: "bg-secondary-100 text-secondary-600",
   },
@@ -91,7 +91,7 @@ export function ProjectsSection({ content }: ProjectsSectionProps) {
           </motion.div>
           <motion.div variants={fadeUp} initial="hidden" animate={inView ? "visible" : "hidden"} custom={1}>
             <Link href={ROUTES.projects}
-            className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-white/80 px-4 py-2 text-sm font-semibold text-primary-600 shadow-sm backdrop-blur-sm hover:border-primary-200 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500">
+              className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-white/80 px-4 py-2 text-sm font-semibold text-primary-600 shadow-sm backdrop-blur-sm hover:border-primary-200 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500">
               All projects <ArrowRight size={14} aria-hidden="true" />
             </Link>
           </motion.div>
@@ -106,23 +106,23 @@ export function ProjectsSection({ content }: ProjectsSectionProps) {
               animate={inView ? "visible" : "hidden"}
               custom={i + 2}
               className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/90 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] backdrop-blur-sm"
-              >
-                <div className="relative h-56 overflow-hidden bg-neutral-100">
+            >
+              <div className="relative h-56 overflow-hidden bg-neutral-100">
                 <Image src={project.image} alt={project.alt} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" quality={90} />
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/35 via-transparent to-transparent" aria-hidden="true" />
                 <span className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-bold", project.tagColor)}>
                   {project.tag}
                 </span>
-                  <span className="absolute right-4 top-4 rounded-full bg-success-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+                <span className="absolute right-4 top-4 rounded-full bg-success-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
                   {project.status}
                 </span>
               </div>
-                <div className="flex flex-1 flex-col p-5">
+              <div className="flex flex-1 flex-col p-5">
                 <h3 className="font-display text-lg font-bold text-neutral-900 transition-colors duration-150 group-hover:text-primary-600">
                   {project.title}
                 </h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-neutral-500">{project.summary}</p>
-                  <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-4">
+                <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-4">
                   <div className="flex items-center gap-1.5 text-xs text-neutral-500">
                     <MapPin size={12} aria-hidden="true" />
                     {project.location}

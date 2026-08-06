@@ -18,6 +18,17 @@ const fadeUp = {
   }),
 };
 
+// Programme slugs that have dedicated detail pages. Any other slug
+// falls back to the /programmes listing to avoid 404s.
+const PROGRAMME_ROUTES = new Set([
+  "srhr",
+  "mental-health",
+  "hiv-teen-pregnancy",
+  "gender-equality",
+  "governance-policy",
+  "climate-justice",
+]);
+
 const ICON_MAP: Record<string, React.ElementType> = {
   Heart: (props: any) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
   Brain: (props: any) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M12 18v4"/></svg>,
@@ -149,8 +160,8 @@ export function ProgrammesSection({ content }: ProgrammesSectionProps) {
                         </span>
                       ))}
                     </div>
-                    <Link
-                      href={`/programmes/${programme.slug}`}
+<Link
+                      href={PROGRAMME_ROUTES.has(programme.slug) ? `/programmes/${programme.slug}` : ROUTES.programmes}
                       className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded"
                     >
                       Learn more <ArrowRight size={13} aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-1" />

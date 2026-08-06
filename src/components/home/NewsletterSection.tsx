@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Mail, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Mail, ArrowRight, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -17,10 +17,30 @@ export function NewsletterSection() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [submitted, setSubmitted] = useState(false);
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) setSubmitted(true);
+    if (!email) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const result = await res.json();
+      if (!res.ok || !result.success) {
+        throw new Error(result.message || "Failed to subscribe. Please try again.");
+      }
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to subscribe. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,6 +68,7 @@ export function NewsletterSection() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="mt-6 flex items-center justify-center gap-3 rounded-[1.2rem] bg-white/15 px-6 py-4 ring-1 ring-white/10"
+              role="status"
             >
               <CheckCircle2 size={22} className="text-white" aria-hidden="true" />
               <p className="font-semibold text-white">Thank you! You are now subscribed.</p>
@@ -57,6 +78,7 @@ export function NewsletterSection() {
               onSubmit={handleSubmit}
               className="mt-6 flex flex-col gap-3 sm:flex-row"
               aria-label="Newsletter signup form"
+              noValidate
             >
               <label htmlFor="newsletter-email" className="sr-only">Email address</label>
               <input
@@ -67,15 +89,34 @@ export function NewsletterSection() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
                 autoComplete="email"
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "newsletter-error" : undefined}
                 className="h-12 flex-1 rounded-full border-0 bg-white/15 px-5 text-sm text-white placeholder:text-primary-200 transition-colors duration-150 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"
               />
               <button
                 type="submit"
-                className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-accent-500 px-6 text-sm font-bold text-white shadow-[0_14px_32px_rgba(245,158,11,0.28)] transition-colors duration-150 hover:bg-accent-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+                disabled={loading}
+                aria-busy={loading}
+                className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-accent-500 px-6 text-sm font-bold text-white shadow-[0_14px_32px_rgba(245,158,11,0.28)] transition-colors duration-150 hover:bg-accent-600 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
               >
-                Subscribe <ArrowRight size={14} aria-hidden="true" />
+                {loading ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" aria-hidden="true" />
+                    Subscribing…
+                  </>
+                ) : (
+                  <>
+                    Subscribe <ArrowRight size={14} aria-hidden="true" />
+                  </>
+                )}
               </button>
             </form>
+          )}
+          {error && !submitted && (
+            <p id="newsletter-error" role="alert" className="mt-3 flex items-center justify-center gap-1.5 text-xs font-medium text-warning-200">
+              <AlertCircle size={13} aria-hidden="true" />
+              {error}
+            </p>
           )}
           <p className="mt-3 text-xs text-primary-300">
             No spam. Unsubscribe anytime. We comply with the Kenya Data Protection Act 2019.

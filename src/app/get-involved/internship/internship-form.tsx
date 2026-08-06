@@ -27,11 +27,13 @@ type InternshipSchema = z.infer<typeof internshipSchema>;
 
 export default function InternshipForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState("");
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<InternshipSchema>({
     resolver: zodResolver(internshipSchema),
   });
 
   const onSubmit = async (data: InternshipSchema) => {
+    setServerError("");
     try {
       const res = await fetch("/api/internship", {
         method: "POST",
@@ -45,7 +47,7 @@ export default function InternshipForm() {
       setSubmitted(true);
       reset();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to submit application");
+      setServerError(err instanceof Error ? err.message : "Failed to submit application. Please try again.");
     }
   };
 

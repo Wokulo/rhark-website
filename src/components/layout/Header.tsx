@@ -585,7 +585,7 @@ export function Header() {
         )}
       >
         {/* Mobile header bar */}
-        <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-100 px-3">
+        <div className="flex h-12 shrink-0 items-center justify-between border-b border-neutral-100 px-3">
           <Link
             href="/"
             className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
@@ -605,7 +605,7 @@ export function Header() {
           <button
             onClick={() => setMobileOpen(false)}
             aria-label="Close navigation menu"
-            className="flex h-11 w-11 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-100"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
           >
             <X size={22} aria-hidden="true" />
           </button>

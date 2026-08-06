@@ -28,7 +28,7 @@ export default async function HomePage() {
       <ImpactStatsSection content={homepage.stats} />
       <AboutPreviewSection />
       <ProgrammesSection content={homepage.programmes} />
-      <ProjectsSection content={{ heading: "Programmes in action", projects: homepage.projects.map((p) => ({ ...p, tagColor: "bg-primary-100 text-primary-700", image: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=600&q=80", alt: p.title, href: `/projects/${p.title.toLowerCase().replace(/\s+/g, "-")}` })) }} />
+<ProjectsSection content={{ heading: "Programmes in action", projects: homepage.projects.map((p) => ({ ...p, tagColor: "bg-primary-100 text-primary-700", image: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=600&q=80", alt: p.title, href: "/projects" })) }} />
       <StoriesSection />
       <NewsSection content={homepage.announcements} />
       <GetInvolvedSection content={homepage.cta} />

@@ -161,51 +161,66 @@ export default function ContactPage() {
                 <input type="text" {...register("_honeypot")} className="sr-only" tabIndex={-1} aria-hidden="true" autoComplete="off" />
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Full Name" error={errors.name?.message} required>
+                  <Field id="name" label="Full Name" error={errors.name?.message} required>
                     <input
                       {...register("name")}
+                      id="name"
                       type="text"
                       autoComplete="name"
                       placeholder="Your full name"
+                      aria-describedby={errors.name ? "name-error" : undefined}
+                      aria-invalid={errors.name ? true : undefined}
                       className={inputClass(!!errors.name)}
                     />
                   </Field>
-                  <Field label="Email Address" error={errors.email?.message} required>
+                  <Field id="email" label="Email Address" error={errors.email?.message} required>
                     <input
                       {...register("email")}
+                      id="email"
                       type="email"
                       autoComplete="email"
                       placeholder="your@email.com"
+                      aria-describedby={errors.email ? "email-error" : undefined}
+                      aria-invalid={errors.email ? true : undefined}
                       className={inputClass(!!errors.email)}
                     />
                   </Field>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Phone Number" error={errors.phone?.message}>
+                  <Field id="phone" label="Phone Number" error={errors.phone?.message}>
                     <input
                       {...register("phone")}
+                      id="phone"
                       type="tel"
                       autoComplete="tel"
                       placeholder="+254 7XX XXX XXX"
+                      aria-describedby={errors.phone ? "phone-error" : undefined}
+                      aria-invalid={errors.phone ? true : undefined}
                       className={inputClass(!!errors.phone)}
                     />
                   </Field>
-                  <Field label="Subject" error={errors.subject?.message} required>
+                  <Field id="subject" label="Subject" error={errors.subject?.message} required>
                     <input
                       {...register("subject")}
+                      id="subject"
                       type="text"
                       placeholder="How can we help?"
+                      aria-describedby={errors.subject ? "subject-error" : undefined}
+                      aria-invalid={errors.subject ? true : undefined}
                       className={inputClass(!!errors.subject)}
                     />
                   </Field>
                 </div>
 
-                <Field label="Message" error={errors.message?.message} required>
+                <Field id="message" label="Message" error={errors.message?.message} required>
                   <textarea
                     {...register("message")}
+                    id="message"
                     rows={5}
                     placeholder="Tell us more about your enquiry..."
+                    aria-describedby={errors.message ? "message-error" : undefined}
+                    aria-invalid={errors.message ? true : undefined}
                     className={cn(inputClass(!!errors.message), "resize-y min-h-[120px]")}
                   />
                 </Field>
@@ -241,15 +256,15 @@ function inputClass(hasError: boolean) {
   );
 }
 
-function Field({ label, error, required, children }: { label: string; error?: string; required?: boolean; children: React.ReactNode }) {
-  const id = label.toLowerCase().replace(/\s+/g, "-");
+function Field({ id, label, error, required, children }: { id: string; label: string; error?: string; required?: boolean; children: React.ReactNode }) {
+  const errorId = `${id}-error`;
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-sm font-medium text-neutral-700">
         {label}{required && <span className="ml-1 text-error-500" aria-hidden="true">*</span>}
       </label>
-      <div id={id}>{children}</div>
-      {error && <p role="alert" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {error}</p>}
+      {children}
+      {error && <p id={errorId} role="alert" aria-live="polite" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {error}</p>}
     </div>
   );
 }

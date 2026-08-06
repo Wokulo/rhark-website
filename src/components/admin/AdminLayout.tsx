@@ -16,9 +16,7 @@ import {
   Handshake,
   MessageSquare,
   Mail,
-  Library,
-  Search,
-  BarChart3,
+Library,
   Settings,
   Menu,
   X,
@@ -78,9 +76,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     label: "Tools",
     items: [
-      { label: "Media Library", href: "/admin/media", icon: Library, resource: RESOURCES.MEDIA },
-      { label: "Search", href: "/admin/search", icon: Search, resource: RESOURCES.DASHBOARD },
-      { label: "Reports", href: "/admin/reports", icon: BarChart3, resource: RESOURCES.REPORTS },
+{ label: "Media Library", href: "/admin/media", icon: Library, resource: RESOURCES.MEDIA },
       { label: "Settings", href: "/admin/settings", icon: Settings, resource: RESOURCES.SETTINGS },
     ],
   },

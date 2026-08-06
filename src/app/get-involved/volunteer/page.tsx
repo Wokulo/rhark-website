@@ -14,11 +14,13 @@ const SKILLS_OPTIONS = ["Community Health","Gender & SRHR","Mental Health","Rese
 
 export default function VolunteerPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState("");
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<VolunteerSchema>({
     resolver: zodResolver(volunteerSchema),
   });
 
   const onSubmit = async (data: VolunteerSchema) => {
+    setServerError("");
     try {
       const res = await fetch("/api/volunteer", {
         method: "POST",
@@ -32,7 +34,7 @@ export default function VolunteerPage() {
       setSubmitted(true);
       reset();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to submit application");
+      setServerError(err instanceof Error ? err.message : "Failed to submit application. Please try again.");
     }
   };
 
@@ -95,33 +97,38 @@ export default function VolunteerPage() {
               <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate aria-label="Volunteer application form">
                 <input type="text" {...register("_honeypot")} className="sr-only" tabIndex={-1} aria-hidden="true" autoComplete="off" />
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <VField label="First Name" error={errors.firstName?.message} required><input {...register("firstName")} type="text" placeholder="First name" className={ic(!!errors.firstName)} /></VField>
-                  <VField label="Last Name" error={errors.lastName?.message} required><input {...register("lastName")} type="text" placeholder="Last name" className={ic(!!errors.lastName)} /></VField>
+                  <VField id="firstName" label="First Name" error={errors.firstName?.message} required><input {...register("firstName")} id="firstName" type="text" placeholder="First name" aria-describedby={errors.firstName ? "firstName-error" : undefined} aria-invalid={errors.firstName ? true : undefined} className={ic(!!errors.firstName)} /></VField>
+                  <VField id="lastName" label="Last Name" error={errors.lastName?.message} required><input {...register("lastName")} id="lastName" type="text" placeholder="Last name" aria-describedby={errors.lastName ? "lastName-error" : undefined} aria-invalid={errors.lastName ? true : undefined} className={ic(!!errors.lastName)} /></VField>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <VField label="Email Address" error={errors.email?.message} required><input {...register("email")} type="email" placeholder="your@email.com" className={ic(!!errors.email)} /></VField>
-                  <VField label="Phone Number" error={errors.phone?.message} required><input {...register("phone")} type="tel" placeholder="+254 7XX XXX XXX" className={ic(!!errors.phone)} /></VField>
+                  <VField id="email" label="Email Address" error={errors.email?.message} required><input {...register("email")} id="email" type="email" placeholder="your@email.com" aria-describedby={errors.email ? "email-error" : undefined} aria-invalid={errors.email ? true : undefined} className={ic(!!errors.email)} /></VField>
+                  <VField id="phone" label="Phone Number" error={errors.phone?.message} required><input {...register("phone")} id="phone" type="tel" placeholder="+254 7XX XXX XXX" aria-describedby={errors.phone ? "phone-error" : undefined} aria-invalid={errors.phone ? true : undefined} className={ic(!!errors.phone)} /></VField>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <VField label="County" error={errors.county?.message} required>
-                    <select {...register("county")} className={ic(!!errors.county)}>
+                  <VField id="county" label="County" error={errors.county?.message} required>
+                    <select {...register("county")} id="county" aria-describedby={errors.county ? "county-error" : undefined} aria-invalid={errors.county ? true : undefined} className={ic(!!errors.county)}>
                       <option value="">Select county</option>
                       {COUNTIES.map((c) => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </VField>
-                  <VField label="Availability" error={errors.availability?.message} required>
-                    <select {...register("availability")} className={ic(!!errors.availability)}>
+                  <VField id="availability" label="Availability" error={errors.availability?.message} required>
+                    <select {...register("availability")} id="availability" aria-describedby={errors.availability ? "availability-error" : undefined} aria-invalid={errors.availability ? true : undefined} className={ic(!!errors.availability)}>
                       <option value="">Select availability</option>
                       {AVAILABILITY.map((a) => <option key={a} value={a}>{a}</option>)}
                     </select>
                   </VField>
                 </div>
-                <VField label="Skills & Experience" error={errors.skills?.message} required>
-                  <textarea {...register("skills")} rows={3} placeholder="Describe your relevant skills and experience..." className={cn(ic(!!errors.skills), "resize-y min-h-[80px]")} />
+                <VField id="skills" label="Skills & Experience" error={errors.skills?.message} required>
+                  <textarea {...register("skills")} id="skills" rows={3} placeholder="Describe your relevant skills and experience..." aria-describedby={errors.skills ? "skills-error" : undefined} aria-invalid={errors.skills ? true : undefined} className={cn(ic(!!errors.skills), "resize-y min-h-[80px]")} />
                 </VField>
-                <VField label="Why do you want to volunteer with RHARK?" error={errors.motivation?.message} required>
-                  <textarea {...register("motivation")} rows={4} placeholder="Tell us what motivates you to volunteer with RHARK..." className={cn(ic(!!errors.motivation), "resize-y min-h-[100px]")} />
+                <VField id="motivation" label="Why do you want to volunteer with RHARK?" error={errors.motivation?.message} required>
+                  <textarea {...register("motivation")} id="motivation" rows={4} placeholder="Tell us what motivates you to volunteer with RHARK..." aria-describedby={errors.motivation ? "motivation-error" : undefined} aria-invalid={errors.motivation ? true : undefined} className={cn(ic(!!errors.motivation), "resize-y min-h-[100px]")} />
                 </VField>
+                {serverError && (
+                  <p role="alert" aria-live="assertive" className="rounded-xl bg-error-50 px-4 py-3 text-sm text-error-600 ring-1 ring-error-200">
+                    {serverError}
+                  </p>
+                )}
                 <button type="submit" disabled={isSubmitting} aria-busy={isSubmitting} className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-8 py-3.5 text-sm font-bold text-white shadow-teal-sm transition-all duration-200 hover:bg-primary-600 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
                   {isSubmitting ? "Submitting…" : <><Send size={15} aria-hidden="true" /> Submit Application</>}
                 </button>
@@ -138,12 +145,13 @@ function ic(hasError: boolean) {
   return cn("h-12 w-full rounded-xl border bg-white px-4 text-sm text-neutral-900 placeholder:text-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500", hasError ? "border-error-500" : "border-neutral-300 hover:border-neutral-400");
 }
 
-function VField({ label, error, required, children }: { label: string; error?: string; required?: boolean; children: React.ReactNode }) {
+function VField({ id, label, error, required, children }: { id: string; label: string; error?: string; required?: boolean; children: React.ReactNode }) {
+  const errorId = `${id}-error`;
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-medium text-neutral-700">{label}{required && <span className="ml-1 text-error-500" aria-hidden="true">*</span>}</label>
+      <label htmlFor={id} className="text-sm font-medium text-neutral-700">{label}{required && <span className="ml-1 text-error-500" aria-hidden="true">*</span>}</label>
       {children}
-      {error && <p role="alert" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {error}</p>}
+      {error && <p id={errorId} role="alert" aria-live="polite" className="flex items-center gap-1 text-xs text-error-500"><span aria-hidden="true">⚠</span> {error}</p>}
     </div>
   );
 }
