@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { getPartners } from "@/services/partners";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -42,24 +41,8 @@ const DEFAULT_PARTNERS: Partner[] = [
 export function PartnersSection({ content }: { content?: { heading: string; partners?: Partner[] } }) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  const [partners, setPartners] = useState<Partner[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getPartners();
-        setPartners(data);
-      } catch {
-        setPartners(content?.partners ?? DEFAULT_PARTNERS);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
-
-  const displayPartners = loading ? (content?.partners ?? DEFAULT_PARTNERS) : partners;
+  const displayPartners = content?.partners && content.partners.length > 0 ? content.partners : DEFAULT_PARTNERS;
   const heading = content?.heading ?? "Working together for greater impact";
 
   return (
@@ -77,7 +60,7 @@ export function PartnersSection({ content }: { content?: { heading: string; part
           className="mx-auto mb-10 max-w-3xl text-center"
         >
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-neutral-400">
-            Our Partners &amp; Supporters
+            Our Partners & Supporters
           </p>
           <h2
             id="partners-heading"
@@ -121,4 +104,3 @@ export function PartnersSection({ content }: { content?: { heading: string; part
     </section>
   );
 }
-
